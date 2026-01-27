@@ -7,6 +7,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -15,42 +22,63 @@ import {
 } from "@/components/ui/pagination";
 import { UserTable } from "@/components/users/UserTable";
 import { FirebaseUser } from "./actions";
+import { PAGE_SIZE_OPTIONS, PageSize } from "./constants";
 
 interface UsersPageClientProps {
   users: FirebaseUser[];
   nextPageToken: string | undefined;
   currentPageToken: string | undefined;
+  pageSize: PageSize;
 }
 
 export function UsersPageClient({
   users,
   nextPageToken,
   currentPageToken,
+  pageSize,
 }: UsersPageClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, loading, signInWithGoogle, signOut, authError } = useAuth();
 
   // ページ履歴をURLから取得
-  const pageHistory = searchParams.get("history")?.split(",").filter(Boolean) || [];
+  const pageHistory =
+    searchParams.get("history")?.split(",").filter(Boolean) || [];
   const currentPage = pageHistory.length + 1;
   const hasPrevious = currentPage > 1;
   const hasNext = !!nextPageToken;
+
+  const buildUrl = (params: {
+    pageToken?: string;
+    history?: string[];
+    pageSize?: number;
+  }) => {
+    const urlParams = new URLSearchParams();
+    if (params.pageToken) {
+      urlParams.set("pageToken", params.pageToken);
+    }
+    if (params.history && params.history.length > 0) {
+      urlParams.set("history", params.history.join(","));
+    }
+    if (params.pageSize) {
+      urlParams.set("pageSize", params.pageSize.toString());
+    }
+    const query = urlParams.toString();
+    return query ? `/firebase/users?${query}` : "/firebase/users";
+  };
 
   const handlePrevious = () => {
     if (!hasPrevious) return;
     const newHistory = [...pageHistory];
     newHistory.pop();
     const prevToken = newHistory[newHistory.length - 1];
-    const params = new URLSearchParams();
-    if (prevToken) {
-      params.set("pageToken", prevToken);
-    }
-    if (newHistory.length > 0) {
-      params.set("history", newHistory.join(","));
-    }
-    const query = params.toString();
-    router.push(query ? `/firebase/users?${query}` : "/firebase/users");
+    router.push(
+      buildUrl({
+        pageToken: prevToken,
+        history: newHistory,
+        pageSize,
+      })
+    );
   };
 
   const handleNext = () => {
@@ -58,12 +86,19 @@ export function UsersPageClient({
     const newHistory = currentPageToken
       ? [...pageHistory, currentPageToken]
       : pageHistory;
-    const params = new URLSearchParams();
-    params.set("pageToken", nextPageToken);
-    if (newHistory.length > 0) {
-      params.set("history", newHistory.join(","));
-    }
-    router.push(`/firebase/users?${params.toString()}`);
+    router.push(
+      buildUrl({
+        pageToken: nextPageToken,
+        history: newHistory,
+        pageSize,
+      })
+    );
+  };
+
+  const handlePageSizeChange = (value: string) => {
+    const newPageSize = parseInt(value, 10) as PageSize;
+    // ページサイズ変更時は1ページ目に戻る
+    router.push(buildUrl({ pageSize: newPageSize }));
   };
 
   if (loading) {
@@ -135,9 +170,31 @@ export function UsersPageClient({
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>ユーザー一覧</span>
-              <span className="text-sm font-normal text-zinc-500 dark:text-zinc-400">
-                ページ {currentPage}
-              </span>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-normal text-zinc-500 dark:text-zinc-400">
+                    表示件数
+                  </span>
+                  <Select
+                    value={pageSize.toString()}
+                    onValueChange={handlePageSizeChange}
+                  >
+                    <SelectTrigger className="w-20">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PAGE_SIZE_OPTIONS.map((size) => (
+                        <SelectItem key={size} value={size.toString()}>
+                          {size}件
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <span className="text-sm font-normal text-zinc-500 dark:text-zinc-400">
+                  ページ {currentPage}
+                </span>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent>

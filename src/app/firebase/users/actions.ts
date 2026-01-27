@@ -2,6 +2,7 @@
 
 import { getAdminAuth } from "@/lib/firebase-admin";
 import { UserRecord } from "firebase-admin/auth";
+import { DEFAULT_PAGE_SIZE } from "./constants";
 
 export interface FirebaseUser {
   uid: string;
@@ -20,8 +21,6 @@ export interface PaginatedUsersResult {
   nextPageToken: string | undefined;
 }
 
-const PAGE_SIZE = 20;
-
 function formatUserRecord(user: UserRecord): FirebaseUser {
   return {
     uid: user.uid,
@@ -37,10 +36,11 @@ function formatUserRecord(user: UserRecord): FirebaseUser {
 }
 
 export async function fetchUsers(
+  pageSize: number = DEFAULT_PAGE_SIZE,
   pageToken?: string
 ): Promise<PaginatedUsersResult> {
   const auth = getAdminAuth();
-  const listUsersResult = await auth.listUsers(PAGE_SIZE, pageToken);
+  const listUsersResult = await auth.listUsers(pageSize, pageToken);
   return {
     users: listUsersResult.users.map(formatUserRecord),
     nextPageToken: listUsersResult.pageToken,
