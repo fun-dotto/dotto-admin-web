@@ -13,13 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { UserTable } from "@/components/users/UserTable";
 import { FirebaseUser } from "./actions";
 import { PAGE_SIZE_OPTIONS, PageSize } from "./constants";
@@ -191,9 +185,27 @@ export function UsersPageClient({
                     </SelectContent>
                   </Select>
                 </div>
-                <span className="text-sm font-normal text-zinc-500 dark:text-zinc-400">
-                  ページ {currentPage}
-                </span>
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={handlePrevious}
+                    disabled={!hasPrevious}
+                  >
+                    <ChevronLeft className="size-4" />
+                  </Button>
+                  <span className="min-w-16 text-center text-sm font-normal text-zinc-500 dark:text-zinc-400">
+                    ページ {currentPage}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={handleNext}
+                    disabled={!hasNext}
+                  >
+                    <ChevronRight className="size-4" />
+                  </Button>
+                </div>
               </div>
             </CardTitle>
           </CardHeader>
@@ -206,37 +218,29 @@ export function UsersPageClient({
               <>
                 <UserTable users={users} />
                 <div className="mt-4 flex justify-center">
-                  <Pagination>
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationPrevious
-                          onClick={handlePrevious}
-                          disabled={!hasPrevious}
-                          className={
-                            !hasPrevious
-                              ? "pointer-events-none opacity-50"
-                              : "cursor-pointer"
-                          }
-                        />
-                      </PaginationItem>
-                      <PaginationItem>
-                        <span className="flex items-center px-4 text-sm text-zinc-600 dark:text-zinc-400">
-                          ページ {currentPage}
-                        </span>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationNext
-                          onClick={handleNext}
-                          disabled={!hasNext}
-                          className={
-                            !hasNext
-                              ? "pointer-events-none opacity-50"
-                              : "cursor-pointer"
-                          }
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handlePrevious}
+                      disabled={!hasPrevious}
+                    >
+                      <ChevronLeft className="size-4" />
+                      前へ
+                    </Button>
+                    <span className="min-w-20 text-center text-sm text-zinc-600 dark:text-zinc-400">
+                      ページ {currentPage}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleNext}
+                      disabled={!hasNext}
+                    >
+                      次へ
+                      <ChevronRight className="size-4" />
+                    </Button>
+                  </div>
                 </div>
               </>
             )}
