@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
-  const { user, loading, signInWithGoogle, signOut } = useAuth();
+  const { user, loading, authError, signInWithGoogle, signOut } = useAuth();
 
   if (loading) {
     return (
@@ -25,6 +25,11 @@ export default function Home() {
           <p className="text-zinc-600 dark:text-zinc-400">
             管理画面にアクセスするにはログインしてください
           </p>
+          {authError && (
+            <div className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950 dark:text-red-400">
+              {authError}
+            </div>
+          )}
           <Button onClick={signInWithGoogle} variant="outline" size="lg">
             <svg className="size-5" viewBox="0 0 24 24">
               <path
