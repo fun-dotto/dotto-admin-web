@@ -64,12 +64,12 @@ export function UsersPageClient({
   const handlePrevious = () => {
     if (!hasPrevious) return;
     const newHistory = [...pageHistory];
-    newHistory.pop();
-    const prevToken = newHistory[newHistory.length - 1];
+    const prevToken = newHistory.pop();
     router.push(
       buildUrl({
-        pageToken: prevToken,
-        history: newHistory,
+        // 空文字列は1ページ目を示すマーカーなのでundefinedに変換
+        pageToken: prevToken || undefined,
+        history: newHistory.filter(Boolean),
         pageSize,
       })
     );
@@ -77,9 +77,8 @@ export function UsersPageClient({
 
   const handleNext = () => {
     if (!hasNext || !nextPageToken) return;
-    const newHistory = currentPageToken
-      ? [...pageHistory, currentPageToken]
-      : pageHistory;
+    // 1ページ目は空文字列をマーカーとして履歴に追加
+    const newHistory = [...pageHistory, currentPageToken || ""];
     router.push(
       buildUrl({
         pageToken: nextPageToken,
