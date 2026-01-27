@@ -35,9 +35,9 @@ export function UsersPageClient({
   const searchParams = useSearchParams();
   const { user, loading, signInWithGoogle, signOut, authError } = useAuth();
 
-  // ページ履歴をURLから取得
-  const pageHistory =
-    searchParams.get("history")?.split(",").filter(Boolean) || [];
+  // ページ履歴をURLから取得（空文字列は1ページ目のマーカー）
+  const historyParam = searchParams.get("history");
+  const pageHistory = historyParam ? historyParam.split(",") : [];
   const currentPage = pageHistory.length + 1;
   const hasPrevious = currentPage > 1;
   const hasNext = !!nextPageToken;
@@ -69,7 +69,7 @@ export function UsersPageClient({
       buildUrl({
         // 空文字列は1ページ目を示すマーカーなのでundefinedに変換
         pageToken: prevToken || undefined,
-        history: newHistory.filter(Boolean),
+        history: newHistory,
         pageSize,
       })
     );
