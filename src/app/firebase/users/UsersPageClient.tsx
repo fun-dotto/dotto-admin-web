@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,11 +15,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { ChevronLeft, ChevronRight, ShieldPlus, ShieldMinus } from "lucide-react";
 import { CircularProgress } from "@/components/ui/circular-progress";
 import { UserTable } from "@/components/users/UserTable";
 import { UserFilters } from "@/components/users/UserFilters";
-import { FirebaseUser } from "./actions";
+import { FirebaseUser, updateAdminClaim } from "./actions";
 import { PAGE_SIZE_OPTIONS, PageSize, StatusFilter } from "./constants";
 
 interface UsersPageClientProps {
@@ -41,6 +52,9 @@ export function UsersPageClient({
   const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(
     new Set()
   );
+  const [adminDialogOpen, setAdminDialogOpen] = useState(false);
+  const [adminDialogAction, setAdminDialogAction] = useState<"grant" | "revoke">("grant");
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -156,6 +170,65 @@ export function UsersPageClient({
       })
     );
   };
+
+  // 選択中のユーザーからログインユーザー自身を除外したリスト
+  const selectedUsersExcludingSelf = Array.from(selectedUserIds).filter(
+    (uid) => uid !== user?.uid
+  );
+
+  // admin権限変更ダイアログを開く
+  const handleOpenAdminDialog = (action: "grant" | "revoke") => {
+    setAdminDialogAction(action);
+    setAdminDialogOpen(true);
+  };
+
+  // admin権限変更を実行
+  const handleConfirmAdminChange = async () => {
+    const targetIds =
+      adminDialogAction === "revoke"
+        ? selectedUsersExcludingSelf
+        : Array.from(selectedUserIds);
+
+    if (targetIds.length === 0) {
+      toast.error("対象ユーザーがいません");
+      setAdminDialogOpen(false);
+      return;
+    }
+
+    setIsUpdating(true);
+    try {
+      const result = await updateAdminClaim(
+        targetIds,
+        adminDialogAction === "grant"
+      );
+
+      if (result.success) {
+        toast.success(
+          adminDialogAction === "grant"
+            ? `${result.updatedCount}人のユーザーに管理者権限を付与しました`
+            : `${result.updatedCount}人のユーザーから管理者権限を剥奪しました`
+        );
+        setSelectedUserIds(new Set());
+        router.refresh();
+      } else {
+        toast.error(`一部のユーザーの更新に失敗しました`, {
+          description: result.errors.join("\n"),
+        });
+        if (result.updatedCount > 0) {
+          router.refresh();
+        }
+      }
+    } catch {
+      toast.error("エラーが発生しました");
+    } finally {
+      setIsUpdating(false);
+      setAdminDialogOpen(false);
+    }
+  };
+
+  // 剥奪対象にログインユーザー自身が含まれているかチェック
+  const selfIncludedInRevoke =
+    selectedUserIds.has(user?.uid || "") && selectedUserIds.size > 0;
 
   if (loading) {
     return (
@@ -282,6 +355,38 @@ export function UsersPageClient({
             />
           </CardHeader>
           <CardContent>
+            {selectedUserIds.size > 0 && (
+              <div className="mb-4 flex items-center gap-4 rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 dark:border-zinc-700 dark:bg-zinc-800">
+                <span className="text-sm text-zinc-600 dark:text-zinc-300">
+                  {selectedUserIds.size}件選択中
+                </span>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleOpenAdminDialog("grant")}
+                    disabled={isUpdating}
+                  >
+                    <ShieldPlus className="mr-1 size-4" />
+                    管理者権限を付与
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleOpenAdminDialog("revoke")}
+                    disabled={isUpdating || selectedUsersExcludingSelf.length === 0}
+                  >
+                    <ShieldMinus className="mr-1 size-4" />
+                    管理者権限を剥奪
+                  </Button>
+                </div>
+                {selfIncludedInRevoke && (
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                    ※自分自身の管理者権限は剥奪できません
+                  </span>
+                )}
+              </div>
+            )}
             {hasActiveFilters && (
               <div className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">
                 {displayUsers.length}件表示中
@@ -333,6 +438,46 @@ export function UsersPageClient({
           </CardContent>
         </Card>
       </main>
+
+      <AlertDialog open={adminDialogOpen} onOpenChange={setAdminDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {adminDialogAction === "grant"
+                ? "管理者権限を付与"
+                : "管理者権限を剥奪"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {adminDialogAction === "grant" ? (
+                <>
+                  選択した{selectedUserIds.size}人のユーザーに管理者権限を付与します。
+                  管理者はこの管理画面にアクセスできるようになります。
+                </>
+              ) : (
+                <>
+                  選択した{selectedUsersExcludingSelf.length}人のユーザーから管理者権限を剥奪します。
+                  {selfIncludedInRevoke && (
+                    <span className="mt-2 block text-amber-600 dark:text-amber-400">
+                      ※自分自身は対象から除外されます
+                    </span>
+                  )}
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isUpdating}>
+              キャンセル
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmAdminChange}
+              disabled={isUpdating}
+            >
+              {isUpdating ? "処理中..." : "確認"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
