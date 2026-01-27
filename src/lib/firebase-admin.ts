@@ -17,18 +17,16 @@ function getAdminApp(): App {
       );
 
       if (!projectId || !clientEmail || !privateKey) {
-        throw new Error(
-          "Firebase Admin SDK の環境変数が設定されていません。FIREBASE_ADMIN_CLIENT_EMAIL と FIREBASE_ADMIN_PRIVATE_KEY を設定してください。",
-        );
+        adminApp = initializeApp();
+      } else {
+        adminApp = initializeApp({
+          credential: cert({
+            projectId,
+            clientEmail,
+            privateKey,
+          }),
+        });
       }
-
-      adminApp = initializeApp({
-        credential: cert({
-          projectId,
-          clientEmail,
-          privateKey,
-        }),
-      });
     }
   } else {
     adminApp = getApps()[0];
