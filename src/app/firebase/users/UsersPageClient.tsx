@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -37,6 +38,9 @@ export function UsersPageClient({
   isSearchMode,
   totalUserCount,
 }: UsersPageClientProps) {
+  const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(
+    new Set()
+  );
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -292,7 +296,11 @@ export function UsersPageClient({
               </div>
             ) : (
               <>
-                <UserTable users={displayUsers} />
+                <UserTable
+                  users={displayUsers}
+                  selectedUserIds={selectedUserIds}
+                  onSelectionChange={setSelectedUserIds}
+                />
                 {!isSearchMode && (
                   <div className="mt-4 flex justify-center">
                     <div className="flex items-center gap-1">
