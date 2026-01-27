@@ -45,3 +45,5 @@ next-env.d.ts
 firebase-debug.log
 
 firebase-adminsdk-key.json
+
+.open-next/
