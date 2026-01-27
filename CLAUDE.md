@@ -48,6 +48,7 @@ src/
 **環境変数** (`.env.local`に設定):
 
 ```
+# Firebase クライアント用
 NEXT_PUBLIC_FIREBASE_API_KEY
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
 NEXT_PUBLIC_FIREBASE_PROJECT_ID
@@ -55,6 +56,50 @@ NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
 NEXT_PUBLIC_FIREBASE_APP_ID
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+
+# Firebase Admin SDK用（サーバーサイドのみ）
+FIREBASE_ADMIN_CLIENT_EMAIL
+FIREBASE_ADMIN_PRIVATE_KEY
+```
+
+### Firebaseユーザー一覧ページ
+
+**パス**: `/firebase/users`
+
+**ファイル構成**:
+
+```
+src/app/firebase/users/
+├── page.tsx              # SSRページ（ユーザー取得）
+├── UsersPageClient.tsx   # クライアントコンポーネント（UI・ページネーション）
+├── actions.ts            # Server Actions（Firebase Admin SDK操作）
+└── constants.ts          # ページサイズ定数
+
+src/components/users/
+└── UserTable.tsx         # ユーザー一覧テーブルコンポーネント
+```
+
+**機能**:
+
+- Firebase Admin SDKでユーザー一覧を取得・表示
+- ページネーション対応（URLパラメータで履歴管理）
+- 表示件数変更（10/20/50/100件）
+- ユーザー情報表示: アバター、名前、メール、UID、ステータス（管理者/有効/無効/メール認証済）、作成日時、最終ログイン
+
+**データ型** (`FirebaseUser`):
+
+```typescript
+interface FirebaseUser {
+  uid: string;
+  email: string | undefined;
+  displayName: string | undefined;
+  photoURL: string | undefined;
+  disabled: boolean;
+  emailVerified: boolean;
+  creationTime: string | undefined;
+  lastSignInTime: string | undefined;
+  isAdmin: boolean; // customClaims.admin === true
+}
 ```
 
 ### スタイリング
