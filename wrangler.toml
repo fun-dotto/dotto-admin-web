@@ -5,3 +5,6 @@ compatibility_flags = ["nodejs_compat"]
 [assets]
 directory = ".open-next/assets"
 binding = "ASSETS"
+[[routes]]
+pattern = "admin.dotto.furari.co"
+custom_domain = true
