@@ -104,3 +104,43 @@ export async function searchUsers(
     totalCount: allUsers.length,
   };
 }
+
+export interface UpdateAdminClaimResult {
+  success: boolean;
+  updatedCount: number;
+  errors: string[];
+}
+
+export async function updateAdminClaim(
+  userIds: string[],
+  grant: boolean
+): Promise<UpdateAdminClaimResult> {
+  const auth = getAdminAuth();
+  const errors: string[] = [];
+  let updatedCount = 0;
+
+  for (const uid of userIds) {
+    try {
+      const user = await auth.getUser(uid);
+      const currentClaims = user.customClaims || {};
+
+      if (grant) {
+        await auth.setCustomUserClaims(uid, { ...currentClaims, admin: true });
+      } else {
+        const { admin: _, ...restClaims } = currentClaims;
+        await auth.setCustomUserClaims(uid, restClaims);
+      }
+      updatedCount++;
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "不明なエラーが発生しました";
+      errors.push(`${uid}: ${message}`);
+    }
+  }
+
+  return {
+    success: errors.length === 0,
+    updatedCount,
+    errors,
+  };
+}
