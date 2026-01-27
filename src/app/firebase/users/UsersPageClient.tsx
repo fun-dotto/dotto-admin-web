@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -26,6 +25,8 @@ interface UsersPageClientProps {
   nextPageToken: string | undefined;
   currentPageToken: string | undefined;
   pageSize: PageSize;
+  isSearchMode: boolean;
+  totalUserCount?: number;
 }
 
 export function UsersPageClient({
@@ -33,7 +34,10 @@ export function UsersPageClient({
   nextPageToken,
   currentPageToken,
   pageSize,
+  isSearchMode,
+  totalUserCount,
 }: UsersPageClientProps) {
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, loading, signInWithGoogle, signOut, authError } = useAuth();
@@ -50,37 +54,9 @@ export function UsersPageClient({
   const statusFilter = (searchParams.get("status") as StatusFilter) || "all";
   const hasActiveFilters = searchQuery !== "" || statusFilter !== "all";
 
-  // クライアントサイドでフィルタリング
-  const filteredUsers = useMemo(() => {
-    return users.filter((user) => {
-      // テキスト検索
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase();
-        const matchesName = user.displayName?.toLowerCase().includes(query);
-        const matchesEmail = user.email?.toLowerCase().includes(query);
-        const matchesUid = user.uid.toLowerCase().includes(query);
-        if (!matchesName && !matchesEmail && !matchesUid) {
-          return false;
-        }
-      }
-
-      // ステータスフィルタ
-      switch (statusFilter) {
-        case "admin":
-          return user.isAdmin;
-        case "enabled":
-          return !user.disabled;
-        case "disabled":
-          return user.disabled;
-        case "verified":
-          return user.emailVerified;
-        case "unverified":
-          return !user.emailVerified;
-        default:
-          return true;
-      }
-    });
-  }, [users, searchQuery, statusFilter]);
+  // 検索モードではサーバーでフィルタリング済み、通常モードではusersをそのまま使用
+  // （通常モードではフィルタがないためフィルタリング不要）
+  const displayUsers = users;
 
   const buildUrl = (params: {
     pageToken?: string;
@@ -147,11 +123,9 @@ export function UsersPageClient({
   };
 
   const handleSearchChange = (value: string) => {
-    // 検索クエリ変更時は現在のページを維持
+    // 検索モードではページネーションパラメータを削除（全件検索）
     router.push(
       buildUrl({
-        pageToken: currentPageToken,
-        history: pageHistory,
         pageSize,
         q: value,
         status: statusFilter,
@@ -160,11 +134,9 @@ export function UsersPageClient({
   };
 
   const handleStatusFilterChange = (value: StatusFilter) => {
-    // ステータスフィルタ変更時は現在のページを維持
+    // 検索モードではページネーションパラメータを削除（全件検索）
     router.push(
       buildUrl({
-        pageToken: currentPageToken,
-        history: pageHistory,
         pageSize,
         q: searchQuery,
         status: value,
@@ -173,10 +145,9 @@ export function UsersPageClient({
   };
 
   const handleClearFilters = () => {
+    // フィルタクリア時は1ページ目に戻る
     router.push(
       buildUrl({
-        pageToken: currentPageToken,
-        history: pageHistory,
         pageSize,
       })
     );
@@ -251,49 +222,51 @@ export function UsersPageClient({
           <CardHeader className="space-y-4">
             <CardTitle className="flex items-center justify-between">
               <span>ユーザー一覧</span>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-normal text-zinc-500 dark:text-zinc-400">
-                    表示件数
-                  </span>
-                  <Select
-                    value={pageSize.toString()}
-                    onValueChange={handlePageSizeChange}
-                  >
-                    <SelectTrigger className="w-20">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {PAGE_SIZE_OPTIONS.map((size) => (
-                        <SelectItem key={size} value={size.toString()}>
-                          {size}件
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+              {!isSearchMode && (
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-normal text-zinc-500 dark:text-zinc-400">
+                      表示件数
+                    </span>
+                    <Select
+                      value={pageSize.toString()}
+                      onValueChange={handlePageSizeChange}
+                    >
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {PAGE_SIZE_OPTIONS.map((size) => (
+                          <SelectItem key={size} value={size.toString()}>
+                            {size}件
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={handlePrevious}
+                      disabled={!hasPrevious}
+                    >
+                      <ChevronLeft className="size-4" />
+                    </Button>
+                    <span className="min-w-16 text-center text-sm font-normal text-zinc-500 dark:text-zinc-400">
+                      ページ {currentPage}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={handleNext}
+                      disabled={!hasNext}
+                    >
+                      <ChevronRight className="size-4" />
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    onClick={handlePrevious}
-                    disabled={!hasPrevious}
-                  >
-                    <ChevronLeft className="size-4" />
-                  </Button>
-                  <span className="min-w-16 text-center text-sm font-normal text-zinc-500 dark:text-zinc-400">
-                    ページ {currentPage}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    onClick={handleNext}
-                    disabled={!hasNext}
-                  >
-                    <ChevronRight className="size-4" />
-                  </Button>
-                </div>
-              </div>
+              )}
             </CardTitle>
             <UserFilters
               searchQuery={searchQuery}
@@ -307,10 +280,11 @@ export function UsersPageClient({
           <CardContent>
             {hasActiveFilters && (
               <div className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">
-                {filteredUsers.length}件表示中（このページ {users.length}件中）
+                {displayUsers.length}件表示中
+                {totalUserCount !== undefined && `（全${totalUserCount}件から検索）`}
               </div>
             )}
-            {filteredUsers.length === 0 ? (
+            {displayUsers.length === 0 ? (
               <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
                 {hasActiveFilters
                   ? "条件に一致するユーザーが見つかりませんでした"
@@ -318,32 +292,34 @@ export function UsersPageClient({
               </div>
             ) : (
               <>
-                <UserTable users={filteredUsers} />
-                <div className="mt-4 flex justify-center">
-                  <div className="flex items-center gap-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handlePrevious}
-                      disabled={!hasPrevious}
-                    >
-                      <ChevronLeft className="size-4" />
-                      前へ
-                    </Button>
-                    <span className="min-w-20 text-center text-sm text-zinc-600 dark:text-zinc-400">
-                      ページ {currentPage}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleNext}
-                      disabled={!hasNext}
-                    >
-                      次へ
-                      <ChevronRight className="size-4" />
-                    </Button>
+                <UserTable users={displayUsers} />
+                {!isSearchMode && (
+                  <div className="mt-4 flex justify-center">
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handlePrevious}
+                        disabled={!hasPrevious}
+                      >
+                        <ChevronLeft className="size-4" />
+                        前へ
+                      </Button>
+                      <span className="min-w-20 text-center text-sm text-zinc-600 dark:text-zinc-400">
+                        ページ {currentPage}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleNext}
+                        disabled={!hasNext}
+                      >
+                        次へ
+                        <ChevronRight className="size-4" />
+                      </Button>
+                    </div>
                   </div>
-                </div>
+                )}
               </>
             )}
           </CardContent>

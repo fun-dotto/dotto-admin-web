@@ -46,3 +46,61 @@ export async function fetchUsers(
     nextPageToken: listUsersResult.pageToken,
   };
 }
+
+export interface SearchUsersResult {
+  users: FirebaseUser[];
+  totalCount: number;
+}
+
+export type StatusFilter = "all" | "admin" | "enabled" | "disabled" | "verified" | "unverified";
+
+export async function searchUsers(
+  query: string,
+  statusFilter: StatusFilter = "all"
+): Promise<SearchUsersResult> {
+  const auth = getAdminAuth();
+  const allUsers: FirebaseUser[] = [];
+
+  // 全ユーザーを取得
+  let pageToken: string | undefined;
+  do {
+    const listUsersResult = await auth.listUsers(1000, pageToken);
+    allUsers.push(...listUsersResult.users.map(formatUserRecord));
+    pageToken = listUsersResult.pageToken;
+  } while (pageToken);
+
+  // フィルタリング
+  const filteredUsers = allUsers.filter((user) => {
+    // テキスト検索
+    if (query) {
+      const q = query.toLowerCase();
+      const matchesName = user.displayName?.toLowerCase().includes(q);
+      const matchesEmail = user.email?.toLowerCase().includes(q);
+      const matchesUid = user.uid.toLowerCase().includes(q);
+      if (!matchesName && !matchesEmail && !matchesUid) {
+        return false;
+      }
+    }
+
+    // ステータスフィルタ
+    switch (statusFilter) {
+      case "admin":
+        return user.isAdmin;
+      case "enabled":
+        return !user.disabled;
+      case "disabled":
+        return user.disabled;
+      case "verified":
+        return user.emailVerified;
+      case "unverified":
+        return !user.emailVerified;
+      default:
+        return true;
+    }
+  });
+
+  return {
+    users: filteredUsers,
+    totalCount: allUsers.length,
+  };
+}
