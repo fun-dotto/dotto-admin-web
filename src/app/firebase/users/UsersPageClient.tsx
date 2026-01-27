@@ -74,6 +74,8 @@ export function UsersPageClient({
           return user.disabled;
         case "verified":
           return user.emailVerified;
+        case "unverified":
+          return !user.emailVerified;
         default:
           return true;
       }

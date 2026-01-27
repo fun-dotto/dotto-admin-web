@@ -8,6 +8,7 @@ export const STATUS_FILTER_OPTIONS = [
   { value: "enabled", label: "有効" },
   { value: "disabled", label: "無効" },
   { value: "verified", label: "メール認証済" },
+  { value: "unverified", label: "メール未認証" },
 ] as const;
 
 export type StatusFilter = (typeof STATUS_FILTER_OPTIONS)[number]["value"];
