@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
@@ -29,6 +30,37 @@ export function UserFilters({
   onClearFilters,
   hasActiveFilters,
 }: UserFiltersProps) {
+  const [localQuery, setLocalQuery] = useState(searchQuery);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 外部からsearchQueryが変更された場合にローカルステートを同期
+  useEffect(() => {
+    setLocalQuery(searchQuery);
+  }, [searchQuery]);
+
+  const handleInputChange = (value: string) => {
+    setLocalQuery(value);
+
+    // 既存のタイマーをクリア
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    // 300ms後にURL更新
+    debounceRef.current = setTimeout(() => {
+      onSearchChange(value);
+    }, 300);
+  };
+
+  // クリーンアップ
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div className="flex flex-wrap items-center gap-3">
       <div className="relative flex-1 min-w-[200px] max-w-sm">
@@ -36,8 +68,8 @@ export function UserFilters({
         <Input
           type="text"
           placeholder="名前、メール、UIDで検索..."
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
+          value={localQuery}
+          onChange={(e) => handleInputChange(e.target.value)}
           className="pl-9"
         />
       </div>
@@ -62,7 +94,13 @@ export function UserFilters({
         <Button
           variant="ghost"
           size="sm"
-          onClick={onClearFilters}
+          onClick={() => {
+            setLocalQuery("");
+            if (debounceRef.current) {
+              clearTimeout(debounceRef.current);
+            }
+            onClearFilters();
+          }}
           className="text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
         >
           <X className="mr-1 size-4" />
