@@ -15,6 +15,13 @@ export interface FirebaseUser {
   isAdmin: boolean;
 }
 
+export interface PaginatedUsersResult {
+  users: FirebaseUser[];
+  nextPageToken: string | undefined;
+}
+
+const PAGE_SIZE = 20;
+
 function formatUserRecord(user: UserRecord): FirebaseUser {
   return {
     uid: user.uid,
@@ -29,8 +36,13 @@ function formatUserRecord(user: UserRecord): FirebaseUser {
   };
 }
 
-export async function fetchUsers(): Promise<FirebaseUser[]> {
+export async function fetchUsers(
+  pageToken?: string
+): Promise<PaginatedUsersResult> {
   const auth = getAdminAuth();
-  const listUsersResult = await auth.listUsers(1000);
-  return listUsersResult.users.map(formatUserRecord);
+  const listUsersResult = await auth.listUsers(PAGE_SIZE, pageToken);
+  return {
+    users: listUsersResult.users.map(formatUserRecord),
+    nextPageToken: listUsersResult.pageToken,
+  };
 }

@@ -2,18 +2,69 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { UserTable } from "@/components/users/UserTable";
 import { FirebaseUser } from "./actions";
 
 interface UsersPageClientProps {
   users: FirebaseUser[];
+  nextPageToken: string | undefined;
+  currentPageToken: string | undefined;
 }
 
-export function UsersPageClient({ users }: UsersPageClientProps) {
+export function UsersPageClient({
+  users,
+  nextPageToken,
+  currentPageToken,
+}: UsersPageClientProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, loading, signInWithGoogle, signOut, authError } = useAuth();
+
+  // ページ履歴をURLから取得
+  const pageHistory = searchParams.get("history")?.split(",").filter(Boolean) || [];
+  const currentPage = pageHistory.length + 1;
+  const hasPrevious = currentPage > 1;
+  const hasNext = !!nextPageToken;
+
+  const handlePrevious = () => {
+    if (!hasPrevious) return;
+    const newHistory = [...pageHistory];
+    newHistory.pop();
+    const prevToken = newHistory[newHistory.length - 1];
+    const params = new URLSearchParams();
+    if (prevToken) {
+      params.set("pageToken", prevToken);
+    }
+    if (newHistory.length > 0) {
+      params.set("history", newHistory.join(","));
+    }
+    const query = params.toString();
+    router.push(query ? `/firebase/users?${query}` : "/firebase/users");
+  };
+
+  const handleNext = () => {
+    if (!hasNext || !nextPageToken) return;
+    const newHistory = currentPageToken
+      ? [...pageHistory, currentPageToken]
+      : pageHistory;
+    const params = new URLSearchParams();
+    params.set("pageToken", nextPageToken);
+    if (newHistory.length > 0) {
+      params.set("history", newHistory.join(","));
+    }
+    router.push(`/firebase/users?${params.toString()}`);
+  };
 
   if (loading) {
     return (
@@ -85,7 +136,7 @@ export function UsersPageClient({ users }: UsersPageClientProps) {
             <CardTitle className="flex items-center justify-between">
               <span>ユーザー一覧</span>
               <span className="text-sm font-normal text-zinc-500 dark:text-zinc-400">
-                {users.length} 件
+                ページ {currentPage}
               </span>
             </CardTitle>
           </CardHeader>
@@ -95,7 +146,42 @@ export function UsersPageClient({ users }: UsersPageClientProps) {
                 ユーザーが見つかりませんでした
               </div>
             ) : (
-              <UserTable users={users} />
+              <>
+                <UserTable users={users} />
+                <div className="mt-4 flex justify-center">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          onClick={handlePrevious}
+                          disabled={!hasPrevious}
+                          className={
+                            !hasPrevious
+                              ? "pointer-events-none opacity-50"
+                              : "cursor-pointer"
+                          }
+                        />
+                      </PaginationItem>
+                      <PaginationItem>
+                        <span className="flex items-center px-4 text-sm text-zinc-600 dark:text-zinc-400">
+                          ページ {currentPage}
+                        </span>
+                      </PaginationItem>
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={handleNext}
+                          disabled={!hasNext}
+                          className={
+                            !hasNext
+                              ? "pointer-events-none opacity-50"
+                              : "cursor-pointer"
+                          }
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              </>
             )}
           </CardContent>
         </Card>
