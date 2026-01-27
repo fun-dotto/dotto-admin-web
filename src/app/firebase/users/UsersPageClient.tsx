@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -16,8 +17,9 @@ import {
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CircularProgress } from "@/components/ui/circular-progress";
 import { UserTable } from "@/components/users/UserTable";
+import { UserFilters } from "@/components/users/UserFilters";
 import { FirebaseUser } from "./actions";
-import { PAGE_SIZE_OPTIONS, PageSize } from "./constants";
+import { PAGE_SIZE_OPTIONS, PageSize, StatusFilter } from "./constants";
 
 interface UsersPageClientProps {
   users: FirebaseUser[];
@@ -43,10 +45,47 @@ export function UsersPageClient({
   const hasPrevious = currentPage > 1;
   const hasNext = !!nextPageToken;
 
+  // フィルタ状態をURLから取得
+  const searchQuery = searchParams.get("q") || "";
+  const statusFilter = (searchParams.get("status") as StatusFilter) || "all";
+  const hasActiveFilters = searchQuery !== "" || statusFilter !== "all";
+
+  // クライアントサイドでフィルタリング
+  const filteredUsers = useMemo(() => {
+    return users.filter((user) => {
+      // テキスト検索
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        const matchesName = user.displayName?.toLowerCase().includes(query);
+        const matchesEmail = user.email?.toLowerCase().includes(query);
+        const matchesUid = user.uid.toLowerCase().includes(query);
+        if (!matchesName && !matchesEmail && !matchesUid) {
+          return false;
+        }
+      }
+
+      // ステータスフィルタ
+      switch (statusFilter) {
+        case "admin":
+          return user.isAdmin;
+        case "enabled":
+          return !user.disabled;
+        case "disabled":
+          return user.disabled;
+        case "verified":
+          return user.emailVerified;
+        default:
+          return true;
+      }
+    });
+  }, [users, searchQuery, statusFilter]);
+
   const buildUrl = (params: {
     pageToken?: string;
     history?: string[];
     pageSize?: number;
+    q?: string;
+    status?: StatusFilter;
   }) => {
     const urlParams = new URLSearchParams();
     if (params.pageToken) {
@@ -57,6 +96,12 @@ export function UsersPageClient({
     }
     if (params.pageSize) {
       urlParams.set("pageSize", params.pageSize.toString());
+    }
+    if (params.q) {
+      urlParams.set("q", params.q);
+    }
+    if (params.status && params.status !== "all") {
+      urlParams.set("status", params.status);
     }
     const query = urlParams.toString();
     return query ? `/firebase/users?${query}` : "/firebase/users";
@@ -72,6 +117,8 @@ export function UsersPageClient({
         pageToken: prevToken || undefined,
         history: newHistory,
         pageSize,
+        q: searchQuery,
+        status: statusFilter,
       })
     );
   };
@@ -85,6 +132,8 @@ export function UsersPageClient({
         pageToken: nextPageToken,
         history: newHistory,
         pageSize,
+        q: searchQuery,
+        status: statusFilter,
       })
     );
   };
@@ -92,7 +141,43 @@ export function UsersPageClient({
   const handlePageSizeChange = (value: string) => {
     const newPageSize = parseInt(value, 10) as PageSize;
     // ページサイズ変更時は1ページ目に戻る
-    router.push(buildUrl({ pageSize: newPageSize }));
+    router.push(buildUrl({ pageSize: newPageSize, q: searchQuery, status: statusFilter }));
+  };
+
+  const handleSearchChange = (value: string) => {
+    // 検索クエリ変更時は現在のページを維持
+    router.push(
+      buildUrl({
+        pageToken: currentPageToken,
+        history: pageHistory,
+        pageSize,
+        q: value,
+        status: statusFilter,
+      })
+    );
+  };
+
+  const handleStatusFilterChange = (value: StatusFilter) => {
+    // ステータスフィルタ変更時は現在のページを維持
+    router.push(
+      buildUrl({
+        pageToken: currentPageToken,
+        history: pageHistory,
+        pageSize,
+        q: searchQuery,
+        status: value,
+      })
+    );
+  };
+
+  const handleClearFilters = () => {
+    router.push(
+      buildUrl({
+        pageToken: currentPageToken,
+        history: pageHistory,
+        pageSize,
+      })
+    );
   };
 
   if (loading) {
@@ -161,7 +246,7 @@ export function UsersPageClient({
       </header>
       <main className="flex-1 p-6">
         <Card>
-          <CardHeader>
+          <CardHeader className="space-y-4">
             <CardTitle className="flex items-center justify-between">
               <span>ユーザー一覧</span>
               <div className="flex items-center gap-4">
@@ -208,15 +293,30 @@ export function UsersPageClient({
                 </div>
               </div>
             </CardTitle>
+            <UserFilters
+              searchQuery={searchQuery}
+              statusFilter={statusFilter}
+              onSearchChange={handleSearchChange}
+              onStatusFilterChange={handleStatusFilterChange}
+              onClearFilters={handleClearFilters}
+              hasActiveFilters={hasActiveFilters}
+            />
           </CardHeader>
           <CardContent>
-            {users.length === 0 ? (
+            {hasActiveFilters && (
+              <div className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">
+                {filteredUsers.length}件表示中（このページ {users.length}件中）
+              </div>
+            )}
+            {filteredUsers.length === 0 ? (
               <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
-                ユーザーが見つかりませんでした
+                {hasActiveFilters
+                  ? "条件に一致するユーザーが見つかりませんでした"
+                  : "ユーザーが見つかりませんでした"}
               </div>
             ) : (
               <>
-                <UserTable users={users} />
+                <UserTable users={filteredUsers} />
                 <div className="mt-4 flex justify-center">
                   <div className="flex items-center gap-1">
                     <Button
