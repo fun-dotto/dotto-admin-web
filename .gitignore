@@ -41,9 +41,6 @@ yarn-error.log*
 next-env.d.ts
 
 !.env.example
-
 firebase-debug.log
-
 firebase-adminsdk-key.json
-
 .open-next/
