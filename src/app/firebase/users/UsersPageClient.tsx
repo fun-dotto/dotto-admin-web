@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CircularProgress } from "@/components/ui/circular-progress";
 import { UserTable } from "@/components/users/UserTable";
 import { FirebaseUser } from "./actions";
 import { PAGE_SIZE_OPTIONS, PageSize } from "./constants";
@@ -97,7 +98,7 @@ export function UsersPageClient({
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
-        <div className="text-zinc-600 dark:text-zinc-400">読み込み中...</div>
+        <CircularProgress size="lg" />
       </div>
     );
   }

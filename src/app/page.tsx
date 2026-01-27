@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import { CircularProgress } from "@/components/ui/circular-progress";
 
 export default function Home() {
   const { user, loading, authError, signInWithGoogle, signOut } = useAuth();
@@ -10,7 +11,7 @@ export default function Home() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
-        <div className="text-zinc-600 dark:text-zinc-400">読み込み中...</div>
+        <CircularProgress size="lg" />
       </div>
     );
   }
