@@ -37,7 +37,7 @@ export function UsersPageClient({
 
   // ページ履歴をURLから取得（空文字列は1ページ目のマーカー）
   const historyParam = searchParams.get("history");
-  const pageHistory = historyParam ? historyParam.split(",") : [];
+  const pageHistory = historyParam !== null ? historyParam.split(",") : [];
   const currentPage = pageHistory.length + 1;
   const hasPrevious = currentPage > 1;
   const hasNext = !!nextPageToken;
