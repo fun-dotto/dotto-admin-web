@@ -38,9 +38,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (user) {
         const tokenResult = await user.getIdTokenResult();
         const admin = tokenResult.claims.admin === true;
+        const developer = tokenResult.claims.developer === true;
         setIsAdmin(admin);
-        if (!admin) {
-          setAuthError("管理者権限がありません。");
+        if (!admin && !developer) {
+          setAuthError("管理者または開発者権限がありません。");
           await firebaseSignOut(auth);
           setUser(null);
         } else {
