@@ -83,18 +83,18 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
           <div className="flex flex-1 items-center justify-end">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative size-9 rounded-full">
+                <Button variant="ghost" className="relative size-10 rounded-full p-0">
                   {user.photoURL ? (
                     <Image
                       src={user.photoURL}
                       alt={user.displayName || "User"}
-                      width={32}
-                      height={32}
-                      className="rounded-full"
+                      width={40}
+                      height={40}
+                      className="size-10 rounded-full"
                     />
                   ) : (
-                    <div className="flex size-8 items-center justify-center rounded-full bg-zinc-200 dark:bg-zinc-700">
-                      <span className="text-sm font-medium text-zinc-600 dark:text-zinc-300">
+                    <div className="flex size-10 items-center justify-center rounded-full bg-zinc-200 dark:bg-zinc-700">
+                      <span className="text-base font-medium text-zinc-600 dark:text-zinc-300">
                         {(user.displayName || user.email || "U").charAt(0).toUpperCase()}
                       </span>
                     </div>
