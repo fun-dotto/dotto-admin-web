@@ -7,6 +7,15 @@ import { CircularProgress } from "@/components/ui/circular-progress";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@/components/ui/separator";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { LogOut } from "lucide-react";
 
 interface AuthenticatedLayoutProps {
   children: React.ReactNode;
@@ -71,24 +80,45 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
-          <div className="flex flex-1 items-center justify-end gap-4">
-            <div className="flex items-center gap-3">
-              {user.photoURL && (
-                <Image
-                  src={user.photoURL}
-                  alt={user.displayName || "User"}
-                  width={32}
-                  height={32}
-                  className="rounded-full"
-                />
-              )}
-              <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                {user.displayName || user.email}
-              </span>
-            </div>
-            <Button onClick={signOut} variant="ghost" size="sm">
-              ログアウト
-            </Button>
+          <div className="flex flex-1 items-center justify-end">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative size-9 rounded-full">
+                  {user.photoURL ? (
+                    <Image
+                      src={user.photoURL}
+                      alt={user.displayName || "User"}
+                      width={32}
+                      height={32}
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <div className="flex size-8 items-center justify-center rounded-full bg-zinc-200 dark:bg-zinc-700">
+                      <span className="text-sm font-medium text-zinc-600 dark:text-zinc-300">
+                        {(user.displayName || user.email || "U").charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                      {user.displayName || "ユーザー"}
+                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={signOut} className="cursor-pointer">
+                  <LogOut className="mr-2 size-4" />
+                  <span>ログアウト</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </header>
         <main className="flex-1 p-6">
