@@ -176,19 +176,19 @@ export function UsersPageClient({
     (uid) => uid !== user?.uid
   );
 
-  // admin権限変更ダイアログを開く
+  // adminロール変更ダイアログを開く
   const handleOpenAdminDialog = (action: "grant" | "revoke") => {
     setAdminDialogAction(action);
     setAdminDialogOpen(true);
   };
 
-  // developer権限変更ダイアログを開く
+  // developerロール変更ダイアログを開く
   const handleOpenDeveloperDialog = (action: "grant" | "revoke") => {
     setDeveloperDialogAction(action);
     setDeveloperDialogOpen(true);
   };
 
-  // admin権限変更を実行
+  // adminロール変更を実行
   const handleConfirmAdminChange = async () => {
     const targetIds =
       adminDialogAction === "revoke"
@@ -211,8 +211,8 @@ export function UsersPageClient({
       if (result.success) {
         toast.success(
           adminDialogAction === "grant"
-            ? `${result.updatedCount}人のユーザーに管理者権限を付与しました`
-            : `${result.updatedCount}人のユーザーから管理者権限を剥奪しました`
+            ? `${result.updatedCount}人のユーザーに管理者ロールを付与しました`
+            : `${result.updatedCount}人のユーザーから管理者ロールを剥奪しました`
         );
         setSelectedUserIds(new Set());
         router.refresh();
@@ -232,7 +232,7 @@ export function UsersPageClient({
     }
   };
 
-  // developer権限変更を実行
+  // developerロール変更を実行
   const handleConfirmDeveloperChange = async () => {
     const targetIds = Array.from(selectedUserIds);
 
@@ -252,8 +252,8 @@ export function UsersPageClient({
       if (result.success) {
         toast.success(
           developerDialogAction === "grant"
-            ? `${result.updatedCount}人のユーザーに開発者権限を付与しました`
-            : `${result.updatedCount}人のユーザーから開発者権限を剥奪しました`
+            ? `${result.updatedCount}人のユーザーに開発者ロールを付与しました`
+            : `${result.updatedCount}人のユーザーから開発者ロールを剥奪しました`
         );
         setSelectedUserIds(new Set());
         router.refresh();
@@ -352,7 +352,7 @@ export function UsersPageClient({
                     disabled={isUpdating}
                   >
                     <ShieldPlus className="mr-1 size-4" />
-                    管理者権限を付与
+                    管理者ロールを付与
                   </Button>
                   <Button
                     variant="outline"
@@ -361,7 +361,7 @@ export function UsersPageClient({
                     disabled={isUpdating || selectedUsersExcludingSelf.length === 0}
                   >
                     <ShieldMinus className="mr-1 size-4" />
-                    管理者権限を剥奪
+                    管理者ロールを剥奪
                   </Button>
                   <Button
                     variant="outline"
@@ -370,7 +370,7 @@ export function UsersPageClient({
                     disabled={isUpdating}
                   >
                     <CodeXml className="mr-1 size-4" />
-                    開発者権限を付与
+                    開発者ロールを付与
                   </Button>
                   <Button
                     variant="outline"
@@ -379,12 +379,12 @@ export function UsersPageClient({
                     disabled={isUpdating}
                   >
                     <CodeXml className="mr-1 size-4" />
-                    開発者権限を剥奪
+                    開発者ロールを剥奪
                   </Button>
                 </div>
                 {selfIncludedInRevoke && (
                   <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                    ※自分自身の管理者権限は剥奪できません
+                    ※自分自身の管理者ロールは剥奪できません
                   </span>
                 )}
               </div>
@@ -445,18 +445,18 @@ export function UsersPageClient({
           <AlertDialogHeader>
             <AlertDialogTitle>
               {adminDialogAction === "grant"
-                ? "管理者権限を付与"
-                : "管理者権限を剥奪"}
+                ? "管理者ロールを付与"
+                : "管理者ロールを剥奪"}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {adminDialogAction === "grant" ? (
                 <>
-                  選択した{selectedUserIds.size}人のユーザーに管理者権限を付与します。
+                  選択した{selectedUserIds.size}人のユーザーに管理者ロールを付与します。
                   管理者はこの管理画面にアクセスできるようになります。
                 </>
               ) : (
                 <>
-                  選択した{selectedUsersExcludingSelf.length}人のユーザーから管理者権限を剥奪します。
+                  選択した{selectedUsersExcludingSelf.length}人のユーザーから管理者ロールを剥奪します。
                   {selfIncludedInRevoke && (
                     <span className="mt-2 block text-amber-600 dark:text-amber-400">
                       ※自分自身は対象から除外されます
@@ -485,17 +485,17 @@ export function UsersPageClient({
           <AlertDialogHeader>
             <AlertDialogTitle>
               {developerDialogAction === "grant"
-                ? "開発者権限を付与"
-                : "開発者権限を剥奪"}
+                ? "開発者ロールを付与"
+                : "開発者ロールを剥奪"}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {developerDialogAction === "grant" ? (
                 <>
-                  選択した{selectedUserIds.size}人のユーザーに開発者権限を付与します。
+                  選択した{selectedUserIds.size}人のユーザーに開発者ロールを付与します。
                 </>
               ) : (
                 <>
-                  選択した{selectedUserIds.size}人のユーザーから開発者権限を剥奪します。
+                  選択した{selectedUserIds.size}人のユーザーから開発者ロールを剥奪します。
                 </>
               )}
             </AlertDialogDescription>
