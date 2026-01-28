@@ -75,6 +75,7 @@ export function UserTable({
           <TableHead className="w-12"></TableHead>
           <TableHead>ユーザー</TableHead>
           <TableHead>UID</TableHead>
+          <TableHead>ロール</TableHead>
           <TableHead>ステータス</TableHead>
           <TableHead>作成日時</TableHead>
           <TableHead>最終ログイン</TableHead>
@@ -123,8 +124,14 @@ export function UserTable({
               </code>
             </TableCell>
             <TableCell>
+              {user.isAdmin ? (
+                <Badge variant="default">管理者</Badge>
+              ) : (
+                <Badge variant="secondary">ユーザー</Badge>
+              )}
+            </TableCell>
+            <TableCell>
               <div className="flex flex-wrap gap-1">
-                {user.isAdmin && <Badge variant="default">管理者</Badge>}
                 {user.disabled ? (
                   <Badge variant="destructive">無効</Badge>
                 ) : (
