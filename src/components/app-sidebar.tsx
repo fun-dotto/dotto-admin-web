@@ -1,6 +1,6 @@
 "use client";
 
-import { Users } from "lucide-react";
+import { Home, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -17,6 +17,16 @@ import {
 } from "@/components/ui/sidebar";
 
 const navigationItems = [
+  {
+    title: "メニュー",
+    items: [
+      {
+        title: "ホーム",
+        href: "/",
+        icon: Home,
+      },
+    ],
+  },
   {
     title: "Firebase",
     items: [
@@ -35,9 +45,9 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className="flex items-center gap-2 px-2 py-2">
+        <Link href="/" className="flex items-center gap-2 px-2 py-2 hover:opacity-80">
           <span className="text-lg font-bold">Dotto Admin</span>
-        </div>
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         {navigationItems.map((group) => (
