@@ -58,7 +58,7 @@ export function UsersPageClient({
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
 
   // ページ履歴をURLから取得（空文字列は1ページ目のマーカー）
   const historyParam = searchParams.get("history");
@@ -276,6 +276,24 @@ export function UsersPageClient({
   // 剥奪対象にログインユーザー自身が含まれているかチェック
   const selfIncludedInRevoke =
     selectedUserIds.has(user?.uid || "") && selectedUserIds.size > 0;
+
+  // 管理者権限がない場合はアクセス拒否
+  if (!isAdmin) {
+    return (
+      <AuthenticatedLayout>
+        <Card>
+          <CardHeader>
+            <CardTitle>アクセス権限がありません</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-zinc-600 dark:text-zinc-400">
+              このページは管理者のみアクセスできます。
+            </p>
+          </CardContent>
+        </Card>
+      </AuthenticatedLayout>
+    );
+  }
 
   return (
     <AuthenticatedLayout>
