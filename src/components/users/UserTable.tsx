@@ -124,11 +124,7 @@ export function UserTable({
               </code>
             </TableCell>
             <TableCell>
-              {user.isAdmin ? (
-                <Badge variant="default">管理者</Badge>
-              ) : (
-                <Badge variant="secondary">ユーザー</Badge>
-              )}
+              {user.isAdmin && <Badge variant="default">管理者</Badge>}
             </TableCell>
             <TableCell>
               <div className="flex flex-wrap gap-1">
