@@ -124,7 +124,10 @@ export function UserTable({
               </code>
             </TableCell>
             <TableCell>
-              {user.isAdmin && <Badge variant="default">管理者</Badge>}
+              <div className="flex flex-wrap gap-1">
+                {user.isAdmin && <Badge variant="default">管理者</Badge>}
+                {user.isDeveloper && <Badge variant="outline">開発者</Badge>}
+              </div>
             </TableCell>
             <TableCell>
               <div className="flex flex-wrap gap-1">

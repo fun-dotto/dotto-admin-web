@@ -14,6 +14,7 @@ export interface FirebaseUser {
   creationTime: string | undefined;
   lastSignInTime: string | undefined;
   isAdmin: boolean;
+  isDeveloper: boolean;
 }
 
 export interface PaginatedUsersResult {
@@ -32,6 +33,7 @@ function formatUserRecord(user: UserRecord): FirebaseUser {
     creationTime: user.metadata.creationTime,
     lastSignInTime: user.metadata.lastSignInTime,
     isAdmin: user.customClaims?.admin === true,
+    isDeveloper: user.customClaims?.developer === true,
   };
 }
 
@@ -52,7 +54,7 @@ export interface SearchUsersResult {
   totalCount: number;
 }
 
-export type StatusFilter = "all" | "admin" | "enabled" | "disabled" | "verified" | "unverified";
+export type StatusFilter = "all" | "admin" | "developer" | "enabled" | "disabled" | "verified" | "unverified";
 
 export async function searchUsers(
   query: string,
@@ -86,6 +88,8 @@ export async function searchUsers(
     switch (statusFilter) {
       case "admin":
         return user.isAdmin;
+      case "developer":
+        return user.isDeveloper;
       case "enabled":
         return !user.disabled;
       case "disabled":
