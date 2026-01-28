@@ -12,17 +12,62 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FirebaseUser } from "@/app/firebase/users/actions";
+import { SortConfig, SortKey } from "@/app/firebase/users/constants";
+import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface UserTableProps {
   users: FirebaseUser[];
   selectedUserIds: Set<string>;
   onSelectionChange: (selectedIds: Set<string>) => void;
+  sortConfig: SortConfig | null;
+  onSortChange: (key: SortKey) => void;
+}
+
+interface SortableHeaderProps {
+  label: string;
+  sortKey: SortKey;
+  currentSort: SortConfig | null;
+  onSort: (key: SortKey) => void;
+  className?: string;
+}
+
+function SortableHeader({
+  label,
+  sortKey,
+  currentSort,
+  onSort,
+  className,
+}: SortableHeaderProps) {
+  const isActive = currentSort?.key === sortKey;
+  const direction = isActive ? currentSort.direction : null;
+
+  return (
+    <TableHead className={className}>
+      <button
+        type="button"
+        onClick={() => onSort(sortKey)}
+        className="flex cursor-pointer items-center gap-1 hover:text-zinc-900 dark:hover:text-zinc-50"
+      >
+        {label}
+        {direction === "asc" ? (
+          <ArrowUp className="size-4" />
+        ) : direction === "desc" ? (
+          <ArrowDown className="size-4" />
+        ) : (
+          <ArrowUpDown className={cn("size-4", !isActive && "opacity-50")} />
+        )}
+      </button>
+    </TableHead>
+  );
 }
 
 export function UserTable({
   users,
   selectedUserIds,
   onSelectionChange,
+  sortConfig,
+  onSortChange,
 }: UserTableProps) {
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return "-";
@@ -73,12 +118,32 @@ export function UserTable({
             />
           </TableHead>
           <TableHead className="w-12"></TableHead>
-          <TableHead>ユーザー</TableHead>
-          <TableHead>UID</TableHead>
+          <SortableHeader
+            label="ユーザー"
+            sortKey="displayName"
+            currentSort={sortConfig}
+            onSort={onSortChange}
+          />
+          <SortableHeader
+            label="UID"
+            sortKey="uid"
+            currentSort={sortConfig}
+            onSort={onSortChange}
+          />
           <TableHead>ロール</TableHead>
           <TableHead>ステータス</TableHead>
-          <TableHead>作成日時</TableHead>
-          <TableHead>最終ログイン</TableHead>
+          <SortableHeader
+            label="作成日時"
+            sortKey="creationTime"
+            currentSort={sortConfig}
+            onSort={onSortChange}
+          />
+          <SortableHeader
+            label="最終ログイン"
+            sortKey="lastSignInTime"
+            currentSort={sortConfig}
+            onSort={onSortChange}
+          />
         </TableRow>
       </TableHeader>
       <TableBody>

@@ -28,7 +28,7 @@ import { ChevronLeft, ChevronRight, ShieldPlus, ShieldMinus, CodeXml } from "luc
 import { UserTable } from "@/components/users/UserTable";
 import { UserFilters } from "@/components/users/UserFilters";
 import { FirebaseUser, updateAdminClaim, updateDeveloperClaim } from "./actions";
-import { PAGE_SIZE_OPTIONS, PageSize, StatusFilter } from "./constants";
+import { PAGE_SIZE_OPTIONS, PageSize, StatusFilter, SortConfig, SortKey, SORT_KEYS } from "./constants";
 
 interface UsersPageClientProps {
   users: FirebaseUser[];
@@ -72,9 +72,57 @@ export function UsersPageClient({
   const statusFilter = (searchParams.get("status") as StatusFilter) || "all";
   const hasActiveFilters = searchQuery !== "" || statusFilter !== "all";
 
+  // ソート状態をURLから取得
+  const sortKeyParam = searchParams.get("sortKey") as SortKey | null;
+  const sortDirectionParam = searchParams.get("sortDir") as "asc" | "desc" | null;
+  const sortConfig: SortConfig | null =
+    sortKeyParam && SORT_KEYS.includes(sortKeyParam as SortKey) && (sortDirectionParam === "asc" || sortDirectionParam === "desc")
+      ? { key: sortKeyParam as SortKey, direction: sortDirectionParam }
+      : null;
+
+  // ソート関数
+  const sortUsers = (usersToSort: FirebaseUser[]): FirebaseUser[] => {
+    if (!sortConfig) return usersToSort;
+
+    return [...usersToSort].sort((a, b) => {
+      const { key, direction } = sortConfig;
+      let aValue: string | undefined;
+      let bValue: string | undefined;
+
+      switch (key) {
+        case "displayName":
+          aValue = a.displayName?.toLowerCase() || "";
+          bValue = b.displayName?.toLowerCase() || "";
+          break;
+        case "email":
+          aValue = a.email?.toLowerCase() || "";
+          bValue = b.email?.toLowerCase() || "";
+          break;
+        case "uid":
+          aValue = a.uid;
+          bValue = b.uid;
+          break;
+        case "creationTime":
+          aValue = a.creationTime || "";
+          bValue = b.creationTime || "";
+          break;
+        case "lastSignInTime":
+          aValue = a.lastSignInTime || "";
+          bValue = b.lastSignInTime || "";
+          break;
+        default:
+          return 0;
+      }
+
+      if (aValue < bValue) return direction === "asc" ? -1 : 1;
+      if (aValue > bValue) return direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  };
+
   // 検索モードではサーバーでフィルタリング済み、通常モードではusersをそのまま使用
   // （通常モードではフィルタがないためフィルタリング不要）
-  const displayUsers = users;
+  const displayUsers = sortUsers(users);
 
   const buildUrl = (params: {
     pageToken?: string;
@@ -82,6 +130,8 @@ export function UsersPageClient({
     pageSize?: number;
     q?: string;
     status?: StatusFilter;
+    sortKey?: SortKey;
+    sortDir?: "asc" | "desc";
   }) => {
     const urlParams = new URLSearchParams();
     if (params.pageToken) {
@@ -99,6 +149,12 @@ export function UsersPageClient({
     if (params.status && params.status !== "all") {
       urlParams.set("status", params.status);
     }
+    if (params.sortKey) {
+      urlParams.set("sortKey", params.sortKey);
+    }
+    if (params.sortDir) {
+      urlParams.set("sortDir", params.sortDir);
+    }
     const query = urlParams.toString();
     return query ? `/firebase/users?${query}` : "/firebase/users";
   };
@@ -115,6 +171,8 @@ export function UsersPageClient({
         pageSize,
         q: searchQuery,
         status: statusFilter,
+        sortKey: sortConfig?.key,
+        sortDir: sortConfig?.direction,
       })
     );
   };
@@ -130,6 +188,8 @@ export function UsersPageClient({
         pageSize,
         q: searchQuery,
         status: statusFilter,
+        sortKey: sortConfig?.key,
+        sortDir: sortConfig?.direction,
       })
     );
   };
@@ -137,7 +197,7 @@ export function UsersPageClient({
   const handlePageSizeChange = (value: string) => {
     const newPageSize = parseInt(value, 10) as PageSize;
     // ページサイズ変更時は1ページ目に戻る
-    router.push(buildUrl({ pageSize: newPageSize, q: searchQuery, status: statusFilter }));
+    router.push(buildUrl({ pageSize: newPageSize, q: searchQuery, status: statusFilter, sortKey: sortConfig?.key, sortDir: sortConfig?.direction }));
   };
 
   const handleSearchChange = (value: string) => {
@@ -147,6 +207,8 @@ export function UsersPageClient({
         pageSize,
         q: value,
         status: statusFilter,
+        sortKey: sortConfig?.key,
+        sortDir: sortConfig?.direction,
       })
     );
   };
@@ -158,6 +220,8 @@ export function UsersPageClient({
         pageSize,
         q: searchQuery,
         status: value,
+        sortKey: sortConfig?.key,
+        sortDir: sortConfig?.direction,
       })
     );
   };
@@ -167,6 +231,27 @@ export function UsersPageClient({
     router.push(
       buildUrl({
         pageSize,
+        sortKey: sortConfig?.key,
+        sortDir: sortConfig?.direction,
+      })
+    );
+  };
+
+  const handleSortChange = (key: SortKey) => {
+    let newDirection: "asc" | "desc" = "asc";
+    if (sortConfig?.key === key) {
+      // 同じカラムをクリックした場合は方向を切り替え
+      newDirection = sortConfig.direction === "asc" ? "desc" : "asc";
+    }
+    router.push(
+      buildUrl({
+        pageToken: currentPageToken,
+        history: pageHistory,
+        pageSize,
+        q: searchQuery,
+        status: statusFilter,
+        sortKey: key,
+        sortDir: newDirection,
       })
     );
   };
@@ -425,6 +510,8 @@ export function UsersPageClient({
                   users={displayUsers}
                   selectedUserIds={selectedUserIds}
                   onSelectionChange={setSelectedUserIds}
+                  sortConfig={sortConfig}
+                  onSortChange={handleSortChange}
                 />
                 {!isSearchMode && (
                   <div className="mt-4 flex justify-center">

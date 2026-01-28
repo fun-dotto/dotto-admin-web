@@ -13,3 +13,19 @@ export const STATUS_FILTER_OPTIONS = [
 ] as const;
 
 export type StatusFilter = (typeof STATUS_FILTER_OPTIONS)[number]["value"];
+
+export const SORT_KEYS = [
+  "displayName",
+  "email",
+  "uid",
+  "creationTime",
+  "lastSignInTime",
+] as const;
+
+export type SortKey = (typeof SORT_KEYS)[number];
+export type SortDirection = "asc" | "desc";
+
+export interface SortConfig {
+  key: SortKey;
+  direction: SortDirection;
+}
