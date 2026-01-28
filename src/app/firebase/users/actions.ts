@@ -180,3 +180,30 @@ export async function updateDeveloperClaim(
     errors,
   };
 }
+
+
+export async function updateUserDisabledStatus(
+  userIds: string[],
+  disabled: boolean
+): Promise<UpdateClaimResult> {
+  const auth = getAdminAuth();
+  const errors: string[] = [];
+  let updatedCount = 0;
+
+  for (const uid of userIds) {
+    try {
+      await auth.updateUser(uid, { disabled });
+      updatedCount++;
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "不明なエラーが発生しました";
+      errors.push(`${uid}: ${message}`);
+    }
+  }
+
+  return {
+    success: errors.length === 0,
+    updatedCount,
+    errors,
+  };
+}

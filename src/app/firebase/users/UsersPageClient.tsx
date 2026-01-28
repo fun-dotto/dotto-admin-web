@@ -24,10 +24,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ChevronLeft, ChevronRight, ShieldPlus, ShieldMinus, CodeXml } from "lucide-react";
+import { ChevronLeft, ChevronRight, ShieldPlus, ShieldMinus, CodeXml, UserCheck, UserX } from "lucide-react";
 import { UserTable } from "@/components/users/UserTable";
 import { UserFilters } from "@/components/users/UserFilters";
-import { FirebaseUser, updateAdminClaim, updateDeveloperClaim } from "./actions";
+import { FirebaseUser, updateAdminClaim, updateDeveloperClaim, updateUserDisabledStatus } from "./actions";
 import { PAGE_SIZE_OPTIONS, PageSize, StatusFilter, SortConfig, SortKey, SORT_KEYS } from "./constants";
 
 interface UsersPageClientProps {
@@ -54,6 +54,8 @@ export function UsersPageClient({
   const [adminDialogAction, setAdminDialogAction] = useState<"grant" | "revoke">("grant");
   const [developerDialogOpen, setDeveloperDialogOpen] = useState(false);
   const [developerDialogAction, setDeveloperDialogAction] = useState<"grant" | "revoke">("grant");
+  const [disabledDialogOpen, setDisabledDialogOpen] = useState(false);
+  const [disabledDialogAction, setDisabledDialogAction] = useState<"enable" | "disable">("enable");
   const [isUpdating, setIsUpdating] = useState(false);
 
   const router = useRouter();
@@ -273,6 +275,12 @@ export function UsersPageClient({
     setDeveloperDialogOpen(true);
   };
 
+  // 有効/無効切り替えダイアログを開く
+  const handleOpenDisabledDialog = (action: "enable" | "disable") => {
+    setDisabledDialogAction(action);
+    setDisabledDialogOpen(true);
+  };
+
   // adminロール変更を実行
   const handleConfirmAdminChange = async () => {
     const targetIds =
@@ -355,6 +363,50 @@ export function UsersPageClient({
     } finally {
       setIsUpdating(false);
       setDeveloperDialogOpen(false);
+    }
+  };
+
+  // 有効/無効切り替えを実行
+  const handleConfirmDisabledChange = async () => {
+    const targetIds =
+      disabledDialogAction === "disable"
+        ? selectedUsersExcludingSelf
+        : Array.from(selectedUserIds);
+
+    if (targetIds.length === 0) {
+      toast.error("対象ユーザーがいません");
+      setDisabledDialogOpen(false);
+      return;
+    }
+
+    setIsUpdating(true);
+    try {
+      const result = await updateUserDisabledStatus(
+        targetIds,
+        disabledDialogAction === "disable"
+      );
+
+      if (result.success) {
+        toast.success(
+          disabledDialogAction === "enable"
+            ? `${result.updatedCount}人のユーザーを有効化しました`
+            : `${result.updatedCount}人のユーザーを無効化しました`
+        );
+        setSelectedUserIds(new Set());
+        router.refresh();
+      } else {
+        toast.error(`一部のユーザーの更新に失敗しました`, {
+          description: result.errors.join("\n"),
+        });
+        if (result.updatedCount > 0) {
+          router.refresh();
+        }
+      }
+    } catch {
+      toast.error("エラーが発生しました");
+    } finally {
+      setIsUpdating(false);
+      setDisabledDialogOpen(false);
     }
   };
 
@@ -484,6 +536,24 @@ export function UsersPageClient({
                     <CodeXml className="mr-1 size-4" />
                     開発者ロールを剥奪
                   </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleOpenDisabledDialog("enable")}
+                    disabled={isUpdating}
+                  >
+                    <UserCheck className="mr-1 size-4" />
+                    有効化
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleOpenDisabledDialog("disable")}
+                    disabled={isUpdating || selectedUsersExcludingSelf.length === 0}
+                  >
+                    <UserX className="mr-1 size-4" />
+                    無効化
+                  </Button>
                 </div>
                 {selfIncludedInRevoke && (
                   <span className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -611,6 +681,47 @@ export function UsersPageClient({
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmDeveloperChange}
+              disabled={isUpdating}
+            >
+              {isUpdating ? "処理中..." : "確認"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={disabledDialogOpen} onOpenChange={setDisabledDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {disabledDialogAction === "enable"
+                ? "ユーザーを有効化"
+                : "ユーザーを無効化"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {disabledDialogAction === "enable" ? (
+                <>
+                  選択した{selectedUserIds.size}人のユーザーを有効化します。
+                  有効化されたユーザーはログインできるようになります。
+                </>
+              ) : (
+                <>
+                  選択した{selectedUsersExcludingSelf.length}人のユーザーを無効化します。
+                  無効化されたユーザーはログインできなくなります。
+                  {selfIncludedInRevoke && (
+                    <span className="mt-2 block text-amber-600 dark:text-amber-400">
+                      ※自分自身は対象から除外されます
+                    </span>
+                  )}
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isUpdating}>
+              キャンセル
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDisabledChange}
               disabled={isUpdating}
             >
               {isUpdating ? "処理中..." : "確認"}
