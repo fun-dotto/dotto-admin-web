@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
+import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,7 +25,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { ChevronLeft, ChevronRight, ShieldPlus, ShieldMinus } from "lucide-react";
-import { CircularProgress } from "@/components/ui/circular-progress";
 import { UserTable } from "@/components/users/UserTable";
 import { UserFilters } from "@/components/users/UserFilters";
 import { FirebaseUser, updateAdminClaim } from "./actions";
@@ -58,7 +56,7 @@ export function UsersPageClient({
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, loading, signInWithGoogle, signOut, authError } = useAuth();
+  const { user } = useAuth();
 
   // ページ履歴をURLから取得（空文字列は1ページ目のマーカー）
   const historyParam = searchParams.get("history");
@@ -230,71 +228,8 @@ export function UsersPageClient({
   const selfIncludedInRevoke =
     selectedUserIds.has(user?.uid || "") && selectedUserIds.size > 0;
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
-        <CircularProgress size="lg" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
-        <main className="flex flex-col items-center gap-8 p-8">
-          <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
-            Dotto Admin
-          </h1>
-          <p className="text-zinc-600 dark:text-zinc-400">
-            管理画面にアクセスするにはログインしてください
-          </p>
-          {authError && (
-            <div className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950 dark:text-red-400">
-              {authError}
-            </div>
-          )}
-          <Button onClick={signInWithGoogle} variant="outline" size="lg">
-            Googleでログイン
-          </Button>
-        </main>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-black">
-      <header className="flex items-center justify-between border-b border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            className="text-xl font-bold text-zinc-900 dark:text-zinc-50"
-          >
-            Dotto Admin
-          </Link>
-          <span className="text-zinc-400">/</span>
-          <span className="text-zinc-600 dark:text-zinc-400">ユーザー管理</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3">
-            {user.photoURL && (
-              <Image
-                src={user.photoURL}
-                alt={user.displayName || "User"}
-                width={32}
-                height={32}
-                className="rounded-full"
-              />
-            )}
-            <span className="text-sm text-zinc-600 dark:text-zinc-400">
-              {user.displayName || user.email}
-            </span>
-          </div>
-          <Button onClick={signOut} variant="ghost" size="sm">
-            ログアウト
-          </Button>
-        </div>
-      </header>
-      <main className="flex-1 p-6">
+    <AuthenticatedLayout>
         <Card>
           <CardHeader className="space-y-4">
             <CardTitle className="flex items-center justify-between">
@@ -437,7 +372,6 @@ export function UsersPageClient({
             )}
           </CardContent>
         </Card>
-      </main>
 
       <AlertDialog open={adminDialogOpen} onOpenChange={setAdminDialogOpen}>
         <AlertDialogContent>
@@ -478,6 +412,6 @@ export function UsersPageClient({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </AuthenticatedLayout>
   );
 }
