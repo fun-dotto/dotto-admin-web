@@ -24,10 +24,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ChevronLeft, ChevronRight, ShieldPlus, ShieldMinus } from "lucide-react";
+import { ChevronLeft, ChevronRight, ShieldPlus, ShieldMinus, CodeXml } from "lucide-react";
 import { UserTable } from "@/components/users/UserTable";
 import { UserFilters } from "@/components/users/UserFilters";
-import { FirebaseUser, updateAdminClaim } from "./actions";
+import { FirebaseUser, updateAdminClaim, updateDeveloperClaim } from "./actions";
 import { PAGE_SIZE_OPTIONS, PageSize, StatusFilter } from "./constants";
 
 interface UsersPageClientProps {
@@ -52,6 +52,8 @@ export function UsersPageClient({
   );
   const [adminDialogOpen, setAdminDialogOpen] = useState(false);
   const [adminDialogAction, setAdminDialogAction] = useState<"grant" | "revoke">("grant");
+  const [developerDialogOpen, setDeveloperDialogOpen] = useState(false);
+  const [developerDialogAction, setDeveloperDialogAction] = useState<"grant" | "revoke">("grant");
   const [isUpdating, setIsUpdating] = useState(false);
 
   const router = useRouter();
@@ -180,6 +182,12 @@ export function UsersPageClient({
     setAdminDialogOpen(true);
   };
 
+  // developer権限変更ダイアログを開く
+  const handleOpenDeveloperDialog = (action: "grant" | "revoke") => {
+    setDeveloperDialogAction(action);
+    setDeveloperDialogOpen(true);
+  };
+
   // admin権限変更を実行
   const handleConfirmAdminChange = async () => {
     const targetIds =
@@ -221,6 +229,47 @@ export function UsersPageClient({
     } finally {
       setIsUpdating(false);
       setAdminDialogOpen(false);
+    }
+  };
+
+  // developer権限変更を実行
+  const handleConfirmDeveloperChange = async () => {
+    const targetIds = Array.from(selectedUserIds);
+
+    if (targetIds.length === 0) {
+      toast.error("対象ユーザーがいません");
+      setDeveloperDialogOpen(false);
+      return;
+    }
+
+    setIsUpdating(true);
+    try {
+      const result = await updateDeveloperClaim(
+        targetIds,
+        developerDialogAction === "grant"
+      );
+
+      if (result.success) {
+        toast.success(
+          developerDialogAction === "grant"
+            ? `${result.updatedCount}人のユーザーに開発者権限を付与しました`
+            : `${result.updatedCount}人のユーザーから開発者権限を剥奪しました`
+        );
+        setSelectedUserIds(new Set());
+        router.refresh();
+      } else {
+        toast.error(`一部のユーザーの更新に失敗しました`, {
+          description: result.errors.join("\n"),
+        });
+        if (result.updatedCount > 0) {
+          router.refresh();
+        }
+      }
+    } catch {
+      toast.error("エラーが発生しました");
+    } finally {
+      setIsUpdating(false);
+      setDeveloperDialogOpen(false);
     }
   };
 
@@ -314,6 +363,24 @@ export function UsersPageClient({
                     <ShieldMinus className="mr-1 size-4" />
                     管理者権限を剥奪
                   </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleOpenDeveloperDialog("grant")}
+                    disabled={isUpdating}
+                  >
+                    <CodeXml className="mr-1 size-4" />
+                    開発者権限を付与
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleOpenDeveloperDialog("revoke")}
+                    disabled={isUpdating}
+                  >
+                    <CodeXml className="mr-1 size-4" />
+                    開発者権限を剥奪
+                  </Button>
                 </div>
                 {selfIncludedInRevoke && (
                   <span className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -405,6 +472,40 @@ export function UsersPageClient({
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmAdminChange}
+              disabled={isUpdating}
+            >
+              {isUpdating ? "処理中..." : "確認"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={developerDialogOpen} onOpenChange={setDeveloperDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {developerDialogAction === "grant"
+                ? "開発者権限を付与"
+                : "開発者権限を剥奪"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {developerDialogAction === "grant" ? (
+                <>
+                  選択した{selectedUserIds.size}人のユーザーに開発者権限を付与します。
+                </>
+              ) : (
+                <>
+                  選択した{selectedUserIds.size}人のユーザーから開発者権限を剥奪します。
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isUpdating}>
+              キャンセル
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDeveloperChange}
               disabled={isUpdating}
             >
               {isUpdating ? "処理中..." : "確認"}

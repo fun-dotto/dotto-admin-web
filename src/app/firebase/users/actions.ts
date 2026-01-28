@@ -2,7 +2,7 @@
 
 import { getAdminAuth } from "@/lib/firebase-admin";
 import { UserRecord } from "firebase-admin/auth";
-import { DEFAULT_PAGE_SIZE } from "./constants";
+import { DEFAULT_PAGE_SIZE, StatusFilter } from "./constants";
 
 export interface FirebaseUser {
   uid: string;
@@ -53,8 +53,6 @@ export interface SearchUsersResult {
   users: FirebaseUser[];
   totalCount: number;
 }
-
-export type StatusFilter = "all" | "admin" | "developer" | "enabled" | "disabled" | "verified" | "unverified";
 
 export async function searchUsers(
   query: string,
@@ -109,7 +107,7 @@ export async function searchUsers(
   };
 }
 
-export interface UpdateAdminClaimResult {
+export interface UpdateClaimResult {
   success: boolean;
   updatedCount: number;
   errors: string[];
@@ -118,7 +116,7 @@ export interface UpdateAdminClaimResult {
 export async function updateAdminClaim(
   userIds: string[],
   grant: boolean
-): Promise<UpdateAdminClaimResult> {
+): Promise<UpdateClaimResult> {
   const auth = getAdminAuth();
   const errors: string[] = [];
   let updatedCount = 0;
@@ -132,6 +130,40 @@ export async function updateAdminClaim(
         await auth.setCustomUserClaims(uid, { ...currentClaims, admin: true });
       } else {
         const { admin: _, ...restClaims } = currentClaims;
+        await auth.setCustomUserClaims(uid, restClaims);
+      }
+      updatedCount++;
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "不明なエラーが発生しました";
+      errors.push(`${uid}: ${message}`);
+    }
+  }
+
+  return {
+    success: errors.length === 0,
+    updatedCount,
+    errors,
+  };
+}
+
+export async function updateDeveloperClaim(
+  userIds: string[],
+  grant: boolean
+): Promise<UpdateClaimResult> {
+  const auth = getAdminAuth();
+  const errors: string[] = [];
+  let updatedCount = 0;
+
+  for (const uid of userIds) {
+    try {
+      const user = await auth.getUser(uid);
+      const currentClaims = user.customClaims || {};
+
+      if (grant) {
+        await auth.setCustomUserClaims(uid, { ...currentClaims, developer: true });
+      } else {
+        const { developer: _, ...restClaims } = currentClaims;
         await auth.setCustomUserClaims(uid, restClaims);
       }
       updatedCount++;

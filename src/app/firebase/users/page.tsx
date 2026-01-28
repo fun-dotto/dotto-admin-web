@@ -1,5 +1,5 @@
-import { fetchUsers, searchUsers, StatusFilter } from "./actions";
-import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS, PageSize, STATUS_FILTER_OPTIONS } from "./constants";
+import { fetchUsers, searchUsers } from "./actions";
+import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS, PageSize, STATUS_FILTER_OPTIONS, StatusFilter } from "./constants";
 import { UsersPageClient } from "./UsersPageClient";
 
 interface UsersPageProps {

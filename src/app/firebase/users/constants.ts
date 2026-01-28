@@ -5,6 +5,7 @@ export const DEFAULT_PAGE_SIZE: PageSize = 20;
 export const STATUS_FILTER_OPTIONS = [
   { value: "all", label: "すべて" },
   { value: "admin", label: "管理者" },
+  { value: "developer", label: "開発者" },
   { value: "enabled", label: "有効" },
   { value: "disabled", label: "無効" },
   { value: "verified", label: "メール認証済" },
