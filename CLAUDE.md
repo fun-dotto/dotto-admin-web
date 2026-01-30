@@ -5,9 +5,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## コマンド
 
 ```bash
-pnpm dev      # 開発サーバー起動 (localhost:3000)
-pnpm build    # 本番ビルド
-pnpm lint     # ESLint実行
+pnpm dev    # 開発サーバー起動 (localhost:3000)
+pnpm build  # 本番ビルド（prebuildでOpenAPI型生成を自動実行）
+pnpm lint   # ESLint実行
 ```
 
 ## アーキテクチャ
@@ -19,6 +19,7 @@ pnpm lint     # ESLint実行
 - Next.js 16 (App Router) + React 19
 - Firebase Auth（Googleログイン）
 - Tailwind CSS v4 + shadcn/ui (new-yorkスタイル)
+- openapi-typescript + openapi-fetch（型安全なAPIクライアント）
 - pnpmパッケージマネージャー
 
 ### プロジェクト構成
@@ -28,7 +29,10 @@ src/
 ├── app/           # Next.js App Routerページ
 ├── components/ui/ # shadcn/uiコンポーネント
 ├── contexts/      # Reactコンテキスト (AuthContext)
-└── lib/           # ユーティリティ (firebase.ts, utils.ts)
+├── lib/           # ユーティリティ (firebase.ts, api.ts, utils.ts)
+└── types/         # 生成された型定義 (openapi.d.ts)
+openapi/
+└── openapi.yaml   # OpenAPI定義（Admin BFF Service）
 ```
 
 ### 主要パターン
@@ -45,6 +49,19 @@ src/
 - className結合には`@/lib/utils`の`cn()`を使用
 - `@/`パスエイリアス → `./src/*`
 
+**APIクライアント** (`src/lib/api.ts`):
+
+- `openapi-fetch`による型安全なHTTPクライアント
+- OpenAPI定義（`openapi/openapi.yaml`）から`openapi-typescript`で型を自動生成
+- 生成された型は`src/types/openapi.d.ts`（gitignore対象、`prebuild`で自動生成）
+- ベースURLは`NEXT_PUBLIC_API_BASE_URL`環境変数で設定
+
+```typescript
+import { api } from "@/lib/api";
+
+const { data, error } = await api.GET("/v1/announcements");
+```
+
 **環境変数** (`.env.local`に設定):
 
 ```
@@ -57,9 +74,8 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
 NEXT_PUBLIC_FIREBASE_APP_ID
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 
-# Firebase Admin SDK用（サーバーサイドのみ）
-FIREBASE_ADMIN_CLIENT_EMAIL
-FIREBASE_ADMIN_PRIVATE_KEY
+# API
+NEXT_PUBLIC_API_BASE_URL
 ```
 
 ### Firebaseユーザー一覧ページ
