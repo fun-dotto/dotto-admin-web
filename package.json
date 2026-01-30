@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "openapi-typegen": "openapi-typescript openapi/openapi.yaml -o src/types/openapi.d.ts"
+    "prebuild": "openapi-typescript openapi/openapi.yaml -o src/types/openapi.d.ts"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.15",
