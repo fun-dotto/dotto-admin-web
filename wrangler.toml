@@ -1,9 +1,0 @@
-main = ".open-next/worker.js"
-name = "dotto-admin-web"
-account_id = "aeca71210f57305929a6ecc7e11b5611"
-compatibility_date = "2026-01-27"
-compatibility_flags = ["nodejs_compat"]
-route = "admin.dotto.furari.co"
-[assets]
-directory = ".open-next/assets"
-binding = "ASSETS"
