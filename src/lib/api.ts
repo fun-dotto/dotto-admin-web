@@ -16,8 +16,6 @@ const authMiddleware: Middleware = {
       token = cookieStore.get("firebase-auth-token")?.value;
     }
 
-    console.log("token", token);
-
     if (token) {
       request.headers.set("Authorization", `Bearer ${token}`);
     }
