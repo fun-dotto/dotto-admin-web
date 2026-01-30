@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -45,30 +45,54 @@ export function AnnouncementFormDialog({
 }: AnnouncementFormDialogProps) {
   const isEdit = !!announcement;
 
-  const [title, setTitle] = useState("");
-  const [availableFrom, setAvailableFrom] = useState("");
-  const [availableUntil, setAvailableUntil] = useState("");
-  const [url, setUrl] = useState("");
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>
+            {isEdit ? "おしらせを編集" : "おしらせを作成"}
+          </DialogTitle>
+        </DialogHeader>
+        {open && (
+          <AnnouncementForm
+            key={announcement?.id ?? "new"}
+            announcement={announcement}
+            onSubmit={onSubmit}
+            onCancel={() => onOpenChange(false)}
+            isSubmitting={isSubmitting}
+            isEdit={isEdit}
+          />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
 
-  useEffect(() => {
-    if (open) {
-      if (announcement) {
-        setTitle(announcement.title);
-        setAvailableFrom(toDatetimeLocal(announcement.availableFrom));
-        setAvailableUntil(
-          announcement.availableUntil
-            ? toDatetimeLocal(announcement.availableUntil)
-            : ""
-        );
-        setUrl(announcement.url);
-      } else {
-        setTitle("");
-        setAvailableFrom("");
-        setAvailableUntil("");
-        setUrl("");
-      }
-    }
-  }, [open, announcement]);
+interface AnnouncementFormProps {
+  announcement?: Announcement;
+  onSubmit: (request: AnnouncementRequest) => void;
+  onCancel: () => void;
+  isSubmitting: boolean;
+  isEdit: boolean;
+}
+
+function AnnouncementForm({
+  announcement,
+  onSubmit,
+  onCancel,
+  isSubmitting,
+  isEdit,
+}: AnnouncementFormProps) {
+  const [title, setTitle] = useState(announcement?.title ?? "");
+  const [availableFrom, setAvailableFrom] = useState(
+    announcement ? toDatetimeLocal(announcement.availableFrom) : ""
+  );
+  const [availableUntil, setAvailableUntil] = useState(
+    announcement?.availableUntil
+      ? toDatetimeLocal(announcement.availableUntil)
+      : ""
+  );
+  const [url, setUrl] = useState(announcement?.url ?? "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,86 +111,77 @@ export function AnnouncementFormDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>
-            {isEdit ? "おしらせを編集" : "おしらせを作成"}
-          </DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">タイトル</Label>
-            <Input
-              id="title"
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="availableFrom">公開開始日時</Label>
-            <Input
-              id="availableFrom"
-              type="datetime-local"
-              value={availableFrom}
-              onChange={(e) => setAvailableFrom(e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="availableUntil">公開終了日時（任意）</Label>
-            <div className="flex gap-2">
-              <Input
-                id="availableUntil"
-                type="datetime-local"
-                value={availableUntil}
-                onChange={(e) => setAvailableUntil(e.target.value)}
-                className="flex-1"
-              />
-              {availableUntil && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setAvailableUntil("")}
-                >
-                  <X className="size-4" />
-                </Button>
-              )}
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="url">URL</Label>
-            <Input
-              id="url"
-              type="url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://"
-              required
-            />
-          </div>
-          <DialogFooter>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="title">タイトル</Label>
+        <Input
+          id="title"
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="availableFrom">公開開始日時</Label>
+        <Input
+          id="availableFrom"
+          type="datetime-local"
+          value={availableFrom}
+          onChange={(e) => setAvailableFrom(e.target.value)}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="availableUntil">公開終了日時（任意）</Label>
+        <div className="flex gap-2">
+          <Input
+            id="availableUntil"
+            type="datetime-local"
+            value={availableUntil}
+            onChange={(e) => setAvailableUntil(e.target.value)}
+            className="flex-1"
+          />
+          {availableUntil && (
             <Button
               type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isSubmitting}
+              variant="ghost"
+              size="icon"
+              onClick={() => setAvailableUntil("")}
             >
-              キャンセル
+              <X className="size-4" />
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting
-                ? "処理中..."
-                : isEdit
-                  ? "更新"
-                  : "作成"}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+          )}
+        </div>
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="url">URL</Label>
+        <Input
+          id="url"
+          type="url"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="https://"
+          required
+        />
+      </div>
+      <DialogFooter>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={isSubmitting}
+        >
+          キャンセル
+        </Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting
+            ? "処理中..."
+            : isEdit
+              ? "更新"
+              : "作成"}
+        </Button>
+      </DialogFooter>
+    </form>
   );
 }
