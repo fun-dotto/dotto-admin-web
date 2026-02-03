@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -26,7 +27,6 @@ import {
 
 interface AnnouncementTableProps {
   announcements: Announcement[];
-  onEdit: (announcement: Announcement) => void;
   onDelete: (announcement: Announcement) => void;
 }
 
@@ -54,7 +54,6 @@ function truncateUrl(url: string, maxLength: number = 40): string {
 
 export function AnnouncementTable({
   announcements,
-  onEdit,
   onDelete,
 }: AnnouncementTableProps) {
   const sorted = [...announcements].sort(
@@ -114,9 +113,13 @@ export function AnnouncementTable({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => onEdit(announcement)}>
-                      <Pencil className="mr-2 size-4" />
-                      編集
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/dotto/announcements/${announcement.id}/edit`}
+                      >
+                        <Pencil className="mr-2 size-4" />
+                        編集
+                      </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onDelete(announcement)}
