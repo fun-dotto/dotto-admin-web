@@ -14,6 +14,22 @@ export async function fetchAnnouncements(): Promise<{
   return { announcements: data.announcements };
 }
 
+export async function fetchAnnouncement(
+  id: string
+): Promise<{ announcement?: Announcement; error?: string }> {
+  const { data, error } = await api.GET("/v1/announcements");
+  if (error) {
+    return { error: "おしらせの取得に失敗しました" };
+  }
+  const announcement = data.announcements.find(
+    (a: Announcement) => a.id === id
+  );
+  if (!announcement) {
+    return { error: "おしらせが見つかりませんでした" };
+  }
+  return { announcement };
+}
+
 export async function createAnnouncement(
   request: AnnouncementRequest
 ): Promise<{ announcement?: Announcement; error?: string }> {
