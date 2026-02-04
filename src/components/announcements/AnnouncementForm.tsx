@@ -1,13 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,12 +10,12 @@ import type {
 } from "@/app/dotto/announcements/constants";
 import { X } from "lucide-react";
 
-interface AnnouncementFormDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+interface AnnouncementFormProps {
   announcement?: Announcement;
   onSubmit: (request: AnnouncementRequest) => void;
+  onCancel: () => void;
   isSubmitting: boolean;
+  isEdit: boolean;
 }
 
 function toDatetimeLocal(isoString: string): string {
@@ -36,47 +29,7 @@ function fromDatetimeLocal(datetimeLocal: string): string {
   return new Date(datetimeLocal).toISOString();
 }
 
-export function AnnouncementFormDialog({
-  open,
-  onOpenChange,
-  announcement,
-  onSubmit,
-  isSubmitting,
-}: AnnouncementFormDialogProps) {
-  const isEdit = !!announcement;
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>
-            {isEdit ? "おしらせを編集" : "おしらせを作成"}
-          </DialogTitle>
-        </DialogHeader>
-        {open && (
-          <AnnouncementForm
-            key={announcement?.id ?? "new"}
-            announcement={announcement}
-            onSubmit={onSubmit}
-            onCancel={() => onOpenChange(false)}
-            isSubmitting={isSubmitting}
-            isEdit={isEdit}
-          />
-        )}
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-interface AnnouncementFormProps {
-  announcement?: Announcement;
-  onSubmit: (request: AnnouncementRequest) => void;
-  onCancel: () => void;
-  isSubmitting: boolean;
-  isEdit: boolean;
-}
-
-function AnnouncementForm({
+export function AnnouncementForm({
   announcement,
   onSubmit,
   onCancel,
@@ -165,7 +118,7 @@ function AnnouncementForm({
           required
         />
       </div>
-      <DialogFooter>
+      <div className="flex justify-end gap-2">
         <Button
           type="button"
           variant="outline"
@@ -181,7 +134,7 @@ function AnnouncementForm({
               ? "更新"
               : "作成"}
         </Button>
-      </DialogFooter>
+      </div>
     </form>
   );
 }

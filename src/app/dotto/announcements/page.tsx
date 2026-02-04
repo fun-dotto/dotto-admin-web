@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { fetchAnnouncements } from "./actions";
 import { AnnouncementsPageClient } from "./AnnouncementsPageClient";
 

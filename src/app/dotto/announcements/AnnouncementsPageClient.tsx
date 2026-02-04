@@ -2,20 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { AnnouncementTable } from "@/components/announcements/AnnouncementTable";
-import { AnnouncementFormDialog } from "@/components/announcements/AnnouncementFormDialog";
 import { AnnouncementDeleteDialog } from "@/components/announcements/AnnouncementDeleteDialog";
-import {
-  createAnnouncement,
-  updateAnnouncement,
-  deleteAnnouncement,
-} from "./actions";
-import type { Announcement, AnnouncementRequest } from "./constants";
+import { deleteAnnouncement } from "./actions";
+import type { Announcement } from "./constants";
 
 interface AnnouncementsPageClientProps {
   announcements: Announcement[];
@@ -26,52 +22,13 @@ export function AnnouncementsPageClient({
 }: AnnouncementsPageClientProps) {
   const router = useRouter();
 
-  const [formDialogOpen, setFormDialogOpen] = useState(false);
-  const [editTarget, setEditTarget] = useState<Announcement | undefined>();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Announcement | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleCreate = () => {
-    setEditTarget(undefined);
-    setFormDialogOpen(true);
-  };
-
-  const handleEdit = (announcement: Announcement) => {
-    setEditTarget(announcement);
-    setFormDialogOpen(true);
-  };
-
   const handleDeleteOpen = (announcement: Announcement) => {
     setDeleteTarget(announcement);
     setDeleteDialogOpen(true);
-  };
-
-  const handleFormSubmit = async (request: AnnouncementRequest) => {
-    setIsSubmitting(true);
-    try {
-      if (editTarget) {
-        const result = await updateAnnouncement(editTarget.id, request);
-        if (result.error) {
-          toast.error(result.error);
-          return;
-        }
-        toast.success("おしらせを更新しました");
-      } else {
-        const result = await createAnnouncement(request);
-        if (result.error) {
-          toast.error(result.error);
-          return;
-        }
-        toast.success("おしらせを作成しました");
-      }
-      setFormDialogOpen(false);
-      router.refresh();
-    } catch {
-      toast.error("エラーが発生しました");
-    } finally {
-      setIsSubmitting(false);
-    }
   };
 
   const handleDeleteConfirm = async () => {
@@ -99,9 +56,11 @@ export function AnnouncementsPageClient({
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>おしらせ管理</span>
-            <Button onClick={handleCreate} size="sm">
-              <Plus className="mr-1 size-4" />
-              新規作成
+            <Button asChild size="sm">
+              <Link href="/dotto/announcements/new">
+                <Plus className="mr-1 size-4" />
+                新規作成
+              </Link>
             </Button>
           </CardTitle>
         </CardHeader>
@@ -113,20 +72,11 @@ export function AnnouncementsPageClient({
           ) : (
             <AnnouncementTable
               announcements={announcements}
-              onEdit={handleEdit}
               onDelete={handleDeleteOpen}
             />
           )}
         </CardContent>
       </Card>
-
-      <AnnouncementFormDialog
-        open={formDialogOpen}
-        onOpenChange={setFormDialogOpen}
-        announcement={editTarget}
-        onSubmit={handleFormSubmit}
-        isSubmitting={isSubmitting}
-      />
 
       <AnnouncementDeleteDialog
         open={deleteDialogOpen}
