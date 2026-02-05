@@ -15,7 +15,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut } from "lucide-react";
+import { Copy, LogOut } from "lucide-react";
+import { toast } from "sonner";
 
 interface AuthenticatedLayoutProps {
   children: React.ReactNode;
@@ -113,6 +114,21 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={async () => {
+                    try {
+                      const idToken = await user.getIdToken();
+                      await navigator.clipboard.writeText(idToken);
+                      toast.success("IDトークンをコピーしました");
+                    } catch {
+                      toast.error("IDトークンのコピーに失敗しました");
+                    }
+                  }}
+                >
+                  <Copy className="mr-2 size-4" />
+                  <span>IDトークンをコピー</span>
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={signOut} className="cursor-pointer">
                   <LogOut className="mr-2 size-4" />
                   <span>ログアウト</span>
