@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Users } from "lucide-react";
+import { Home, Megaphone, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -24,6 +24,16 @@ const navigationItems = [
         title: "ホーム",
         href: "/",
         icon: Home,
+      },
+    ],
+  },
+  {
+    title: "Dotto",
+    items: [
+      {
+        title: "おしらせ",
+        href: "/dotto/announcements",
+        icon: Megaphone,
       },
     ],
   },
@@ -57,7 +67,7 @@ export function AppSidebar() {
               <SidebarMenu>
                 {group.items.map((item) => (
                   <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton asChild isActive={pathname === item.href}>
+                    <SidebarMenuButton asChild isActive={item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)}>
                       <Link href={item.href}>
                         <item.icon />
                         <span>{item.title}</span>

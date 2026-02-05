@@ -9,12 +9,13 @@ import {
 } from "react";
 import {
   User,
-  onAuthStateChanged,
+  onIdTokenChanged,
   signInWithPopup,
   signOut as firebaseSignOut,
   GoogleAuthProvider,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { setAuthCookie, removeAuthCookie } from "@/app/actions/auth";
 
 interface AuthContextType {
   user: User | null;
@@ -34,8 +35,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onIdTokenChanged(auth, async (user) => {
       if (user) {
+        const token = await user.getIdToken();
+        await setAuthCookie(token);
+
         const tokenResult = await user.getIdTokenResult();
         const admin = tokenResult.claims.admin === true;
         const developer = tokenResult.claims.developer === true;
@@ -44,6 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setAuthError("管理者または開発者権限がありません。");
           await firebaseSignOut(auth);
           setUser(null);
+          await removeAuthCookie();
         } else {
           setAuthError(null);
           setUser(user);
@@ -51,6 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         setUser(null);
         setIsAdmin(false);
+        await removeAuthCookie();
       }
       setLoading(false);
     });
@@ -65,6 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     await firebaseSignOut(auth);
+    await removeAuthCookie();
   };
 
   return (

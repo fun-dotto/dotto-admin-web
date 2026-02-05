@@ -1,6 +1,30 @@
-import createClient from "openapi-fetch";
+import createClient, { type Middleware } from "openapi-fetch";
 import type { paths } from "@/types/openapi";
+
+const authMiddleware: Middleware = {
+  async onRequest({ request }) {
+    let token: string | undefined;
+
+    if (typeof window !== "undefined") {
+      // クライアントサイド: Firebase Authからトークンを取得
+      const { auth } = await import("@/lib/firebase");
+      token = await auth.currentUser?.getIdToken();
+    } else {
+      // サーバーサイド: Cookieからトークンを取得
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      token = cookieStore.get("firebase-auth-token")?.value;
+    }
+
+    if (token) {
+      request.headers.set("Authorization", `Bearer ${token}`);
+    }
+    return request;
+  },
+};
 
 export const api = createClient<paths>({
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
+
+api.use(authMiddleware);

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { fetchUsers, searchUsers } from "./actions";
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS, PageSize, STATUS_FILTER_OPTIONS, StatusFilter } from "./constants";
 import { UsersPageClient } from "./UsersPageClient";
