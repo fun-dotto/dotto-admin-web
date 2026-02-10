@@ -7,33 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Megaphone, Users } from "lucide-react";
+import { navigationSections } from "@/lib/navigation";
 import Link from "next/link";
-
-const navigationSections = [
-  {
-    title: "Dotto",
-    items: [
-      {
-        title: "おしらせ",
-        description: "おしらせの作成・編集・削除",
-        href: "/dotto/announcements",
-        icon: Megaphone,
-      },
-    ],
-  },
-  {
-    title: "Firebase",
-    items: [
-      {
-        title: "ユーザー",
-        description: "Firebaseユーザーの一覧・管理",
-        href: "/firebase/users",
-        icon: Users,
-      },
-    ],
-  },
-];
 
 export default function Home() {
   return (
@@ -54,9 +29,11 @@ export default function Home() {
                       </div>
                       <div className="min-w-0">
                         <CardTitle className="text-sm">{card.title}</CardTitle>
-                        <CardDescription className="text-xs">
-                          {card.description}
-                        </CardDescription>
+                        {card.description && (
+                          <CardDescription className="text-xs">
+                            {card.description}
+                          </CardDescription>
+                        )}
                       </div>
                     </CardHeader>
                   </Card>
