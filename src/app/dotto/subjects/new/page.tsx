@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { fetchRelatedResources } from "../actions";
 import { NewSubjectPageClient } from "./NewSubjectPageClient";
 
