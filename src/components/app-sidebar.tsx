@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Megaphone, Users } from "lucide-react";
+import { Home } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -15,8 +15,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { navigationSections } from "@/lib/navigation";
 
-const navigationItems = [
+const sidebarSections = [
   {
     title: "メニュー",
     items: [
@@ -27,26 +28,7 @@ const navigationItems = [
       },
     ],
   },
-  {
-    title: "Dotto",
-    items: [
-      {
-        title: "おしらせ",
-        href: "/dotto/announcements",
-        icon: Megaphone,
-      },
-    ],
-  },
-  {
-    title: "Firebase",
-    items: [
-      {
-        title: "ユーザー",
-        href: "/firebase/users",
-        icon: Users,
-      },
-    ],
-  },
+  ...navigationSections,
 ];
 
 export function AppSidebar() {
@@ -60,7 +42,7 @@ export function AppSidebar() {
         </Link>
       </SidebarHeader>
       <SidebarContent>
-        {navigationItems.map((group) => (
+        {sidebarSections.map((group) => (
           <SidebarGroup key={group.title}>
             <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
             <SidebarGroupContent>

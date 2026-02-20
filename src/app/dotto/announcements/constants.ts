@@ -1,7 +1,7 @@
 import type { components } from "@/types/openapi";
 
-export type Announcement = components["schemas"]["Announcement"];
-export type AnnouncementRequest = components["schemas"]["AnnouncementRequest"];
+export type Announcement = components["schemas"]["AnnouncementService.Announcement"];
+export type AnnouncementRequest = components["schemas"]["AnnouncementService.AnnouncementRequest"];
 
 export type AnnouncementStatus = "active" | "upcoming" | "expired";
 
