@@ -4,12 +4,20 @@ export type Subject = components["schemas"]["SubjectService.Subject"];
 export type SubjectRequest = components["schemas"]["SubjectService.SubjectRequest"];
 export type SubjectTargetClass = components["schemas"]["SubjectService.SubjectTargetClass"];
 export type SubjectRequirement = components["schemas"]["SubjectService.SubjectRequirement"];
-export type SubjectRequirementRequest = components["schemas"]["SubjectService.SubjectRequirementRequest"];
 
+export type Course = components["schemas"]["DottoFoundationV1.Course"];
 export type CourseSemester = components["schemas"]["DottoFoundationV1.CourseSemester"];
 export type Grade = components["schemas"]["DottoFoundationV1.Grade"];
 export type Class = components["schemas"]["DottoFoundationV1.Class"];
 export type SubjectRequirementType = components["schemas"]["DottoFoundationV1.SubjectRequirementType"];
+
+export const COURSE_LABEL: Record<Course, string> = {
+  InformationSystem: "情報システム",
+  InformationDesign: "情報デザイン",
+  AdvancedICT: "高度ICT",
+  ComplexSystem: "複雑系",
+  IntelligentSystem: "知能システム",
+};
 
 export const SEMESTER_LABEL: Record<CourseSemester, string> = {
   AllYear: "通年",
@@ -23,18 +31,6 @@ export const SEMESTER_LABEL: Record<CourseSemester, string> = {
   WinterIntensive: "冬季集中",
 };
 
-export const SEMESTER_OPTIONS: CourseSemester[] = [
-  "AllYear",
-  "H1",
-  "H2",
-  "Q1",
-  "Q2",
-  "Q3",
-  "Q4",
-  "SummerIntensive",
-  "WinterIntensive",
-];
-
 export const GRADE_LABEL: Record<Grade, string> = {
   B1: "B1",
   B2: "B2",
@@ -46,18 +42,6 @@ export const GRADE_LABEL: Record<Grade, string> = {
   D2: "D2",
   D3: "D3",
 };
-
-export const GRADE_OPTIONS: Grade[] = [
-  "B1",
-  "B2",
-  "B3",
-  "B4",
-  "M1",
-  "M2",
-  "D1",
-  "D2",
-  "D3",
-];
 
 export const CLASS_LABEL: Record<Class, string> = {
   A: "A",
@@ -74,29 +58,8 @@ export const CLASS_LABEL: Record<Class, string> = {
   L: "L",
 };
 
-export const CLASS_OPTIONS: Class[] = [
-  "A",
-  "B",
-  "C",
-  "D",
-  "E",
-  "F",
-  "G",
-  "H",
-  "I",
-  "J",
-  "K",
-  "L",
-];
-
 export const REQUIREMENT_TYPE_LABEL: Record<SubjectRequirementType, string> = {
   Required: "必修",
   Optional: "選択",
   OptionalRequired: "選択必修",
 };
-
-export const REQUIREMENT_TYPE_OPTIONS: SubjectRequirementType[] = [
-  "Required",
-  "Optional",
-  "OptionalRequired",
-];

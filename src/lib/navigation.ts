@@ -1,9 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import {
   BookOpen,
-  Calendar,
-  FolderTree,
-  GraduationCap,
   Megaphone,
   UserRound,
   Users,
@@ -37,12 +34,6 @@ export const navigationSections: NavigationSection[] = [
     title: "科目",
     items: [
       {
-        title: "コース",
-        description: "",
-        href: "/dotto/courses",
-        icon: GraduationCap,
-      },
-      {
         title: "教員",
         description: "",
         href: "/dotto/faculties",
@@ -53,18 +44,6 @@ export const navigationSections: NavigationSection[] = [
         description: "",
         href: "/dotto/subjects",
         icon: BookOpen,
-      },
-      {
-        title: "科目群・科目区分",
-        description: "",
-        href: "/dotto/subject-categories",
-        icon: FolderTree,
-      },
-      {
-        title: "曜日・時限",
-        description: "",
-        href: "/dotto/day-of-week-timetable-slots",
-        icon: Calendar,
       },
     ],
   },

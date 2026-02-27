@@ -20,10 +20,6 @@ import {
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import type { Subject } from "@/app/dotto/subjects/constants";
 import { SEMESTER_LABEL } from "@/app/dotto/subjects/constants";
-import {
-  DAY_OF_WEEK_LABEL,
-  TIMETABLE_SLOT_LABEL,
-} from "@/app/dotto/day-of-week-timetable-slots/constants";
 
 interface SubjectTableProps {
   subjects: Subject[];
@@ -38,7 +34,7 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
           <TableHead>科目名</TableHead>
           <TableHead>教員</TableHead>
           <TableHead>開講時期</TableHead>
-          <TableHead>曜日・時限</TableHead>
+          <TableHead>単位</TableHead>
           <TableHead className="w-12"></TableHead>
         </TableRow>
       </TableHeader>
@@ -49,7 +45,9 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
               {subject.name}
             </TableCell>
             <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
-              {subject.faculty.name}
+              {subject.faculties
+                .map((f) => f.faculty.name)
+                .join(", ")}
             </TableCell>
             <TableCell>
               <Badge variant="secondary">
@@ -57,12 +55,7 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
               </Badge>
             </TableCell>
             <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
-              {subject.dayOfWeekTimetableSlots
-                .map(
-                  (slot) =>
-                    `${DAY_OF_WEEK_LABEL[slot.dayOfWeek]}${TIMETABLE_SLOT_LABEL[slot.timetableSlot]}`,
-                )
-                .join(", ")}
+              {subject.credit}
             </TableCell>
             <TableCell>
               <DropdownMenu>
