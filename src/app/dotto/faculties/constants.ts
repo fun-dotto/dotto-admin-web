@@ -1,4 +1,4 @@
 import type { components } from "@/types/openapi";
 
-export type Faculty = components["schemas"]["DottoFoundationV1.Faculty"];
-export type FacultyRequest = components["schemas"]["DottoFoundationV1.FacultyRequest"];
+export type Faculty = components["schemas"]["FacultyService.Faculty"];
+export type FacultyRequest = components["schemas"]["FacultyService.FacultyRequest"];
