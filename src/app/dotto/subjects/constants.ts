@@ -1,6 +1,7 @@
 import type { components } from "@/types/openapi";
 
 export type Subject = components["schemas"]["SubjectService.Subject"];
+export type SubjectSummary = components["schemas"]["SubjectService.SubjectSummary"];
 export type SubjectRequest = components["schemas"]["SubjectService.SubjectRequest"];
 export type SubjectTargetClass = components["schemas"]["SubjectService.SubjectTargetClass"];
 export type SubjectRequirement = components["schemas"]["SubjectService.SubjectRequirement"];
