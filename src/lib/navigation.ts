@@ -31,7 +31,7 @@ export const navigationSections: NavigationSection[] = [
     ],
   },
   {
-    title: "科目",
+    title: "教員",
     items: [
       {
         title: "教員",
@@ -39,6 +39,11 @@ export const navigationSections: NavigationSection[] = [
         href: "/dotto/faculties",
         icon: UserRound,
       },
+    ],
+  },
+  {
+    title: "科目",
+    items: [
       {
         title: "科目",
         description: "",
