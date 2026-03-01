@@ -16,24 +16,8 @@ import {
 import { SubjectForm } from "@/components/subjects/SubjectForm";
 import { createSubject } from "../actions";
 import type { SubjectRequest } from "../constants";
-import type { Course } from "@/app/dotto/courses/constants";
-import type { Faculty } from "@/app/dotto/faculties/constants";
-import type { SubjectCategory } from "@/app/dotto/subject-categories/constants";
-import type { DayOfWeekTimetableSlot } from "@/app/dotto/day-of-week-timetable-slots/constants";
 
-interface NewSubjectPageClientProps {
-  courses: Course[];
-  faculties: Faculty[];
-  subjectCategories: SubjectCategory[];
-  dayOfWeekTimetableSlots: DayOfWeekTimetableSlot[];
-}
-
-export function NewSubjectPageClient({
-  courses,
-  faculties,
-  subjectCategories,
-  dayOfWeekTimetableSlots,
-}: NewSubjectPageClientProps) {
+export function NewSubjectPageClient() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -77,10 +61,6 @@ export function NewSubjectPageClient({
           </CardHeader>
           <CardContent>
             <SubjectForm
-              courses={courses}
-              faculties={faculties}
-              subjectCategories={subjectCategories}
-              dayOfWeekTimetableSlots={dayOfWeekTimetableSlots}
               onSubmit={handleSubmit}
               onCancel={() => router.push("/dotto/subjects")}
               isSubmitting={isSubmitting}

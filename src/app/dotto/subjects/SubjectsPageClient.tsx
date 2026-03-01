@@ -11,20 +11,20 @@ import { Plus } from "lucide-react";
 import { SubjectTable } from "@/components/subjects/SubjectTable";
 import { SubjectDeleteDialog } from "@/components/subjects/SubjectDeleteDialog";
 import { deleteSubject } from "./actions";
-import type { Subject } from "./constants";
+import type { SubjectSummary } from "./constants";
 
 interface SubjectsPageClientProps {
-  subjects: Subject[];
+  subjects: SubjectSummary[];
 }
 
 export function SubjectsPageClient({ subjects }: SubjectsPageClientProps) {
   const router = useRouter();
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState<Subject | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<SubjectSummary | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleDeleteOpen = (subject: Subject) => {
+  const handleDeleteOpen = (subject: SubjectSummary) => {
     setDeleteTarget(subject);
     setDeleteDialogOpen(true);
   };
