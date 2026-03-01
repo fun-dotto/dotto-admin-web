@@ -10,12 +10,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { Subject } from "@/app/dotto/subjects/constants";
+import type { SubjectSummary } from "@/app/dotto/subjects/constants";
 
 interface SubjectDeleteDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  subject: Subject | null;
+  subject: SubjectSummary | null;
   onConfirm: () => void;
   isSubmitting: boolean;
 }

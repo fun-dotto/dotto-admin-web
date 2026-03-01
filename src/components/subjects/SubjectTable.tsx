@@ -9,7 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -18,12 +17,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import type { Subject } from "@/app/dotto/subjects/constants";
-import { SEMESTER_LABEL } from "@/app/dotto/subjects/constants";
+import type { SubjectSummary } from "@/app/dotto/subjects/constants";
 
 interface SubjectTableProps {
-  subjects: Subject[];
-  onDelete: (subject: Subject) => void;
+  subjects: SubjectSummary[];
+  onDelete: (subject: SubjectSummary) => void;
 }
 
 export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
@@ -33,8 +31,6 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
         <TableRow>
           <TableHead>科目名</TableHead>
           <TableHead>教員</TableHead>
-          <TableHead>開講時期</TableHead>
-          <TableHead>単位</TableHead>
           <TableHead className="w-12"></TableHead>
         </TableRow>
       </TableHeader>
@@ -48,14 +44,6 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
               {subject.faculties
                 .map((f) => f.faculty.name)
                 .join(", ")}
-            </TableCell>
-            <TableCell>
-              <Badge variant="secondary">
-                {SEMESTER_LABEL[subject.semester]}
-              </Badge>
-            </TableCell>
-            <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
-              {subject.credit}
             </TableCell>
             <TableCell>
               <DropdownMenu>

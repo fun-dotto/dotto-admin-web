@@ -1,10 +1,10 @@
 "use server";
 
 import { api } from "@/lib/api";
-import type { Subject, SubjectRequest } from "./constants";
+import type { Subject, SubjectSummary, SubjectRequest } from "./constants";
 
 export async function fetchSubjects(): Promise<{
-  subjects: Subject[];
+  subjects: SubjectSummary[];
   error?: string;
 }> {
   const { data, error } = await api.GET("/v1/subjects");
