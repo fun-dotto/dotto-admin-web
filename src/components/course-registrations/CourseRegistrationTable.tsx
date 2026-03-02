@@ -16,33 +16,36 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Trash2 } from "lucide-react";
-import type { SubjectSummary } from "@/app/dotto/subjects/constants";
+import type { Registration } from "@/app/dotto/course-registrations/constants";
 
-interface SubjectTableProps {
-  subjects: SubjectSummary[];
-  onDelete: (subject: SubjectSummary) => void;
+interface CourseRegistrationTableProps {
+  registrations: Registration[];
+  subjectMap: Record<string, string>;
+  onDelete: (registration: Registration) => void;
 }
 
-export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
+export function CourseRegistrationTable({
+  registrations,
+  subjectMap,
+  onDelete,
+}: CourseRegistrationTableProps) {
   return (
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead>ユーザーID</TableHead>
           <TableHead>科目名</TableHead>
-          <TableHead>教員</TableHead>
           <TableHead className="w-12"></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {subjects.map((subject) => (
-          <TableRow key={subject.id}>
-            <TableCell className="font-medium text-zinc-900 dark:text-zinc-50">
-              {subject.name}
-            </TableCell>
+        {registrations.map((reg) => (
+          <TableRow key={reg.id}>
             <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
-              {subject.faculties
-                .map((f) => f.facultyId)
-                .join(", ")}
+              {reg.userId}
+            </TableCell>
+            <TableCell className="font-medium text-zinc-900 dark:text-zinc-50">
+              {subjectMap[reg.subjectId] ?? reg.subjectId}
             </TableCell>
             <TableCell>
               <DropdownMenu>
@@ -53,7 +56,7 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
-                    onClick={() => onDelete(subject)}
+                    onClick={() => onDelete(reg)}
                     className="text-red-600 dark:text-red-400"
                   >
                     <Trash2 className="mr-2 size-4" />

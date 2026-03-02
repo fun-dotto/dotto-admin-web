@@ -13,30 +13,28 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { SubjectForm } from "@/components/subjects/SubjectForm";
-import { updateSubject } from "../../actions";
-import type { Subject, SubjectRequest } from "../../constants";
+import { RoomForm } from "@/components/facility-rooms/RoomForm";
+import { updateRoom } from "../../actions";
+import type { Room, RoomRequest } from "../../constants";
 
-interface EditSubjectPageClientProps {
-  subject: Subject;
+interface EditRoomPageClientProps {
+  room: Room;
 }
 
-export function EditSubjectPageClient({
-  subject,
-}: EditSubjectPageClientProps) {
+export function EditRoomPageClient({ room }: EditRoomPageClientProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (request: SubjectRequest) => {
+  const handleSubmit = async (request: RoomRequest) => {
     setIsSubmitting(true);
     try {
-      const result = await updateSubject(subject.id, request);
+      const result = await updateRoom(room.id, request);
       if (result.error) {
         toast.error(result.error);
         return;
       }
-      toast.success("科目を更新しました");
-      router.push("/dotto/subjects");
+      toast.success("教室を更新しました");
+      router.push("/dotto/facility-rooms");
     } catch {
       toast.error("エラーが発生しました");
     } finally {
@@ -50,8 +48,8 @@ export function EditSubjectPageClient({
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/dotto/subjects">
-                科目管理
+              <BreadcrumbLink href="/dotto/facility-rooms">
+                教室管理
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -63,12 +61,13 @@ export function EditSubjectPageClient({
 
         <Card>
           <CardHeader>
-            <CardTitle>科目を編集</CardTitle>
+            <CardTitle>教室を編集</CardTitle>
           </CardHeader>
           <CardContent>
-            <SubjectForm
+            <RoomForm
+              room={room}
               onSubmit={handleSubmit}
-              onCancel={() => router.push("/dotto/subjects")}
+              onCancel={() => router.push("/dotto/facility-rooms")}
               isSubmitting={isSubmitting}
               isEdit={true}
             />

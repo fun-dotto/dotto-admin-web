@@ -13,24 +13,24 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { SubjectForm } from "@/components/subjects/SubjectForm";
-import { upsertSubject } from "../actions";
-import type { SubjectRequest } from "../constants";
+import { RoomForm } from "@/components/facility-rooms/RoomForm";
+import { createRoom } from "../actions";
+import type { RoomRequest } from "../constants";
 
-export function NewSubjectPageClient() {
+export function NewRoomPageClient() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (request: SubjectRequest) => {
+  const handleSubmit = async (request: RoomRequest) => {
     setIsSubmitting(true);
     try {
-      const result = await upsertSubject(request);
+      const result = await createRoom(request);
       if (result.error) {
         toast.error(result.error);
         return;
       }
-      toast.success("科目を作成・更新しました");
-      router.push("/dotto/subjects");
+      toast.success("教室を作成しました");
+      router.push("/dotto/facility-rooms");
     } catch {
       toast.error("エラーが発生しました");
     } finally {
@@ -44,8 +44,8 @@ export function NewSubjectPageClient() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/dotto/subjects">
-                科目管理
+              <BreadcrumbLink href="/dotto/facility-rooms">
+                教室管理
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -57,13 +57,14 @@ export function NewSubjectPageClient() {
 
         <Card>
           <CardHeader>
-            <CardTitle>科目を作成</CardTitle>
+            <CardTitle>教室を作成</CardTitle>
           </CardHeader>
           <CardContent>
-            <SubjectForm
+            <RoomForm
               onSubmit={handleSubmit}
-              onCancel={() => router.push("/dotto/subjects")}
+              onCancel={() => router.push("/dotto/facility-rooms")}
               isSubmitting={isSubmitting}
+              isEdit={false}
             />
           </CardContent>
         </Card>

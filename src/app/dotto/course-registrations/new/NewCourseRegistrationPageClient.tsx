@@ -13,24 +13,31 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { SubjectForm } from "@/components/subjects/SubjectForm";
-import { upsertSubject } from "../actions";
-import type { SubjectRequest } from "../constants";
+import { CourseRegistrationForm } from "@/components/course-registrations/CourseRegistrationForm";
+import { createRegistration } from "../actions";
+import type { RegistrationRequest } from "../constants";
+import type { SubjectSummary } from "@/app/dotto/subjects/constants";
 
-export function NewSubjectPageClient() {
+interface NewCourseRegistrationPageClientProps {
+  subjects: SubjectSummary[];
+}
+
+export function NewCourseRegistrationPageClient({
+  subjects,
+}: NewCourseRegistrationPageClientProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (request: SubjectRequest) => {
+  const handleSubmit = async (request: RegistrationRequest) => {
     setIsSubmitting(true);
     try {
-      const result = await upsertSubject(request);
+      const result = await createRegistration(request);
       if (result.error) {
         toast.error(result.error);
         return;
       }
-      toast.success("科目を作成・更新しました");
-      router.push("/dotto/subjects");
+      toast.success("履修情報を作成しました");
+      router.push("/dotto/course-registrations");
     } catch {
       toast.error("エラーが発生しました");
     } finally {
@@ -44,8 +51,8 @@ export function NewSubjectPageClient() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/dotto/subjects">
-                科目管理
+              <BreadcrumbLink href="/dotto/course-registrations">
+                履修情報管理
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -57,12 +64,13 @@ export function NewSubjectPageClient() {
 
         <Card>
           <CardHeader>
-            <CardTitle>科目を作成</CardTitle>
+            <CardTitle>履修情報を作成</CardTitle>
           </CardHeader>
           <CardContent>
-            <SubjectForm
+            <CourseRegistrationForm
+              subjects={subjects}
               onSubmit={handleSubmit}
-              onCancel={() => router.push("/dotto/subjects")}
+              onCancel={() => router.push("/dotto/course-registrations")}
               isSubmitting={isSubmitting}
             />
           </CardContent>

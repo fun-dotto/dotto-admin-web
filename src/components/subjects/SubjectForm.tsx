@@ -11,7 +11,6 @@ interface SubjectFormProps {
   onSubmit: (request: SubjectRequest) => void;
   onCancel: () => void;
   isSubmitting: boolean;
-  isEdit: boolean;
 }
 
 export function SubjectForm({
@@ -19,7 +18,6 @@ export function SubjectForm({
   onSubmit,
   onCancel,
   isSubmitting,
-  isEdit,
 }: SubjectFormProps) {
   const [syllabusId, setSyllabusId] = useState(defaultSyllabusId ?? "");
 
@@ -51,11 +49,7 @@ export function SubjectForm({
           キャンセル
         </Button>
         <Button type="submit" disabled={isSubmitting || !syllabusId}>
-          {isSubmitting
-            ? "処理中..."
-            : isEdit
-              ? "更新"
-              : "作成"}
+          {isSubmitting ? "処理中..." : "作成"}
         </Button>
       </div>
     </form>

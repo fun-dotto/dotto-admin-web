@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -15,34 +16,33 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Trash2 } from "lucide-react";
-import type { SubjectSummary } from "@/app/dotto/subjects/constants";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import type { Room } from "@/app/dotto/facility-rooms/constants";
+import { FLOOR_LABEL } from "@/app/dotto/facility-rooms/constants";
 
-interface SubjectTableProps {
-  subjects: SubjectSummary[];
-  onDelete: (subject: SubjectSummary) => void;
+interface RoomTableProps {
+  rooms: Room[];
+  onDelete: (room: Room) => void;
 }
 
-export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
+export function RoomTable({ rooms, onDelete }: RoomTableProps) {
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>科目名</TableHead>
-          <TableHead>教員</TableHead>
+          <TableHead>教室名</TableHead>
+          <TableHead>フロア</TableHead>
           <TableHead className="w-12"></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {subjects.map((subject) => (
-          <TableRow key={subject.id}>
+        {rooms.map((room) => (
+          <TableRow key={room.id}>
             <TableCell className="font-medium text-zinc-900 dark:text-zinc-50">
-              {subject.name}
+              {room.name}
             </TableCell>
             <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
-              {subject.faculties
-                .map((f) => f.facultyId)
-                .join(", ")}
+              {FLOOR_LABEL[room.floor]}
             </TableCell>
             <TableCell>
               <DropdownMenu>
@@ -52,8 +52,14 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link href={`/dotto/facility-rooms/${room.id}/edit`}>
+                      <Pencil className="mr-2 size-4" />
+                      編集
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => onDelete(subject)}
+                    onClick={() => onDelete(room)}
                     className="text-red-600 dark:text-red-400"
                   >
                     <Trash2 className="mr-2 size-4" />

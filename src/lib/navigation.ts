@@ -1,8 +1,12 @@
 import type { LucideIcon } from "lucide-react";
 import {
   BookOpen,
+  Calendar,
+  ClipboardList,
+  DoorOpen,
   Megaphone,
   UserRound,
+  UserSearch,
   Users,
 } from "lucide-react";
 
@@ -49,6 +53,50 @@ export const navigationSections: NavigationSection[] = [
         description: "",
         href: "/dotto/subjects",
         icon: BookOpen,
+      },
+    ],
+  },
+  {
+    title: "教室",
+    items: [
+      {
+        title: "教室",
+        description: "",
+        href: "/dotto/facility-rooms",
+        icon: DoorOpen,
+      },
+    ],
+  },
+  {
+    title: "時間割",
+    items: [
+      {
+        title: "時間割",
+        description: "",
+        href: "/dotto/timetable",
+        icon: Calendar,
+      },
+    ],
+  },
+  {
+    title: "ユーザー",
+    items: [
+      {
+        title: "ユーザー",
+        description: "",
+        href: "/dotto/users",
+        icon: UserSearch,
+      },
+    ],
+  },
+  {
+    title: "履修情報",
+    items: [
+      {
+        title: "履修情報",
+        description: "",
+        href: "/dotto/course-registrations",
+        icon: ClipboardList,
       },
     ],
   },

@@ -13,24 +13,34 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { SubjectForm } from "@/components/subjects/SubjectForm";
-import { upsertSubject } from "../actions";
-import type { SubjectRequest } from "../constants";
+import { TimetableItemForm } from "@/components/timetable/TimetableItemForm";
+import { createTimetableItem } from "../actions";
+import type { TimetableItemRequest } from "../constants";
+import type { SubjectSummary } from "@/app/dotto/subjects/constants";
+import type { Room } from "@/app/dotto/facility-rooms/constants";
 
-export function NewSubjectPageClient() {
+interface NewTimetableItemPageClientProps {
+  subjects: SubjectSummary[];
+  rooms: Room[];
+}
+
+export function NewTimetableItemPageClient({
+  subjects,
+  rooms,
+}: NewTimetableItemPageClientProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (request: SubjectRequest) => {
+  const handleSubmit = async (request: TimetableItemRequest) => {
     setIsSubmitting(true);
     try {
-      const result = await upsertSubject(request);
+      const result = await createTimetableItem(request);
       if (result.error) {
         toast.error(result.error);
         return;
       }
-      toast.success("科目を作成・更新しました");
-      router.push("/dotto/subjects");
+      toast.success("時間割を作成しました");
+      router.push("/dotto/timetable");
     } catch {
       toast.error("エラーが発生しました");
     } finally {
@@ -44,8 +54,8 @@ export function NewSubjectPageClient() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/dotto/subjects">
-                科目管理
+              <BreadcrumbLink href="/dotto/timetable">
+                時間割管理
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -57,12 +67,14 @@ export function NewSubjectPageClient() {
 
         <Card>
           <CardHeader>
-            <CardTitle>科目を作成</CardTitle>
+            <CardTitle>時間割を作成</CardTitle>
           </CardHeader>
           <CardContent>
-            <SubjectForm
+            <TimetableItemForm
+              subjects={subjects}
+              rooms={rooms}
               onSubmit={handleSubmit}
-              onCancel={() => router.push("/dotto/subjects")}
+              onCancel={() => router.push("/dotto/timetable")}
               isSubmitting={isSubmitting}
             />
           </CardContent>
