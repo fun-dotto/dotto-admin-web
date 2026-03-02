@@ -7,7 +7,7 @@ export async function fetchAnnouncements(): Promise<{
   announcements: Announcement[];
   error?: string;
 }> {
-  const { data, error } = await api.GET("/v1/announcements");
+  const { data, error } = await api.GET("/v1/announcement/announcements");
   if (error) {
     return { announcements: [], error: "おしらせの取得に失敗しました" };
   }
@@ -17,7 +17,7 @@ export async function fetchAnnouncements(): Promise<{
 export async function fetchAnnouncement(
   id: string,
 ): Promise<{ announcement?: Announcement; error?: string }> {
-  const { data, error } = await api.GET("/v1/announcements/{id}", {
+  const { data, error } = await api.GET("/v1/announcement/announcements/{id}", {
     params: { path: { id } },
   });
   if (error) {
@@ -29,7 +29,7 @@ export async function fetchAnnouncement(
 export async function createAnnouncement(
   request: AnnouncementRequest,
 ): Promise<{ announcement?: Announcement; error?: string }> {
-  const { data, error, response } = await api.POST("/v1/announcements", {
+  const { data, error, response } = await api.POST("/v1/announcement/announcements", {
     body: request,
   });
   if (error) {
@@ -42,7 +42,7 @@ export async function updateAnnouncement(
   id: string,
   request: AnnouncementRequest,
 ): Promise<{ announcement?: Announcement; error?: string }> {
-  const { data, error } = await api.PUT("/v1/announcements/{id}", {
+  const { data, error } = await api.PUT("/v1/announcement/announcements/{id}", {
     params: { path: { id } },
     body: request,
   });
@@ -55,7 +55,7 @@ export async function updateAnnouncement(
 export async function deleteAnnouncement(
   id: string,
 ): Promise<{ success: boolean; error?: string }> {
-  const { error } = await api.DELETE("/v1/announcements/{id}", {
+  const { error } = await api.DELETE("/v1/announcement/announcements/{id}", {
     params: { path: { id } },
   });
   if (error) {

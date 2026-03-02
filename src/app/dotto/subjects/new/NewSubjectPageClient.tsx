@@ -14,7 +14,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { SubjectForm } from "@/components/subjects/SubjectForm";
-import { createSubject } from "../actions";
+import { upsertSubject } from "../actions";
 import type { SubjectRequest } from "../constants";
 
 export function NewSubjectPageClient() {
@@ -24,12 +24,12 @@ export function NewSubjectPageClient() {
   const handleSubmit = async (request: SubjectRequest) => {
     setIsSubmitting(true);
     try {
-      const result = await createSubject(request);
+      const result = await upsertSubject(request);
       if (result.error) {
         toast.error(result.error);
         return;
       }
-      toast.success("科目を作成しました");
+      toast.success("科目を作成・更新しました");
       router.push("/dotto/subjects");
     } catch {
       toast.error("エラーが発生しました");
@@ -64,7 +64,6 @@ export function NewSubjectPageClient() {
               onSubmit={handleSubmit}
               onCancel={() => router.push("/dotto/subjects")}
               isSubmitting={isSubmitting}
-              isEdit={false}
             />
           </CardContent>
         </Card>

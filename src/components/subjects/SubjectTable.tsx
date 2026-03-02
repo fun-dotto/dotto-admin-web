@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -16,7 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Trash2 } from "lucide-react";
 import type { SubjectSummary } from "@/app/dotto/subjects/constants";
 
 interface SubjectTableProps {
@@ -53,12 +52,6 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link href={`/dotto/subjects/${subject.id}/edit`}>
-                      <Pencil className="mr-2 size-4" />
-                      編集
-                    </Link>
-                  </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => onDelete(subject)}
                     className="text-red-600 dark:text-red-400"

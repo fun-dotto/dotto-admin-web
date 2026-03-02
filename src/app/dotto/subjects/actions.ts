@@ -7,7 +7,7 @@ export async function fetchSubjects(): Promise<{
   subjects: SubjectSummary[];
   error?: string;
 }> {
-  const { data, error } = await api.GET("/v1/subjects");
+  const { data, error } = await api.GET("/v1/subject/subjects");
   if (error) {
     return { subjects: [], error: "科目の取得に失敗しました" };
   }
@@ -17,7 +17,7 @@ export async function fetchSubjects(): Promise<{
 export async function fetchSubject(
   id: string,
 ): Promise<{ subject?: Subject; error?: string }> {
-  const { data, error } = await api.GET("/v1/subjects/{id}", {
+  const { data, error } = await api.GET("/v1/subject/subjects/{id}", {
     params: { path: { id } },
   });
   if (error) {
@@ -26,28 +26,14 @@ export async function fetchSubject(
   return { subject: data.subject };
 }
 
-export async function createSubject(
+export async function upsertSubject(
   request: SubjectRequest,
 ): Promise<{ subject?: Subject; error?: string }> {
-  const { data, error } = await api.POST("/v1/subjects", {
+  const { data, error } = await api.POST("/v1/subject/subjects", {
     body: request,
   });
   if (error) {
-    return { error: "科目の作成に失敗しました" };
-  }
-  return { subject: data.subject };
-}
-
-export async function updateSubject(
-  id: string,
-  request: SubjectRequest,
-): Promise<{ subject?: Subject; error?: string }> {
-  const { data, error } = await api.PUT("/v1/subjects/{id}", {
-    params: { path: { id } },
-    body: request,
-  });
-  if (error) {
-    return { error: "科目の更新に失敗しました" };
+    return { error: "科目の作成・更新に失敗しました" };
   }
   return { subject: data.subject };
 }
@@ -55,7 +41,7 @@ export async function updateSubject(
 export async function deleteSubject(
   id: string,
 ): Promise<{ success: boolean; error?: string }> {
-  const { error } = await api.DELETE("/v1/subjects/{id}", {
+  const { error } = await api.DELETE("/v1/subject/subjects/{id}", {
     params: { path: { id } },
   });
   if (error) {
