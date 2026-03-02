@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import {
   BookOpen,
+  DoorOpen,
   Megaphone,
   UserRound,
   Users,
@@ -49,6 +50,17 @@ export const navigationSections: NavigationSection[] = [
         description: "",
         href: "/dotto/subjects",
         icon: BookOpen,
+      },
+    ],
+  },
+  {
+    title: "教室",
+    items: [
+      {
+        title: "教室",
+        description: "",
+        href: "/dotto/facility-rooms",
+        icon: DoorOpen,
       },
     ],
   },
