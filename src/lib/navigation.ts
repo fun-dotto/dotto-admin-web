@@ -24,7 +24,7 @@ export interface NavigationSection {
 
 export const navigationSections: NavigationSection[] = [
   {
-    title: "Dotto",
+    title: "Announcement",
     items: [
       {
         title: "おしらせ",
@@ -35,7 +35,7 @@ export const navigationSections: NavigationSection[] = [
     ],
   },
   {
-    title: "教員",
+    title: "Academic",
     items: [
       {
         title: "教員",
@@ -43,60 +43,44 @@ export const navigationSections: NavigationSection[] = [
         href: "/dotto/faculties",
         icon: UserRound,
       },
-    ],
-  },
-  {
-    title: "科目",
-    items: [
       {
         title: "科目",
         description: "",
         href: "/dotto/subjects",
         icon: BookOpen,
       },
-    ],
-  },
-  {
-    title: "教室",
-    items: [
       {
         title: "教室",
         description: "",
         href: "/dotto/facility-rooms",
         icon: DoorOpen,
       },
-    ],
-  },
-  {
-    title: "時間割",
-    items: [
       {
         title: "時間割",
         description: "",
         href: "/dotto/timetable",
         icon: Calendar,
       },
+      {
+        title: "履修",
+        description: "",
+        href: "/dotto/course-registrations",
+        icon: ClipboardList,
+      },
     ],
   },
   {
-    title: "ユーザー",
+    title: "Funch",
+    items: [],
+  },
+  {
+    title: "User",
     items: [
       {
         title: "ユーザー",
         description: "",
         href: "/dotto/users",
         icon: UserSearch,
-      },
-    ],
-  },
-  {
-    title: "履修情報",
-    items: [
-      {
-        title: "履修情報",
-        description: "",
-        href: "/dotto/course-registrations",
-        icon: ClipboardList,
       },
     ],
   },
