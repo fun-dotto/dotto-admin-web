@@ -1,10 +1,10 @@
 import type { components } from "@/types/openapi";
 
-export type Subject = components["schemas"]["SubjectService.Subject"];
-export type SubjectSummary = components["schemas"]["SubjectService.SubjectSummary"];
-export type SubjectRequest = components["schemas"]["SubjectService.SubjectRequest"];
-export type SubjectTargetClass = components["schemas"]["SubjectService.SubjectTargetClass"];
-export type SubjectRequirement = components["schemas"]["SubjectService.SubjectRequirement"];
+export type Subject = components["schemas"]["AcademicService.Subject"];
+export type SubjectSummary = components["schemas"]["AcademicService.SubjectSummary"];
+export type SubjectRequest = components["schemas"]["AcademicService.SubjectRequest"];
+export type SubjectTargetClass = components["schemas"]["AcademicService.SubjectTargetClass"];
+export type SubjectRequirement = components["schemas"]["AcademicService.SubjectRequirement"];
 
 export type Course = components["schemas"]["DottoFoundationV1.Course"];
 export type CourseSemester = components["schemas"]["DottoFoundationV1.CourseSemester"];

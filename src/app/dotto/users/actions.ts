@@ -6,7 +6,7 @@ import type { User } from "./constants";
 export async function fetchUser(
   id: string,
 ): Promise<{ user?: User; error?: string }> {
-  const { data, error } = await api.GET("/v1/user/users/{id}", {
+  const { data, error } = await api.GET("/v1/users/{id}", {
     params: { path: { id } },
   });
   if (error) {

@@ -1,9 +1,9 @@
 import type { components } from "@/types/openapi";
 
 export type Registration =
-  components["schemas"]["CourseService.Registration"];
+  components["schemas"]["AcademicService.CourseRegistration"];
 export type RegistrationRequest =
-  components["schemas"]["CourseService.RegistrationRequest"];
+  components["schemas"]["AcademicService.CourseRegistrationRequest"];
 
 export type CourseSemester =
   components["schemas"]["DottoFoundationV1.CourseSemester"];
