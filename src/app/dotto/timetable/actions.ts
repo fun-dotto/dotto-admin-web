@@ -12,7 +12,7 @@ export async function fetchTimetableItems(
   semester: CourseSemester,
   dayOfWeek: DayOfWeek[],
 ): Promise<{ items: TimetableItem[]; error?: string }> {
-  const { data, error } = await api.GET("/v1/timetable/itmes", {
+  const { data, error } = await api.GET("/v1/timetableItmes", {
     params: { query: { semester, dayOfWeek } },
   });
   if (error) {
@@ -24,7 +24,7 @@ export async function fetchTimetableItems(
 export async function createTimetableItem(
   request: TimetableItemRequest,
 ): Promise<{ item?: TimetableItem; error?: string }> {
-  const { data, error } = await api.POST("/v1/timetable/itmes", {
+  const { data, error } = await api.POST("/v1/timetableItmes", {
     body: request,
   });
   if (error) {
@@ -36,7 +36,7 @@ export async function createTimetableItem(
 export async function deleteTimetableItem(
   id: string,
 ): Promise<{ success: boolean; error?: string }> {
-  const { error } = await api.DELETE("/v1/timetable/itmes/{id}", {
+  const { error } = await api.DELETE("/v1/timetableItmes/{id}", {
     params: { path: { id } },
   });
   if (error) {

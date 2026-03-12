@@ -7,7 +7,7 @@ export async function fetchFaculties(): Promise<{
   faculties: Faculty[];
   error?: string;
 }> {
-  const { data, error } = await api.GET("/v1/faculty/faculties");
+  const { data, error } = await api.GET("/v1/faculties");
   if (error) {
     return { faculties: [], error: "教員の取得に失敗しました" };
   }
@@ -17,7 +17,7 @@ export async function fetchFaculties(): Promise<{
 export async function fetchFaculty(
   id: string,
 ): Promise<{ faculty?: Faculty; error?: string }> {
-  const { data, error } = await api.GET("/v1/faculty/faculties/{id}", {
+  const { data, error } = await api.GET("/v1/faculties/{id}", {
     params: { path: { id } },
   });
   if (error) {
@@ -29,7 +29,7 @@ export async function fetchFaculty(
 export async function createFaculty(
   request: FacultyRequest,
 ): Promise<{ faculty?: Faculty; error?: string }> {
-  const { data, error } = await api.POST("/v1/faculty/faculties", {
+  const { data, error } = await api.POST("/v1/faculties", {
     body: request,
   });
   if (error) {
@@ -42,7 +42,7 @@ export async function updateFaculty(
   id: string,
   request: FacultyRequest,
 ): Promise<{ faculty?: Faculty; error?: string }> {
-  const { data, error } = await api.PUT("/v1/faculty/faculties/{id}", {
+  const { data, error } = await api.PUT("/v1/faculties/{id}", {
     params: { path: { id } },
     body: request,
   });
@@ -55,7 +55,7 @@ export async function updateFaculty(
 export async function deleteFaculty(
   id: string,
 ): Promise<{ success: boolean; error?: string }> {
-  const { error } = await api.DELETE("/v1/faculty/faculties/{id}", {
+  const { error } = await api.DELETE("/v1/faculties/{id}", {
     params: { path: { id } },
   });
   if (error) {

@@ -11,7 +11,7 @@ export async function fetchRegistrations(
   userId: string,
   semester: CourseSemester,
 ): Promise<{ registrations: Registration[]; error?: string }> {
-  const { data, error } = await api.GET("/v1/course/registrations", {
+  const { data, error } = await api.GET("/v1/courseRegistrations", {
     params: { query: { userId, semester } },
   });
   if (error) {
@@ -23,7 +23,7 @@ export async function fetchRegistrations(
 export async function createRegistration(
   request: RegistrationRequest,
 ): Promise<{ registration?: Registration; error?: string }> {
-  const { data, error } = await api.POST("/v1/course/registrations", {
+  const { data, error } = await api.POST("/v1/courseRegistrations", {
     body: request,
   });
   if (error) {
@@ -35,7 +35,7 @@ export async function createRegistration(
 export async function deleteRegistration(
   id: string,
 ): Promise<{ success: boolean; error?: string }> {
-  const { error } = await api.DELETE("/v1/course/registrations/{id}", {
+  const { error } = await api.DELETE("/v1/courseRegistrations/{id}", {
     params: { path: { id } },
   });
   if (error) {

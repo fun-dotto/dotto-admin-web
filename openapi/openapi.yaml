@@ -3,18 +3,18 @@ info:
   title: Admin BFF Service
   version: 1.0.0
 tags:
-  - name: AnnouncementAnnouncements
+  - name: Announcements
   - name: CourseRegistrations
-  - name: FacilityRooms
-  - name: FacilityReservations
-  - name: FacultyFaculties
-  - name: SubjectSubjects
+  - name: Rooms
+  - name: Reservations
+  - name: Faculties
+  - name: Subjects
   - name: TimetableItems
-  - name: UserUsers
+  - name: Users
 paths:
-  /v1/announcement/announcements:
+  /v1/announcements:
     get:
-      operationId: AnnouncementAnnouncementsV1_list
+      operationId: AnnouncementsV1_list
       parameters: []
       responses:
         '200':
@@ -31,9 +31,9 @@ paths:
                 required:
                   - announcements
       tags:
-        - AnnouncementAnnouncements
+        - Announcements
     post:
-      operationId: AnnouncementAnnouncementsV1_create
+      operationId: AnnouncementsV1_create
       description: おしらせを作成する
       parameters: []
       responses:
@@ -49,7 +49,7 @@ paths:
                 required:
                   - announcement
       tags:
-        - AnnouncementAnnouncements
+        - Announcements
       requestBody:
         required: true
         content:
@@ -57,9 +57,9 @@ paths:
             schema:
               $ref: '#/components/schemas/AnnouncementService.AnnouncementRequest'
         description: 作成するおしらせの情報
-  /v1/announcement/announcements/{id}:
+  /v1/announcements/{id}:
     get:
-      operationId: AnnouncementAnnouncementsV1_detail
+      operationId: AnnouncementsV1_detail
       description: おしらせを詳細取得する
       parameters:
         - name: id
@@ -81,9 +81,9 @@ paths:
                 required:
                   - announcement
       tags:
-        - AnnouncementAnnouncements
+        - Announcements
     put:
-      operationId: AnnouncementAnnouncementsV1_update
+      operationId: AnnouncementsV1_update
       description: おしらせを更新する
       parameters:
         - name: id
@@ -105,7 +105,7 @@ paths:
                 required:
                   - announcement
       tags:
-        - AnnouncementAnnouncements
+        - Announcements
       requestBody:
         required: true
         content:
@@ -114,7 +114,7 @@ paths:
               $ref: '#/components/schemas/AnnouncementService.AnnouncementRequest'
         description: 更新するおしらせの情報
     delete:
-      operationId: AnnouncementAnnouncementsV1_delete
+      operationId: AnnouncementsV1_delete
       description: おしらせを削除する
       parameters:
         - name: id
@@ -127,8 +127,8 @@ paths:
         '204':
           description: There is no content to send for this request, but the headers may be useful.
       tags:
-        - AnnouncementAnnouncements
-  /v1/course/registrations:
+        - Announcements
+  /v1/courseRegistrations:
     get:
       operationId: CourseRegistrationsV1_list
       description: 履修情報を取得する
@@ -165,7 +165,7 @@ paths:
                   registrations:
                     type: array
                     items:
-                      $ref: '#/components/schemas/CourseService.Registration'
+                      $ref: '#/components/schemas/AcademicService.CourseRegistration'
                 required:
                   - registrations
       tags:
@@ -183,7 +183,7 @@ paths:
                 type: object
                 properties:
                   registration:
-                    $ref: '#/components/schemas/CourseService.Registration'
+                    $ref: '#/components/schemas/AcademicService.CourseRegistration'
                 required:
                   - registration
       tags:
@@ -193,9 +193,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CourseService.RegistrationRequest'
+              $ref: '#/components/schemas/AcademicService.CourseRegistrationRequest'
         description: 作成する履修情報の情報
-  /v1/course/registrations/{id}:
+  /v1/courseRegistrations/{id}:
     delete:
       operationId: CourseRegistrationsV1_delete
       description: 履修情報を削除する
@@ -211,9 +211,126 @@ paths:
           description: There is no content to send for this request, but the headers may be useful.
       tags:
         - CourseRegistrations
-  /v1/facility/rooms:
+  /v1/faculties:
     get:
-      operationId: FacilityRoomsV1_list
+      operationId: FacultiesV1_list
+      description: 教員一覧を取得する
+      parameters: []
+      responses:
+        '200':
+          description: 教員のリスト
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  faculties:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AcademicService.Faculty'
+                required:
+                  - faculties
+      tags:
+        - Faculties
+    post:
+      operationId: FacultiesV1_create
+      description: 教員を作成する
+      parameters: []
+      responses:
+        '201':
+          description: 作成された教員
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  faculty:
+                    $ref: '#/components/schemas/AcademicService.Faculty'
+                required:
+                  - faculty
+      tags:
+        - Faculties
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcademicService.FacultyRequest'
+        description: 作成する教員の情報
+  /v1/faculties/{id}:
+    get:
+      operationId: FacultiesV1_detail
+      description: 教員を詳細取得する
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 教員ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 教員の詳細
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  faculty:
+                    $ref: '#/components/schemas/AcademicService.Faculty'
+                required:
+                  - faculty
+      tags:
+        - Faculties
+    put:
+      operationId: FacultiesV1_update
+      description: 教員を更新する
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 教員ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 更新された教員
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  faculty:
+                    $ref: '#/components/schemas/AcademicService.Faculty'
+                required:
+                  - faculty
+      tags:
+        - Faculties
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcademicService.FacultyRequest'
+        description: 更新する教員の情報
+    delete:
+      operationId: FacultiesV1_delete
+      description: 教員を削除する
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 教員ID
+          schema:
+            type: string
+      responses:
+        '204':
+          description: There is no content to send for this request, but the headers may be useful.
+      tags:
+        - Faculties
+  /v1/rooms:
+    get:
+      operationId: RoomsV1_list
       description: 教室一覧を取得する
       parameters:
         - name: floor
@@ -235,13 +352,13 @@ paths:
                   rooms:
                     type: array
                     items:
-                      $ref: '#/components/schemas/FacilityService.Room'
+                      $ref: '#/components/schemas/AcademicService.Room'
                 required:
                   - rooms
       tags:
-        - FacilityRooms
+        - Rooms
     post:
-      operationId: FacilityRoomsV1_create
+      operationId: RoomsV1_create
       description: 教室を作成する
       parameters: []
       responses:
@@ -253,21 +370,21 @@ paths:
                 type: object
                 properties:
                   room:
-                    $ref: '#/components/schemas/FacilityService.Room'
+                    $ref: '#/components/schemas/AcademicService.Room'
                 required:
                   - room
       tags:
-        - FacilityRooms
+        - Rooms
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FacilityService.RoomRequest'
+              $ref: '#/components/schemas/AcademicService.RoomRequest'
         description: 作成する教室の情報
-  /v1/facility/rooms/{id}:
+  /v1/rooms/{id}:
     get:
-      operationId: FacilityRoomsV1_detail
+      operationId: RoomsV1_detail
       description: 教室を詳細取得する
       parameters:
         - name: id
@@ -285,13 +402,13 @@ paths:
                 type: object
                 properties:
                   room:
-                    $ref: '#/components/schemas/FacilityService.Room'
+                    $ref: '#/components/schemas/AcademicService.Room'
                 required:
                   - room
       tags:
-        - FacilityRooms
+        - Rooms
     put:
-      operationId: FacilityRoomsV1_update
+      operationId: RoomsV1_update
       description: 教室を更新する
       parameters:
         - name: id
@@ -309,20 +426,20 @@ paths:
                 type: object
                 properties:
                   room:
-                    $ref: '#/components/schemas/FacilityService.Room'
+                    $ref: '#/components/schemas/AcademicService.Room'
                 required:
                   - room
       tags:
-        - FacilityRooms
+        - Rooms
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FacilityService.RoomRequest'
+              $ref: '#/components/schemas/AcademicService.RoomRequest'
         description: 更新する教室の情報
     delete:
-      operationId: FacilityRoomsV1_delete
+      operationId: RoomsV1_delete
       description: 教室を削除する
       parameters:
         - name: id
@@ -335,10 +452,10 @@ paths:
         '204':
           description: There is no content to send for this request, but the headers may be useful.
       tags:
-        - FacilityRooms
-  /v1/facility/rooms/{id}/reservations:
+        - Rooms
+  /v1/rooms/{id}/reservations:
     get:
-      operationId: FacilityReservationsV1_list
+      operationId: ReservationsV1_list
       description: 教室の予約一覧を取得する
       parameters:
         - name: id
@@ -374,131 +491,14 @@ paths:
                   reservations:
                     type: array
                     items:
-                      $ref: '#/components/schemas/FacilityService.Reservation'
+                      $ref: '#/components/schemas/AcademicService.Reservation'
                 required:
                   - reservations
       tags:
-        - FacilityReservations
-  /v1/faculty/faculties:
+        - Reservations
+  /v1/subjects:
     get:
-      operationId: FacultyFacultiesV1_list
-      description: 教員一覧を取得する
-      parameters: []
-      responses:
-        '200':
-          description: 教員のリスト
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  faculties:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/FacultyService.Faculty'
-                required:
-                  - faculties
-      tags:
-        - FacultyFaculties
-    post:
-      operationId: FacultyFacultiesV1_create
-      description: 教員を作成する
-      parameters: []
-      responses:
-        '201':
-          description: 作成された教員
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  faculty:
-                    $ref: '#/components/schemas/FacultyService.Faculty'
-                required:
-                  - faculty
-      tags:
-        - FacultyFaculties
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FacultyService.FacultyRequest'
-        description: 作成する教員の情報
-  /v1/faculty/faculties/{id}:
-    get:
-      operationId: FacultyFacultiesV1_detail
-      description: 教員を詳細取得する
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: 教員ID
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 教員の詳細
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  faculty:
-                    $ref: '#/components/schemas/FacultyService.Faculty'
-                required:
-                  - faculty
-      tags:
-        - FacultyFaculties
-    put:
-      operationId: FacultyFacultiesV1_update
-      description: 教員を更新する
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: 教員ID
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 更新された教員
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  faculty:
-                    $ref: '#/components/schemas/FacultyService.Faculty'
-                required:
-                  - faculty
-      tags:
-        - FacultyFaculties
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FacultyService.FacultyRequest'
-        description: 更新する教員の情報
-    delete:
-      operationId: FacultyFacultiesV1_delete
-      description: 教員を削除する
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: 教員ID
-          schema:
-            type: string
-      responses:
-        '204':
-          description: There is no content to send for this request, but the headers may be useful.
-      tags:
-        - FacultyFaculties
-  /v1/subject/subjects:
-    get:
-      operationId: SubjectSubjectsV1_list
+      operationId: SubjectsV1_list
       description: |-
         科目一覧を取得する
 
@@ -592,13 +592,13 @@ paths:
                   subjects:
                     type: array
                     items:
-                      $ref: '#/components/schemas/SubjectService.SubjectSummary'
+                      $ref: '#/components/schemas/AcademicService.SubjectSummary'
                 required:
                   - subjects
       tags:
-        - SubjectSubjects
+        - Subjects
     post:
-      operationId: SubjectSubjectsV1_upsert
+      operationId: SubjectsV1_upsert
       description: 科目を作成または更新する
       parameters: []
       responses:
@@ -610,21 +610,21 @@ paths:
                 type: object
                 properties:
                   subject:
-                    $ref: '#/components/schemas/SubjectService.Subject'
+                    $ref: '#/components/schemas/AcademicService.Subject'
                 required:
                   - subject
       tags:
-        - SubjectSubjects
+        - Subjects
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SubjectService.SubjectRequest'
+              $ref: '#/components/schemas/AcademicService.SubjectRequest'
         description: 作成または更新する科目の情報
-  /v1/subject/subjects/{id}:
+  /v1/subjects/{id}:
     get:
-      operationId: SubjectSubjectsV1_detail
+      operationId: SubjectsV1_detail
       description: 科目を詳細取得する
       parameters:
         - name: id
@@ -642,13 +642,13 @@ paths:
                 type: object
                 properties:
                   subject:
-                    $ref: '#/components/schemas/SubjectService.Subject'
+                    $ref: '#/components/schemas/AcademicService.Subject'
                 required:
                   - subject
       tags:
-        - SubjectSubjects
+        - Subjects
     delete:
-      operationId: SubjectSubjectsV1_delete
+      operationId: SubjectsV1_delete
       description: 科目を削除する
       parameters:
         - name: id
@@ -661,8 +661,8 @@ paths:
         '204':
           description: There is no content to send for this request, but the headers may be useful.
       tags:
-        - SubjectSubjects
-  /v1/timetable/itmes:
+        - Subjects
+  /v1/timetableItmes:
     get:
       operationId: TimetableItemsV1_list
       description: 時間割を取得する
@@ -683,7 +683,7 @@ paths:
           explode: false
         - name: dayOfWeek
           in: query
-          required: true
+          required: false
           description: 曜日; 複数指定時はORでフィルタリングされる; 指定しない場合は全ての曜日が選択される
           schema:
             type: array
@@ -701,7 +701,7 @@ paths:
                   items:
                     type: array
                     items:
-                      $ref: '#/components/schemas/TimetableService.Item'
+                      $ref: '#/components/schemas/AcademicService.TimetableItem'
                 required:
                   - items
       tags:
@@ -719,7 +719,7 @@ paths:
                 type: object
                 properties:
                   item:
-                    $ref: '#/components/schemas/TimetableService.Item'
+                    $ref: '#/components/schemas/AcademicService.TimetableItem'
                 required:
                   - item
       tags:
@@ -729,9 +729,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TimetableService.ItemRequest'
+              $ref: '#/components/schemas/AcademicService.TimetableItemRequest'
         description: 追加する時間割の情報
-  /v1/timetable/itmes/{id}:
+  /v1/timetableItmes/{id}:
     delete:
       operationId: TimetableItemsV1_delete
       description: 時間割を削除する
@@ -747,9 +747,9 @@ paths:
           description: There is no content to send for this request, but the headers may be useful.
       tags:
         - TimetableItems
-  /v1/user/users/{id}:
+  /v1/users/{id}:
     get:
-      operationId: UserUsersV1_detail
+      operationId: UsersV1_detail
       description: ユーザーを取得する
       parameters:
         - name: id
@@ -771,9 +771,223 @@ paths:
                 required:
                   - user
       tags:
-        - UserUsers
+        - Users
 components:
   schemas:
+    AcademicService.CourseRegistration:
+      type: object
+      required:
+        - id
+        - userId
+        - subjectId
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        subjectId:
+          type: string
+    AcademicService.CourseRegistrationRequest:
+      type: object
+      required:
+        - userId
+        - subjectId
+      properties:
+        userId:
+          type: string
+        subjectId:
+          type: string
+    AcademicService.Faculty:
+      type: object
+      required:
+        - id
+        - name
+        - email
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+      description: 教員
+    AcademicService.FacultyRequest:
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+    AcademicService.Reservation:
+      type: object
+      required:
+        - startAt
+        - endAt
+        - title
+      properties:
+        startAt:
+          type: string
+          format: date-time
+        endAt:
+          type: string
+          format: date-time
+        title:
+          type: string
+    AcademicService.Room:
+      type: object
+      required:
+        - id
+        - name
+        - floor
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        floor:
+          $ref: '#/components/schemas/DottoFoundationV1.Floor'
+    AcademicService.RoomRequest:
+      type: object
+      required:
+        - name
+        - floor
+      properties:
+        name:
+          type: string
+        floor:
+          $ref: '#/components/schemas/DottoFoundationV1.Floor'
+    AcademicService.Subject:
+      type: object
+      required:
+        - id
+        - name
+        - faculties
+        - year
+        - semester
+        - credit
+        - eligibleAttributes
+        - requirements
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        faculties:
+          type: array
+          items:
+            $ref: '#/components/schemas/AcademicService.SubjectFaculty'
+        year:
+          type: integer
+          description: 開講年度
+        semester:
+          allOf:
+            - $ref: '#/components/schemas/DottoFoundationV1.CourseSemester'
+          description: 開講時期
+        credit:
+          type: integer
+          description: 単位数
+        eligibleAttributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AcademicService.SubjectTargetClass'
+          description: 授業名末尾の`学年-クラス`をもとに決定
+        requirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/AcademicService.SubjectRequirement'
+          description: 科目群・科目区分をもとに決定
+    AcademicService.SubjectFaculty:
+      type: object
+      required:
+        - facultyId
+        - isPrimary
+      properties:
+        facultyId:
+          type: string
+        isPrimary:
+          type: boolean
+    AcademicService.SubjectRequest:
+      type: object
+      required:
+        - syllabusId
+      properties:
+        syllabusId:
+          type: string
+    AcademicService.SubjectRequirement:
+      type: object
+      required:
+        - course
+        - requirementType
+      properties:
+        course:
+          $ref: '#/components/schemas/DottoFoundationV1.Course'
+        requirementType:
+          $ref: '#/components/schemas/DottoFoundationV1.SubjectRequirementType'
+    AcademicService.SubjectSummary:
+      type: object
+      required:
+        - id
+        - name
+        - faculties
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        faculties:
+          type: array
+          items:
+            $ref: '#/components/schemas/AcademicService.SubjectFaculty'
+    AcademicService.SubjectTargetClass:
+      type: object
+      required:
+        - grade
+      properties:
+        grade:
+          $ref: '#/components/schemas/DottoFoundationV1.Grade'
+        class:
+          allOf:
+            - $ref: '#/components/schemas/DottoFoundationV1.Class'
+          description: 修士課程・博士課程対象の場合はnull
+      description: 対象学年・クラス
+    AcademicService.TimetableItem:
+      type: object
+      required:
+        - id
+        - subjectId
+        - dayOfWeek
+        - period
+        - roomId
+      properties:
+        id:
+          type: string
+        subjectId:
+          type: string
+        dayOfWeek:
+          $ref: '#/components/schemas/DottoFoundationV1.DayOfWeek'
+        period:
+          $ref: '#/components/schemas/DottoFoundationV1.Period'
+        roomId:
+          type: string
+    AcademicService.TimetableItemRequest:
+      type: object
+      required:
+        - subjectId
+        - dayOfWeek
+        - period
+        - roomId
+      properties:
+        subjectId:
+          type: string
+        dayOfWeek:
+          $ref: '#/components/schemas/DottoFoundationV1.DayOfWeek'
+        period:
+          $ref: '#/components/schemas/DottoFoundationV1.Period'
+        roomId:
+          type: string
     AnnouncementService.Announcement:
       type: object
       required:
@@ -813,29 +1027,6 @@ components:
         url:
           type: string
           format: uri
-    CourseService.Registration:
-      type: object
-      required:
-        - id
-        - userId
-        - subjectId
-      properties:
-        id:
-          type: string
-        userId:
-          type: string
-        subjectId:
-          type: string
-    CourseService.RegistrationRequest:
-      type: object
-      required:
-        - userId
-        - subjectId
-      properties:
-        userId:
-          type: string
-        subjectId:
-          type: string
     DottoFoundationV1.Class:
       type: string
       enum:
@@ -939,197 +1130,6 @@ components:
         - Optional
         - OptionalRequired
       description: 必修・選択
-    FacilityService.Reservation:
-      type: object
-      required:
-        - startAt
-        - endAt
-        - title
-      properties:
-        startAt:
-          type: string
-          format: date-time
-        endAt:
-          type: string
-          format: date-time
-        title:
-          type: string
-    FacilityService.Room:
-      type: object
-      required:
-        - id
-        - name
-        - floor
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        floor:
-          $ref: '#/components/schemas/DottoFoundationV1.Floor'
-    FacilityService.RoomRequest:
-      type: object
-      required:
-        - name
-        - floor
-      properties:
-        name:
-          type: string
-        floor:
-          $ref: '#/components/schemas/DottoFoundationV1.Floor'
-    FacultyService.Faculty:
-      type: object
-      required:
-        - id
-        - name
-        - email
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        email:
-          type: string
-      description: 教員
-    FacultyService.FacultyRequest:
-      type: object
-      required:
-        - name
-        - email
-      properties:
-        name:
-          type: string
-        email:
-          type: string
-    SubjectService.Subject:
-      type: object
-      required:
-        - id
-        - name
-        - faculties
-        - year
-        - semester
-        - credit
-        - eligibleAttributes
-        - requirements
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        faculties:
-          type: array
-          items:
-            $ref: '#/components/schemas/SubjectService.SubjectFaculty'
-        year:
-          type: integer
-          description: 開講年度
-        semester:
-          allOf:
-            - $ref: '#/components/schemas/DottoFoundationV1.CourseSemester'
-          description: 開講時期
-        credit:
-          type: integer
-          description: 単位数
-        eligibleAttributes:
-          type: array
-          items:
-            $ref: '#/components/schemas/SubjectService.SubjectTargetClass'
-          description: 授業名末尾の`学年-クラス`をもとに決定
-        requirements:
-          type: array
-          items:
-            $ref: '#/components/schemas/SubjectService.SubjectRequirement'
-          description: 科目群・科目区分をもとに決定
-    SubjectService.SubjectFaculty:
-      type: object
-      required:
-        - facultyId
-        - isPrimary
-      properties:
-        facultyId:
-          type: string
-        isPrimary:
-          type: boolean
-    SubjectService.SubjectRequest:
-      type: object
-      required:
-        - syllabusId
-      properties:
-        syllabusId:
-          type: string
-    SubjectService.SubjectRequirement:
-      type: object
-      required:
-        - course
-        - requirementType
-      properties:
-        course:
-          $ref: '#/components/schemas/DottoFoundationV1.Course'
-        requirementType:
-          $ref: '#/components/schemas/DottoFoundationV1.SubjectRequirementType'
-    SubjectService.SubjectSummary:
-      type: object
-      required:
-        - id
-        - name
-        - faculties
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        faculties:
-          type: array
-          items:
-            $ref: '#/components/schemas/SubjectService.SubjectFaculty'
-    SubjectService.SubjectTargetClass:
-      type: object
-      required:
-        - grade
-      properties:
-        grade:
-          $ref: '#/components/schemas/DottoFoundationV1.Grade'
-        class:
-          allOf:
-            - $ref: '#/components/schemas/DottoFoundationV1.Class'
-          description: 修士課程・博士課程対象の場合はnull
-      description: 対象学年・クラス
-    TimetableService.Item:
-      type: object
-      required:
-        - id
-        - subjectId
-        - dayOfWeek
-        - period
-        - roomId
-      properties:
-        id:
-          type: string
-        subjectId:
-          type: string
-        dayOfWeek:
-          $ref: '#/components/schemas/DottoFoundationV1.DayOfWeek'
-        period:
-          $ref: '#/components/schemas/DottoFoundationV1.Period'
-        roomId:
-          type: string
-    TimetableService.ItemRequest:
-      type: object
-      required:
-        - subjectId
-        - dayOfWeek
-        - period
-        - roomId
-      properties:
-        subjectId:
-          type: string
-        dayOfWeek:
-          $ref: '#/components/schemas/DottoFoundationV1.DayOfWeek'
-        period:
-          $ref: '#/components/schemas/DottoFoundationV1.Period'
-        roomId:
-          type: string
     UserService.User:
       type: object
       required:

@@ -1,9 +1,9 @@
 import type { components } from "@/types/openapi";
 
 export type TimetableItem =
-  components["schemas"]["TimetableService.Item"];
+  components["schemas"]["AcademicService.TimetableItem"];
 export type TimetableItemRequest =
-  components["schemas"]["TimetableService.ItemRequest"];
+  components["schemas"]["AcademicService.TimetableItemRequest"];
 
 export type DayOfWeek = components["schemas"]["DottoFoundationV1.DayOfWeek"];
 export type Period = components["schemas"]["DottoFoundationV1.Period"];

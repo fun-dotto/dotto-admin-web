@@ -7,7 +7,7 @@ export async function fetchRooms(): Promise<{
   rooms: Room[];
   error?: string;
 }> {
-  const { data, error } = await api.GET("/v1/facility/rooms");
+  const { data, error } = await api.GET("/v1/rooms");
   if (error) {
     return { rooms: [], error: "教室の取得に失敗しました" };
   }
@@ -17,7 +17,7 @@ export async function fetchRooms(): Promise<{
 export async function fetchRoom(
   id: string,
 ): Promise<{ room?: Room; error?: string }> {
-  const { data, error } = await api.GET("/v1/facility/rooms/{id}", {
+  const { data, error } = await api.GET("/v1/rooms/{id}", {
     params: { path: { id } },
   });
   if (error) {
@@ -29,7 +29,7 @@ export async function fetchRoom(
 export async function createRoom(
   request: RoomRequest,
 ): Promise<{ room?: Room; error?: string }> {
-  const { data, error } = await api.POST("/v1/facility/rooms", {
+  const { data, error } = await api.POST("/v1/rooms", {
     body: request,
   });
   if (error) {
@@ -42,7 +42,7 @@ export async function updateRoom(
   id: string,
   request: RoomRequest,
 ): Promise<{ room?: Room; error?: string }> {
-  const { data, error } = await api.PUT("/v1/facility/rooms/{id}", {
+  const { data, error } = await api.PUT("/v1/rooms/{id}", {
     params: { path: { id } },
     body: request,
   });
@@ -55,7 +55,7 @@ export async function updateRoom(
 export async function deleteRoom(
   id: string,
 ): Promise<{ success: boolean; error?: string }> {
-  const { error } = await api.DELETE("/v1/facility/rooms/{id}", {
+  const { error } = await api.DELETE("/v1/rooms/{id}", {
     params: { path: { id } },
   });
   if (error) {

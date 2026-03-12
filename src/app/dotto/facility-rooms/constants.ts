@@ -1,7 +1,7 @@
 import type { components } from "@/types/openapi";
 
-export type Room = components["schemas"]["FacilityService.Room"];
-export type RoomRequest = components["schemas"]["FacilityService.RoomRequest"];
+export type Room = components["schemas"]["AcademicService.Room"];
+export type RoomRequest = components["schemas"]["AcademicService.RoomRequest"];
 export type Floor = components["schemas"]["DottoFoundationV1.Floor"];
 
 export const FLOOR_VALUES: Floor[] = [
