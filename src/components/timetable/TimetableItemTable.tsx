@@ -25,14 +25,12 @@ import {
 interface TimetableItemTableProps {
   items: TimetableItem[];
   subjectMap: Record<string, string>;
-  roomMap: Record<string, string>;
   onDelete: (item: TimetableItem) => void;
 }
 
 export function TimetableItemTable({
   items,
   subjectMap,
-  roomMap,
   onDelete,
 }: TimetableItemTableProps) {
   return (
@@ -42,7 +40,6 @@ export function TimetableItemTable({
           <TableHead>科目名</TableHead>
           <TableHead>曜日</TableHead>
           <TableHead>時限</TableHead>
-          <TableHead>教室</TableHead>
           <TableHead className="w-12"></TableHead>
         </TableRow>
       </TableHeader>
@@ -50,16 +47,13 @@ export function TimetableItemTable({
         {items.map((item) => (
           <TableRow key={item.id}>
             <TableCell className="font-medium text-zinc-900 dark:text-zinc-50">
-              {subjectMap[item.subjectId] ?? item.subjectId}
+              {subjectMap[item.subject.id] ?? item.subject.id}
             </TableCell>
             <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
               {DAY_OF_WEEK_LABEL[item.dayOfWeek]}
             </TableCell>
             <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
               {PERIOD_LABEL[item.period]}
-            </TableCell>
-            <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
-              {roomMap[item.roomId] ?? item.roomId}
             </TableCell>
             <TableCell>
               <DropdownMenu>

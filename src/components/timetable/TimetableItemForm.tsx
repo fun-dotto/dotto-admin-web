@@ -22,11 +22,9 @@ import {
   PERIOD_LABEL,
 } from "@/app/dotto/timetable/constants";
 import type { SubjectSummary } from "@/app/dotto/subjects/constants";
-import type { Room } from "@/app/dotto/facility-rooms/constants";
 
 interface TimetableItemFormProps {
   subjects: SubjectSummary[];
-  rooms: Room[];
   onSubmit: (request: TimetableItemRequest) => void;
   onCancel: () => void;
   isSubmitting: boolean;
@@ -34,7 +32,6 @@ interface TimetableItemFormProps {
 
 export function TimetableItemForm({
   subjects,
-  rooms,
   onSubmit,
   onCancel,
   isSubmitting,
@@ -42,15 +39,14 @@ export function TimetableItemForm({
   const [subjectId, setSubjectId] = useState("");
   const [dayOfWeek, setDayOfWeek] = useState<DayOfWeek | "">("");
   const [period, setPeriod] = useState<Period | "">("");
-  const [roomId, setRoomId] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!subjectId || !dayOfWeek || !period || !roomId) return;
-    onSubmit({ subjectId, dayOfWeek, period, roomId });
+    if (!subjectId || !dayOfWeek || !period) return;
+    onSubmit({ subjectId, dayOfWeek, period });
   };
 
-  const isValid = subjectId && dayOfWeek && period && roomId;
+  const isValid = subjectId && dayOfWeek && period;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -104,22 +100,6 @@ export function TimetableItemForm({
             {PERIOD_VALUES.map((p) => (
               <SelectItem key={p} value={p}>
                 {PERIOD_LABEL[p]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="roomId">教室</Label>
-        <Select value={roomId} onValueChange={setRoomId} required>
-          <SelectTrigger id="roomId">
-            <SelectValue placeholder="教室を選択" />
-          </SelectTrigger>
-          <SelectContent>
-            {rooms.map((room) => (
-              <SelectItem key={room.id} value={room.id}>
-                {room.name}
               </SelectItem>
             ))}
           </SelectContent>

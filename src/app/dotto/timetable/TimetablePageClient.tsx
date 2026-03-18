@@ -18,18 +18,15 @@ import type {
 } from "./constants";
 import { DAY_OF_WEEK_VALUES } from "./constants";
 import type { SubjectSummary } from "@/app/dotto/subjects/constants";
-import type { Room } from "@/app/dotto/facility-rooms/constants";
 
 interface TimetablePageClientProps {
   initialItems: TimetableItem[];
   subjects: SubjectSummary[];
-  rooms: Room[];
 }
 
 export function TimetablePageClient({
   initialItems,
   subjects,
-  rooms,
 }: TimetablePageClientProps) {
   const [items, setItems] = useState(initialItems);
   const [semester, setSemester] = useState<CourseSemester>("Q1");
@@ -45,11 +42,6 @@ export function TimetablePageClient({
     () =>
       Object.fromEntries(subjects.map((s) => [s.id, s.name])),
     [subjects],
-  );
-
-  const roomMap = useMemo(
-    () => Object.fromEntries(rooms.map((r) => [r.id, r.name])),
-    [rooms],
   );
 
   const handleSearch = async () => {
@@ -124,7 +116,6 @@ export function TimetablePageClient({
             <TimetableItemTable
               items={items}
               subjectMap={subjectMap}
-              roomMap={roomMap}
               onDelete={handleDeleteOpen}
             />
           )}
@@ -136,7 +127,7 @@ export function TimetablePageClient({
         onOpenChange={setDeleteDialogOpen}
         item={deleteTarget}
         subjectName={
-          deleteTarget ? (subjectMap[deleteTarget.subjectId] ?? deleteTarget.subjectId) : ""
+          deleteTarget ? (subjectMap[deleteTarget.subject.id] ?? deleteTarget.subject.id) : ""
         }
         onConfirm={handleDeleteConfirm}
         isSubmitting={isSubmitting}
