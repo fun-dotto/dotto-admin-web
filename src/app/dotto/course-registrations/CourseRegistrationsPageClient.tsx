@@ -128,7 +128,7 @@ export function CourseRegistrationsPageClient({
         registration={deleteTarget}
         subjectName={
           deleteTarget
-            ? (subjectMap[deleteTarget.subjectId] ?? deleteTarget.subjectId)
+            ? (subjectMap[deleteTarget.subject.id] ?? deleteTarget.subject.id)
             : ""
         }
         onConfirm={handleDeleteConfirm}

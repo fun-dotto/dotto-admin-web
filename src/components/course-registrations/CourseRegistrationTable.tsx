@@ -45,7 +45,7 @@ export function CourseRegistrationTable({
               {reg.userId}
             </TableCell>
             <TableCell className="font-medium text-zinc-900 dark:text-zinc-50">
-              {subjectMap[reg.subjectId] ?? reg.subjectId}
+              {subjectMap[reg.subject.id] ?? reg.subject.id}
             </TableCell>
             <TableCell>
               <DropdownMenu>
