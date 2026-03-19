@@ -6,11 +6,11 @@ import type { User } from "./constants";
 export async function fetchUser(
   id: string,
 ): Promise<{ user?: User; error?: string }> {
-  const { data, error } = await api.GET("/v1/users/{id}", {
+  const { data, error, response } = await api.GET("/v1/users/{id}", {
     params: { path: { id } },
   });
-  if (error) {
-    return { error: "ユーザーの取得に失敗しました" };
+  if (error || !data) {
+    return { error: `ユーザーの取得に失敗しました (${response.status})` };
   }
   return { user: data.user };
 }

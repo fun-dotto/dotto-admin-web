@@ -12,11 +12,14 @@ export async function fetchTimetableItems(
   semester: CourseSemester,
   dayOfWeek: DayOfWeek[],
 ): Promise<{ items: TimetableItem[]; error?: string }> {
-  const { data, error } = await api.GET("/v1/timetableItmes", {
+  const { data, error, response } = await api.GET("/v1/timetableItmes", {
     params: { query: { semester, dayOfWeek } },
   });
-  if (error) {
-    return { items: [], error: "時間割の取得に失敗しました" };
+  if (error || !data) {
+    return {
+      items: [],
+      error: `時間割の取得に失敗しました (${response.status})`,
+    };
   }
   return { items: data.items };
 }
@@ -24,11 +27,11 @@ export async function fetchTimetableItems(
 export async function createTimetableItem(
   request: TimetableItemRequest,
 ): Promise<{ item?: TimetableItem; error?: string }> {
-  const { data, error } = await api.POST("/v1/timetableItmes", {
+  const { data, error, response } = await api.POST("/v1/timetableItmes", {
     body: request,
   });
-  if (error) {
-    return { error: "時間割の作成に失敗しました" };
+  if (error || !data) {
+    return { error: `時間割の作成に失敗しました (${response.status})` };
   }
   return { item: data.item };
 }
@@ -36,11 +39,14 @@ export async function createTimetableItem(
 export async function deleteTimetableItem(
   id: string,
 ): Promise<{ success: boolean; error?: string }> {
-  const { error } = await api.DELETE("/v1/timetableItmes/{id}", {
+  const { error, response } = await api.DELETE("/v1/timetableItmes/{id}", {
     params: { path: { id } },
   });
   if (error) {
-    return { success: false, error: "時間割の削除に失敗しました" };
+    return {
+      success: false,
+      error: `時間割の削除に失敗しました (${response.status})`,
+    };
   }
   return { success: true };
 }
