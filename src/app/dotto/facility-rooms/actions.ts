@@ -7,9 +7,12 @@ export async function fetchRooms(): Promise<{
   rooms: Room[];
   error?: string;
 }> {
-  const { data, error } = await api.GET("/v1/rooms");
-  if (error) {
-    return { rooms: [], error: "教室の取得に失敗しました" };
+  const { data, error, response } = await api.GET("/v1/rooms");
+  if (error || !data) {
+    return {
+      rooms: [],
+      error: `教室の取得に失敗しました (${response.status})`,
+    };
   }
   return { rooms: data.rooms };
 }
@@ -17,11 +20,11 @@ export async function fetchRooms(): Promise<{
 export async function fetchRoom(
   id: string,
 ): Promise<{ room?: Room; error?: string }> {
-  const { data, error } = await api.GET("/v1/rooms/{id}", {
+  const { data, error, response } = await api.GET("/v1/rooms/{id}", {
     params: { path: { id } },
   });
-  if (error) {
-    return { error: "教室の取得に失敗しました" };
+  if (error || !data) {
+    return { error: `教室の取得に失敗しました (${response.status})` };
   }
   return { room: data.room };
 }
@@ -29,11 +32,11 @@ export async function fetchRoom(
 export async function createRoom(
   request: RoomRequest,
 ): Promise<{ room?: Room; error?: string }> {
-  const { data, error } = await api.POST("/v1/rooms", {
+  const { data, error, response } = await api.POST("/v1/rooms", {
     body: request,
   });
-  if (error) {
-    return { error: "教室の作成に失敗しました" };
+  if (error || !data) {
+    return { error: `教室の作成に失敗しました (${response.status})` };
   }
   return { room: data.room };
 }
@@ -42,12 +45,12 @@ export async function updateRoom(
   id: string,
   request: RoomRequest,
 ): Promise<{ room?: Room; error?: string }> {
-  const { data, error } = await api.PUT("/v1/rooms/{id}", {
+  const { data, error, response } = await api.PUT("/v1/rooms/{id}", {
     params: { path: { id } },
     body: request,
   });
-  if (error) {
-    return { error: "教室の更新に失敗しました" };
+  if (error || !data) {
+    return { error: `教室の更新に失敗しました (${response.status})` };
   }
   return { room: data.room };
 }
@@ -55,11 +58,14 @@ export async function updateRoom(
 export async function deleteRoom(
   id: string,
 ): Promise<{ success: boolean; error?: string }> {
-  const { error } = await api.DELETE("/v1/rooms/{id}", {
+  const { error, response } = await api.DELETE("/v1/rooms/{id}", {
     params: { path: { id } },
   });
   if (error) {
-    return { success: false, error: "教室の削除に失敗しました" };
+    return {
+      success: false,
+      error: `教室の削除に失敗しました (${response.status})`,
+    };
   }
   return { success: true };
 }
