@@ -14,9 +14,7 @@ import { deleteTimetableItem, fetchTimetableItems } from "./actions";
 import type {
   TimetableItem,
   CourseSemester,
-  DayOfWeek,
 } from "./constants";
-import { DAY_OF_WEEK_VALUES } from "./constants";
 import type { SubjectSummary } from "@/app/dotto/subjects/constants";
 
 interface TimetablePageClientProps {
@@ -30,8 +28,6 @@ export function TimetablePageClient({
 }: TimetablePageClientProps) {
   const [items, setItems] = useState(initialItems);
   const [semester, setSemester] = useState<CourseSemester>("Q1");
-  const [selectedDays, setSelectedDays] =
-    useState<DayOfWeek[]>(DAY_OF_WEEK_VALUES);
   const [isSearching, setIsSearching] = useState(false);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -47,7 +43,7 @@ export function TimetablePageClient({
   const handleSearch = async () => {
     setIsSearching(true);
     try {
-      const result = await fetchTimetableItems(semester, selectedDays);
+      const result = await fetchTimetableItems(semester);
       if (result.error) {
         toast.error(result.error);
         return;
@@ -102,8 +98,6 @@ export function TimetablePageClient({
           <TimetableFilterBar
             semester={semester}
             onSemesterChange={setSemester}
-            selectedDays={selectedDays}
-            onSelectedDaysChange={setSelectedDays}
             onSearch={handleSearch}
             isSearching={isSearching}
           />
