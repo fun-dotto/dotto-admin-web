@@ -9,6 +9,10 @@ export type DayOfWeek = components["schemas"]["DottoFoundationV1.DayOfWeek"];
 export type Period = components["schemas"]["DottoFoundationV1.Period"];
 export type CourseSemester =
   components["schemas"]["DottoFoundationV1.CourseSemester"];
+export enum TimetableSemester {
+  spring = "spring",
+  fall = "fall",
+}
 
 export const DAY_OF_WEEK_VALUES: DayOfWeek[] = [
   "Monday",
@@ -70,4 +74,34 @@ export const SEMESTER_LABEL: Record<CourseSemester, string> = {
   Q4: "第4クォーター",
   SummerIntensive: "夏季集中",
   WinterIntensive: "冬季集中",
+};
+
+export const TIMETABLE_SEMESTER_LABEL: Record<TimetableSemester, string> = {
+  [TimetableSemester.spring]: "前期",
+  [TimetableSemester.fall]: "後期",
+};
+
+export const TIMETABLE_SEMESTER_VALUES: TimetableSemester[] = [
+  TimetableSemester.spring,
+  TimetableSemester.fall,
+];
+
+export const TIMETABLE_SEMESTER_TO_SEMESTERS: Record<
+  TimetableSemester,
+  CourseSemester[]
+> = {
+  [TimetableSemester.spring]: [
+    "H1",
+    "AllYear",
+    "Q1",
+    "Q2",
+    "SummerIntensive",
+  ],
+  [TimetableSemester.fall]: [
+    "H2",
+    "AllYear",
+    "Q3",
+    "Q4",
+    "WinterIntensive",
+  ],
 };

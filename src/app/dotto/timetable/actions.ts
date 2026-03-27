@@ -8,10 +8,11 @@ import type {
 } from "./constants";
 
 export async function fetchTimetableItems(
+  year: number,
   semester: CourseSemester,
 ): Promise<{ items: TimetableItem[]; error?: string }> {
   const { data, error, response } = await api.GET("/v1/timetableItmes", {
-    params: { query: { semesters: [semester] } },
+    params: { query: { year, semesters: [semester] } },
   });
   if (error || !data) {
     return {
