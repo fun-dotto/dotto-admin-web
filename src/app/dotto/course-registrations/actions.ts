@@ -12,7 +12,7 @@ export async function fetchRegistrations(
   semester: CourseSemester,
 ): Promise<{ registrations: Registration[]; error?: string }> {
   const { data, error, response } = await api.GET("/v1/courseRegistrations", {
-    params: { query: { userId, semester } },
+    params: { query: { userId, semesters: [semester] } },
   });
   if (error || !data) {
     return {

@@ -50,10 +50,10 @@ export function TimetableItemTable({
               {subjectMap[item.subject.id] ?? item.subject.id}
             </TableCell>
             <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
-              {DAY_OF_WEEK_LABEL[item.dayOfWeek]}
+              {item.slot ? DAY_OF_WEEK_LABEL[item.slot.dayOfWeek] : "-"}
             </TableCell>
             <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
-              {PERIOD_LABEL[item.period]}
+              {item.slot ? PERIOD_LABEL[item.slot.period] : "-"}
             </TableCell>
             <TableCell>
               <DropdownMenu>
