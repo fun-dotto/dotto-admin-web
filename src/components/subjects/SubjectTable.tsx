@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -15,7 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Trash2 } from "lucide-react";
+import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import type { SubjectSummary } from "@/app/dotto/subjects/constants";
 
 interface SubjectTableProps {
@@ -37,7 +38,12 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
         {subjects.map((subject) => (
           <TableRow key={subject.id}>
             <TableCell className="font-medium text-zinc-900 dark:text-zinc-50">
-              {subject.name}
+              <Link
+                href={`/dotto/subjects/${subject.id}`}
+                className="hover:underline"
+              >
+                {subject.name}
+              </Link>
             </TableCell>
             <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
               {subject.faculties
@@ -52,6 +58,12 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link href={`/dotto/subjects/${subject.id}`}>
+                      <Eye className="mr-2 size-4" />
+                      詳細
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => onDelete(subject)}
                     className="text-red-600 dark:text-red-400"
