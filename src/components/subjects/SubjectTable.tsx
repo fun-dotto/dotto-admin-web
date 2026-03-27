@@ -41,7 +41,7 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
             </TableCell>
             <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
               {subject.faculties
-                .map((f) => f.faculty.id)
+                .map((f) => f.faculty.name)
                 .join(", ")}
             </TableCell>
             <TableCell>
