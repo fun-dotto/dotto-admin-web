@@ -5,15 +5,13 @@ import type {
   TimetableItem,
   TimetableItemRequest,
   CourseSemester,
-  DayOfWeek,
 } from "./constants";
 
 export async function fetchTimetableItems(
   semester: CourseSemester,
-  dayOfWeek: DayOfWeek[],
 ): Promise<{ items: TimetableItem[]; error?: string }> {
   const { data, error, response } = await api.GET("/v1/timetableItmes", {
-    params: { query: { semesters: [semester], dayOfWeek } },
+    params: { query: { semesters: [semester] } },
   });
   if (error || !data) {
     return {

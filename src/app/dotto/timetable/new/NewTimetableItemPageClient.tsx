@@ -17,13 +17,16 @@ import { TimetableItemForm } from "@/components/timetable/TimetableItemForm";
 import { createTimetableItem } from "../actions";
 import type { TimetableItemRequest } from "../constants";
 import type { SubjectSummary } from "@/app/dotto/subjects/constants";
+import type { Room } from "@/app/dotto/facility-rooms/constants";
 
 interface NewTimetableItemPageClientProps {
   subjects: SubjectSummary[];
+  rooms: Room[];
 }
 
 export function NewTimetableItemPageClient({
   subjects,
+  rooms,
 }: NewTimetableItemPageClientProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,6 +72,7 @@ export function NewTimetableItemPageClient({
           <CardContent>
             <TimetableItemForm
               subjects={subjects}
+              rooms={rooms}
               onSubmit={handleSubmit}
               onCancel={() => router.push("/dotto/timetable")}
               isSubmitting={isSubmitting}
