@@ -43,7 +43,7 @@ export function TimetableItemForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!subjectId || !dayOfWeek || !period) return;
-    onSubmit({ subjectId, dayOfWeek, period });
+    onSubmit({ subjectId, slot: { dayOfWeek, period } });
   };
 
   const isValid = subjectId && dayOfWeek && period;

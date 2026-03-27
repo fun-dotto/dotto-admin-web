@@ -13,7 +13,7 @@ export async function fetchTimetableItems(
   dayOfWeek: DayOfWeek[],
 ): Promise<{ items: TimetableItem[]; error?: string }> {
   const { data, error, response } = await api.GET("/v1/timetableItmes", {
-    params: { query: { semester, dayOfWeek } },
+    params: { query: { semesters: [semester], dayOfWeek } },
   });
   if (error || !data) {
     return {

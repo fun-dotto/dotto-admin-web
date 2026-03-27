@@ -39,8 +39,10 @@ export function TimetableItemDeleteDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>時間割を削除</AlertDialogTitle>
           <AlertDialogDescription>
-            「{subjectName}（{item ? DAY_OF_WEEK_LABEL[item.dayOfWeek] : ""}
-            {item ? PERIOD_LABEL[item.period] : ""}）」を削除します。
+            「{subjectName}（
+            {item?.slot ? DAY_OF_WEEK_LABEL[item.slot.dayOfWeek] : ""}
+            {item?.slot ? PERIOD_LABEL[item.slot.period] : ""}
+            ）」を削除します。
             この操作は取り消せません。
           </AlertDialogDescription>
         </AlertDialogHeader>
