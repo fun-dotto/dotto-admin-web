@@ -3,8 +3,16 @@ export const dynamic = "force-dynamic";
 import { fetchSubjects } from "./actions";
 import { SubjectsPageClient } from "./SubjectsPageClient";
 
-export default async function SubjectsPage() {
-  const { subjects } = await fetchSubjects();
+interface SubjectsPageProps {
+  searchParams: Promise<{
+    q?: string;
+  }>;
+}
 
-  return <SubjectsPageClient subjects={subjects} />;
+export default async function SubjectsPage({ searchParams }: SubjectsPageProps) {
+  const { q } = await searchParams;
+  const query = q?.trim() ?? "";
+  const { subjects } = await fetchSubjects(query);
+
+  return <SubjectsPageClient subjects={subjects} initialQuery={query} />;
 }
