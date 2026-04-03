@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Breadcrumb,
@@ -13,30 +12,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { SubjectForm } from "@/components/subjects/SubjectForm";
-import { upsertSubject } from "../actions";
-import type { SubjectRequest } from "../constants";
 
 export function NewSubjectPageClient() {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async (request: SubjectRequest) => {
-    setIsSubmitting(true);
-    try {
-      const result = await upsertSubject(request);
-      if (result.error) {
-        toast.error(result.error);
-        return;
-      }
-      toast.success("科目を作成・更新しました");
-      router.push("/dotto/subjects");
-    } catch {
-      toast.error("エラーが発生しました");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <AuthenticatedLayout>
@@ -57,14 +35,18 @@ export function NewSubjectPageClient() {
 
         <Card>
           <CardHeader>
-            <CardTitle>科目を作成</CardTitle>
+            <CardTitle>科目の新規作成</CardTitle>
           </CardHeader>
-          <CardContent>
-            <SubjectForm
-              onSubmit={handleSubmit}
-              onCancel={() => router.push("/dotto/subjects")}
-              isSubmitting={isSubmitting}
-            />
+          <CardContent className="space-y-4">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              現在のAPIでは科目の新規作成はサポートされていません。
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => router.push("/dotto/subjects")}
+            >
+              科目一覧へ戻る
+            </Button>
           </CardContent>
         </Card>
       </div>

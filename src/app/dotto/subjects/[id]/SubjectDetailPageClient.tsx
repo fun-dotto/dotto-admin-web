@@ -43,6 +43,8 @@ function formatRequirement(requirement: SubjectRequirement): string {
 export function SubjectDetailPageClient({
   subject,
 }: SubjectDetailPageClientProps) {
+  const eligibleAttributes = subject.eligibleAttributes ?? [];
+  const requirements = subject.requirements ?? [];
   const faculties = subject.faculties
     .map((f) => (f.isPrimary ? `${f.faculty.name} (主担当)` : f.faculty.name))
     .join(", ");
@@ -111,12 +113,12 @@ export function SubjectDetailPageClient({
             <CardTitle>対象クラス</CardTitle>
           </CardHeader>
           <CardContent>
-            {subject.eligibleAttributes.length === 0 ? (
+            {eligibleAttributes.length === 0 ? (
               <p className="text-sm text-zinc-500 dark:text-zinc-400">-
               </p>
             ) : (
               <div className="flex flex-wrap gap-2">
-                {subject.eligibleAttributes.map((targetClass, index) => (
+                {eligibleAttributes.map((targetClass, index) => (
                   <Badge variant="outline" key={`${targetClass.grade}-${targetClass.class ?? "none"}-${index}`}>
                     {formatTargetClass(targetClass)}
                   </Badge>
@@ -131,12 +133,12 @@ export function SubjectDetailPageClient({
             <CardTitle>科目要件</CardTitle>
           </CardHeader>
           <CardContent>
-            {subject.requirements.length === 0 ? (
+            {requirements.length === 0 ? (
               <p className="text-sm text-zinc-500 dark:text-zinc-400">-
               </p>
             ) : (
               <div className="flex flex-wrap gap-2">
-                {subject.requirements.map((requirement, index) => (
+                {requirements.map((requirement, index) => (
                   <Badge
                     variant="secondary"
                     key={`${requirement.course}-${requirement.requirementType}-${index}`}
