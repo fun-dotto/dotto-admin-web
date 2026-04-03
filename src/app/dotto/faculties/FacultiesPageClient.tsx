@@ -7,7 +7,8 @@ import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Search, Plus } from "lucide-react";
 import { FacultyTable } from "@/components/faculties/FacultyTable";
 import { FacultyDeleteDialog } from "@/components/faculties/FacultyDeleteDialog";
 import { deleteFaculty } from "./actions";
@@ -15,14 +16,30 @@ import type { Faculty } from "./constants";
 
 interface FacultiesPageClientProps {
   faculties: Faculty[];
+  initialQuery: string;
 }
 
-export function FacultiesPageClient({ faculties }: FacultiesPageClientProps) {
+export function FacultiesPageClient({
+  faculties,
+  initialQuery,
+}: FacultiesPageClientProps) {
   const router = useRouter();
+  const [query, setQuery] = useState(initialQuery);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Faculty | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    const trimmedQuery = query.trim();
+    if (trimmedQuery) {
+      params.set("q", trimmedQuery);
+    }
+    const qs = params.toString();
+    router.push(qs ? `/dotto/faculties?${qs}` : "/dotto/faculties");
+  };
 
   const handleDeleteOpen = (faculty: Faculty) => {
     setDeleteTarget(faculty);
@@ -62,7 +79,20 @@ export function FacultiesPageClient({ faculties }: FacultiesPageClientProps) {
             </Button>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          <form onSubmit={handleSearch} className="flex items-end gap-3">
+            <div className="flex-1">
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="教員名で検索"
+              />
+            </div>
+            <Button type="submit">
+              <Search className="mr-1 size-4" />
+              検索
+            </Button>
+          </form>
           {faculties.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               教員がありません
