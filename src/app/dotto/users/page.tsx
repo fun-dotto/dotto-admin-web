@@ -1,5 +1,9 @@
+export const dynamic = "force-dynamic";
+
+import { fetchUsers } from "./actions";
 import { UsersPageClient } from "./UsersPageClient";
 
-export default function UsersPage() {
-  return <UsersPageClient />;
+export default async function UsersPage() {
+  const { users } = await fetchUsers();
+  return <UsersPageClient users={users} />;
 }

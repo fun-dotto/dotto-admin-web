@@ -1,83 +1,53 @@
 "use client";
 
-import { useState } from "react";
-import { toast } from "sonner";
+import { useMemo, useState } from "react";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Search } from "lucide-react";
-import { UserDetailCard } from "@/components/dotto-users/UserDetailCard";
-import { fetchUser } from "./actions";
+import { DottoUserTable } from "@/components/dotto-users/DottoUserTable";
 import type { User } from "./constants";
 
-export function UsersPageClient() {
-  const [userId, setUserId] = useState("");
-  const [user, setUser] = useState<User | null>(null);
-  const [isSearching, setIsSearching] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
+interface UsersPageClientProps {
+  users: User[];
+}
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!userId.trim()) return;
-    setIsSearching(true);
-    setHasSearched(true);
-    try {
-      const result = await fetchUser(userId.trim());
-      if (result.error) {
-        toast.error(result.error);
-        setUser(null);
-        return;
-      }
-      setUser(result.user ?? null);
-    } catch {
-      toast.error("エラーが発生しました");
-      setUser(null);
-    } finally {
-      setIsSearching(false);
+export function UsersPageClient({ users }: UsersPageClientProps) {
+  const [query, setQuery] = useState("");
+  const filteredUsers = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) {
+      return users;
     }
-  };
+    return users.filter((user) => {
+      return (
+        user.id.toLowerCase().includes(normalizedQuery) ||
+        user.email.toLowerCase().includes(normalizedQuery)
+      );
+    });
+  }, [users, query]);
 
   return (
     <AuthenticatedLayout>
       <div className="space-y-4">
         <Card>
           <CardHeader>
-            <CardTitle>ユーザー検索</CardTitle>
+            <CardTitle>ユーザー一覧</CardTitle>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSearch} className="flex items-end gap-2">
-              <div className="flex-1 space-y-2">
-                <Label htmlFor="userId">ユーザーID</Label>
-                <Input
-                  id="userId"
-                  type="text"
-                  value={userId}
-                  onChange={(e) => setUserId(e.target.value)}
-                  placeholder="ユーザーIDを入力"
-                  required
-                />
+          <CardContent className="space-y-4">
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="ユーザーID・メールアドレスで絞り込み"
+            />
+            {filteredUsers.length === 0 ? (
+              <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
+                ユーザーが見つかりませんでした
               </div>
-              <Button type="submit" disabled={isSearching || !userId.trim()}>
-                <Search className="mr-1 size-4" />
-                {isSearching ? "検索中..." : "検索"}
-              </Button>
-            </form>
+            ) : (
+              <DottoUserTable users={filteredUsers} />
+            )}
           </CardContent>
         </Card>
-
-        {hasSearched && !isSearching && (
-          user ? (
-            <UserDetailCard user={user} />
-          ) : (
-            <Card>
-              <CardContent className="py-8 text-center text-zinc-500 dark:text-zinc-400">
-                ユーザーが見つかりませんでした
-              </CardContent>
-            </Card>
-          )
-        )}
       </div>
     </AuthenticatedLayout>
   );
