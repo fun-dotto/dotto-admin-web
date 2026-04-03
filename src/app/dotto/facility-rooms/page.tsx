@@ -2,9 +2,30 @@ export const dynamic = "force-dynamic";
 
 import { fetchRooms } from "./actions";
 import { FacilityRoomsPageClient } from "./FacilityRoomsPageClient";
+import { FLOOR_VALUES, type Floor } from "./constants";
 
-export default async function FacilityRoomsPage() {
-  const { rooms } = await fetchRooms();
+interface FacilityRoomsPageProps {
+  searchParams: Promise<{
+    q?: string;
+    floor?: string;
+  }>;
+}
 
-  return <FacilityRoomsPageClient rooms={rooms} />;
+export default async function FacilityRoomsPage({
+  searchParams,
+}: FacilityRoomsPageProps) {
+  const { q, floor } = await searchParams;
+  const query = q?.trim() ?? "";
+  const validatedFloor: Floor | undefined = FLOOR_VALUES.includes(floor as Floor)
+    ? (floor as Floor)
+    : undefined;
+  const { rooms } = await fetchRooms({ q: query, floor: validatedFloor });
+
+  return (
+    <FacilityRoomsPageClient
+      rooms={rooms}
+      initialQuery={query}
+      initialFloor={validatedFloor}
+    />
+  );
 }
