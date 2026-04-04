@@ -24,7 +24,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ChevronLeft, ChevronRight, ShieldPlus, ShieldMinus, CodeXml, UserCheck, UserX } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown, ChevronLeft, ChevronRight, ShieldPlus, ShieldMinus, CodeXml, UserCheck, UserX } from "lucide-react";
 import { UserTable } from "@/components/users/UserTable";
 import { UserFilters } from "@/components/users/UserFilters";
 import { FirebaseUser, updateAdminClaim, updateDeveloperClaim, updateUserDisabledStatus } from "./actions";
@@ -500,60 +509,63 @@ export function UsersPageClient({
                   {selectedUserIds.size}件選択中
                 </span>
                 <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleOpenAdminDialog("grant")}
-                    disabled={isUpdating}
-                  >
-                    <ShieldPlus className="mr-1 size-4" />
-                    管理者ロールを付与
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleOpenAdminDialog("revoke")}
-                    disabled={isUpdating || selectedUsersExcludingSelf.length === 0}
-                  >
-                    <ShieldMinus className="mr-1 size-4" />
-                    管理者ロールを剥奪
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleOpenDeveloperDialog("grant")}
-                    disabled={isUpdating}
-                  >
-                    <CodeXml className="mr-1 size-4" />
-                    開発者ロールを付与
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleOpenDeveloperDialog("revoke")}
-                    disabled={isUpdating}
-                  >
-                    <CodeXml className="mr-1 size-4" />
-                    開発者ロールを剥奪
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleOpenDisabledDialog("enable")}
-                    disabled={isUpdating}
-                  >
-                    <UserCheck className="mr-1 size-4" />
-                    有効化
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleOpenDisabledDialog("disable")}
-                    disabled={isUpdating || selectedUsersExcludingSelf.length === 0}
-                  >
-                    <UserX className="mr-1 size-4" />
-                    無効化
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" disabled={isUpdating}>
+                        ロール管理
+                        <ChevronDown className="ml-1 size-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start">
+                      <DropdownMenuLabel>管理者ロール</DropdownMenuLabel>
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem onClick={() => handleOpenAdminDialog("grant")}>
+                          <ShieldPlus className="mr-2 size-4" />
+                          付与
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleOpenAdminDialog("revoke")}
+                          disabled={selectedUsersExcludingSelf.length === 0}
+                        >
+                          <ShieldMinus className="mr-2 size-4" />
+                          剥奪
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuLabel>開発者ロール</DropdownMenuLabel>
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem onClick={() => handleOpenDeveloperDialog("grant")}>
+                          <CodeXml className="mr-2 size-4" />
+                          付与
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleOpenDeveloperDialog("revoke")}>
+                          <CodeXml className="mr-2 size-4" />
+                          剥奪
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" disabled={isUpdating}>
+                        ステータス
+                        <ChevronDown className="ml-1 size-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start">
+                      <DropdownMenuItem onClick={() => handleOpenDisabledDialog("enable")}>
+                        <UserCheck className="mr-2 size-4" />
+                        有効化
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleOpenDisabledDialog("disable")}
+                        disabled={selectedUsersExcludingSelf.length === 0}
+                      >
+                        <UserX className="mr-2 size-4" />
+                        無効化
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
                 {selfIncludedInRevoke && (
                   <span className="text-xs text-zinc-500 dark:text-zinc-400">
