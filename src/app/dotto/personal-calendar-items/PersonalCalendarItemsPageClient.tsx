@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FilterBarField, FilterBarFormLayout } from "@/components/ui/filter-bar-layout";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -61,10 +62,12 @@ export function PersonalCalendarItemsPageClient({
         <CardContent className="space-y-4">
           <FilterBarFormLayout
             onSubmit={handleSearch}
-            className="md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
+            className="md:grid-cols-[minmax(0,1fr)_180px_auto]"
           >
             <FilterBarField>
+              <Label htmlFor="personalCalendarUserId">ユーザーID</Label>
               <Input
+                id="personalCalendarUserId"
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
                 placeholder="ユーザーID"
@@ -72,7 +75,14 @@ export function PersonalCalendarItemsPageClient({
               />
             </FilterBarField>
             <FilterBarField>
-              <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+              <Label htmlFor="personalCalendarDate">日付</Label>
+              <Input
+                id="personalCalendarDate"
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                required
+              />
             </FilterBarField>
             <Button type="submit" className="w-full md:w-auto">
               <Search className="mr-1 size-4" />検索

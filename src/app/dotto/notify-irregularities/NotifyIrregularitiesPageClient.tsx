@@ -5,7 +5,9 @@ import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FilterBarField, FilterBarFormLayout } from "@/components/ui/filter-bar-layout";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { notifyIrregularities } from "./actions";
 
 export function NotifyIrregularitiesPageClient() {
@@ -49,22 +51,33 @@ export function NotifyIrregularitiesPageClient() {
           <CardTitle>イレギュラー通知</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              required
-            />
-            <Input
-              value={userIds}
-              onChange={(e) => setUserIds(e.target.value)}
-              placeholder="ユーザーID（カンマ区切り、空欄で全ユーザー）"
-            />
-            <Button type="submit" disabled={isSubmitting || !date}>
+          <FilterBarFormLayout
+            onSubmit={handleSubmit}
+            className="md:grid-cols-[minmax(0,1fr)_180px_auto]"
+          >
+            <FilterBarField>
+              <Label htmlFor="notifyUserIds">ユーザーID</Label>
+              <Input
+                id="notifyUserIds"
+                value={userIds}
+                onChange={(e) => setUserIds(e.target.value)}
+                placeholder="カンマ区切り、空欄で全ユーザー"
+              />
+            </FilterBarField>
+            <FilterBarField>
+              <Label htmlFor="notifyDate">日付</Label>
+              <Input
+                id="notifyDate"
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                required
+              />
+            </FilterBarField>
+            <Button type="submit" className="w-full md:w-auto" disabled={isSubmitting || !date}>
               {isSubmitting ? "送信中..." : "通知を送信"}
             </Button>
-          </form>
+          </FilterBarFormLayout>
         </CardContent>
       </Card>
     </AuthenticatedLayout>
