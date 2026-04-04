@@ -45,3 +45,6 @@ firebase-debug.log
 firebase-adminsdk-key.json
 .open-next/
 src/types/openapi.d.ts
+
+.claude/worktrees/
+
