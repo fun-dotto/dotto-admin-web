@@ -40,6 +40,7 @@ export function TimetableItemTable({
           <TableHead>科目名</TableHead>
           <TableHead>曜日</TableHead>
           <TableHead>時限</TableHead>
+          <TableHead>教室</TableHead>
           <TableHead className="w-12"></TableHead>
         </TableRow>
       </TableHeader>
@@ -54,6 +55,11 @@ export function TimetableItemTable({
             </TableCell>
             <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
               {item.slot ? PERIOD_LABEL[item.slot.period] : "-"}
+            </TableCell>
+            <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
+              {item.rooms.length > 0
+                ? item.rooms.map((r) => r.name).join(", ")
+                : "-"}
             </TableCell>
             <TableCell>
               <DropdownMenu>
