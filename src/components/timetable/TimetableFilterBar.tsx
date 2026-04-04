@@ -79,7 +79,7 @@ export function TimetableFilterBar({
         </Select>
       </FilterBarField>
 
-      <Button onClick={onSearch} disabled={isSearching} className="w-full md:w-auto">
+      <Button onClick={onSearch} disabled={isSearching} size="sm" className="w-full md:w-auto">
         <Search className="mr-1 size-4" />
         {isSearching ? "検索中..." : "検索"}
       </Button>
