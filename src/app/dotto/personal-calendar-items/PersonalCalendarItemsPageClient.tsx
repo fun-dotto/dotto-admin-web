@@ -16,7 +16,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search } from "lucide-react";
+import { Search, UserRound } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import type { PersonalCalendarItem } from "./actions";
 
 const STATUS_LABEL: Record<PersonalCalendarItem["status"], string> = {
@@ -40,6 +41,7 @@ export function PersonalCalendarItemsPageClient({
   hasSearched,
 }: PersonalCalendarItemsPageClientProps) {
   const router = useRouter();
+  const { user } = useAuth();
   const [userId, setUserId] = useState(initialUserId);
   const [date, setDate] = useState(initialDate);
 
@@ -66,13 +68,26 @@ export function PersonalCalendarItemsPageClient({
           >
             <FilterBarField>
               <Label htmlFor="personalCalendarUserId">ユーザーID</Label>
-              <Input
-                id="personalCalendarUserId"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
-                placeholder="ユーザーID"
-                required
-              />
+              <div className="flex gap-1">
+                <Input
+                  id="personalCalendarUserId"
+                  value={userId}
+                  onChange={(e) => setUserId(e.target.value)}
+                  placeholder="ユーザーID"
+                  required
+                />
+                {user && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setUserId(user.uid)}
+                    title="自分自身を設定"
+                  >
+                    <UserRound className="size-4" />
+                  </Button>
+                )}
+              </div>
             </FilterBarField>
             <FilterBarField>
               <Label htmlFor="personalCalendarDate">日付</Label>
