@@ -40,7 +40,10 @@ export function CourseRegistrationFilterBar({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-end gap-4">
+    <form
+      onSubmit={handleSubmit}
+      className="grid gap-4 md:grid-cols-[minmax(0,1fr)_180px_auto] md:items-end"
+    >
       <div className="flex-1 space-y-2">
         <Label htmlFor="filterUserId">ユーザーID</Label>
         <Input
@@ -58,7 +61,7 @@ export function CourseRegistrationFilterBar({
           value={semester}
           onValueChange={(v) => onSemesterChange(v as CourseSemester)}
         >
-          <SelectTrigger id="filterSemester" className="w-[180px]">
+          <SelectTrigger id="filterSemester" className="w-full md:w-[180px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -72,6 +75,7 @@ export function CourseRegistrationFilterBar({
       </div>
       <Button
         type="submit"
+        className="w-full md:w-auto"
         disabled={isSearching || !userId.trim()}
       >
         <Search className="mr-1 size-4" />
