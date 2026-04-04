@@ -16,7 +16,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, Trash2 } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Search, Trash2, X } from "lucide-react";
 import { deleteReservation, type Reservation } from "./actions";
 
 interface ReservationsPageClientProps {
@@ -87,6 +88,7 @@ export function ReservationsPageClient({
             className="md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]"
           >
             <FilterBarField>
+              <Label>教室ID</Label>
               <Input
                 value={roomIds}
                 onChange={(e) => setRoomIds(e.target.value)}
@@ -94,18 +96,48 @@ export function ReservationsPageClient({
               />
             </FilterBarField>
             <FilterBarField>
-              <Input
-                type="datetime-local"
-                value={from}
-                onChange={(e) => setFrom(e.target.value)}
-              />
+              <Label>開始</Label>
+              <div className="flex items-center gap-1">
+                <Input
+                  type="datetime-local"
+                  value={from}
+                  onChange={(e) => setFrom(e.target.value)}
+                  className="flex-1"
+                />
+                {from && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="shrink-0"
+                    onClick={() => setFrom("")}
+                  >
+                    <X className="size-4" />
+                  </Button>
+                )}
+              </div>
             </FilterBarField>
             <FilterBarField>
-              <Input
-                type="datetime-local"
-                value={until}
-                onChange={(e) => setUntil(e.target.value)}
-              />
+              <Label>終了</Label>
+              <div className="flex items-center gap-1">
+                <Input
+                  type="datetime-local"
+                  value={until}
+                  onChange={(e) => setUntil(e.target.value)}
+                  className="flex-1"
+                />
+                {until && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="shrink-0"
+                    onClick={() => setUntil("")}
+                  >
+                    <X className="size-4" />
+                  </Button>
+                )}
+              </div>
             </FilterBarField>
             <Button type="submit" className="w-full md:w-auto">
               <Search className="mr-1 size-4" />検索
