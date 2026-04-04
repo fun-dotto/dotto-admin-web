@@ -69,8 +69,8 @@ export function RoomChangesPageClient({
     if (filledIds.length > 0) params.set("subjectIds", filledIds.join(","));
     if (from) params.set("from", fromLocalDateTimeInputValue(from));
     if (until) params.set("until", fromLocalDateTimeInputValue(until));
-    const qs = params.toString();
-    router.push(qs ? `/dotto/room-changes?${qs}` : "/dotto/room-changes");
+    params.set("searched", "1");
+    router.push(`/dotto/room-changes?${params.toString()}`);
   };
 
   const handleFetch = async () => {
