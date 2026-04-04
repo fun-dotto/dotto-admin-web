@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { FilterBarField, FilterBarFormLayout } from "@/components/ui/filter-bar-layout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -40,11 +41,11 @@ export function CourseRegistrationFilterBar({
   };
 
   return (
-    <form
+    <FilterBarFormLayout
       onSubmit={handleSubmit}
-      className="grid gap-4 md:grid-cols-[minmax(0,1fr)_180px_auto] md:items-end"
+      className="md:grid-cols-[minmax(0,1fr)_180px_auto]"
     >
-      <div className="flex-1 space-y-2">
+      <FilterBarField className="flex-1">
         <Label htmlFor="filterUserId">ユーザーID</Label>
         <Input
           id="filterUserId"
@@ -54,8 +55,8 @@ export function CourseRegistrationFilterBar({
           placeholder="ユーザーIDを入力"
           required
         />
-      </div>
-      <div className="space-y-2">
+      </FilterBarField>
+      <FilterBarField>
         <Label htmlFor="filterSemester">開講時期</Label>
         <Select
           value={semester}
@@ -72,7 +73,7 @@ export function CourseRegistrationFilterBar({
             ))}
           </SelectContent>
         </Select>
-      </div>
+      </FilterBarField>
       <Button
         type="submit"
         className="w-full md:w-auto"
@@ -81,6 +82,6 @@ export function CourseRegistrationFilterBar({
         <Search className="mr-1 size-4" />
         {isSearching ? "検索中..." : "検索"}
       </Button>
-    </form>
+    </FilterBarFormLayout>
   );
 }

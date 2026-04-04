@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { FilterBarField, FilterBarLayout } from "@/components/ui/filter-bar-layout";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -39,14 +40,14 @@ export function TimetableFilterBar({
   const yearOptions = [currentYear + 1, currentYear, currentYear - 1, currentYear - 2];
 
   return (
-    <div className="flex items-end gap-4">
-      <div className="space-y-2">
+    <FilterBarLayout className="md:grid-cols-[120px_180px_auto]">
+      <FilterBarField>
         <Label htmlFor="year">年度</Label>
         <Select
           value={String(year)}
           onValueChange={(v) => onYearChange(Number(v))}
         >
-          <SelectTrigger id="year" className="w-[120px]">
+          <SelectTrigger id="year" className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -57,15 +58,15 @@ export function TimetableFilterBar({
             ))}
           </SelectContent>
         </Select>
-      </div>
+      </FilterBarField>
 
-      <div className="space-y-2">
+      <FilterBarField>
         <Label htmlFor="timetableSemester">開講時期</Label>
         <Select
           value={timetableSemester}
           onValueChange={(v) => onTimetableSemesterChange(v as TimetableSemester)}
         >
-          <SelectTrigger id="timetableSemester" className="w-[120px]">
+          <SelectTrigger id="timetableSemester" className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -76,12 +77,12 @@ export function TimetableFilterBar({
             ))}
           </SelectContent>
         </Select>
-      </div>
+      </FilterBarField>
 
-      <Button onClick={onSearch} disabled={isSearching}>
+      <Button onClick={onSearch} disabled={isSearching} className="w-full md:w-auto">
         <Search className="mr-1 size-4" />
         {isSearching ? "検索中..." : "検索"}
       </Button>
-    </div>
+    </FilterBarLayout>
   );
 }
