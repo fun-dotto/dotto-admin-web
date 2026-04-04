@@ -233,8 +233,8 @@ export function RoomChangesPageClient({
                     <TableCell>{item.subject.name}</TableCell>
                     <TableCell>{new Date(item.date).toLocaleString("ja-JP")}</TableCell>
                     <TableCell>{PERIOD_LABEL[item.period as Period] ?? item.period}</TableCell>
-                    <TableCell>{item.originalRooms.map((r) => r.name).join(", ") || "-"}</TableCell>
-                    <TableCell>{item.newRooms.map((r) => r.name).join(", ") || "-"}</TableCell>
+                    <TableCell>{item.originalRoom?.name ?? "-"}</TableCell>
+                    <TableCell>{item.newRoom?.name ?? "-"}</TableCell>
                     <TableCell>
                       <Button size="icon-sm" variant="ghost" onClick={() => handleDelete(item.id)}>
                         <Trash2 className="size-4 text-red-600" />
