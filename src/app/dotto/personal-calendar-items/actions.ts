@@ -13,7 +13,6 @@ export async function fetchPersonalCalendarItems(
   const { data, error, response } = await api.GET("/v1/personalCalendarItems", {
     params: { query: { userId, dates } },
   });
-  console.log("[personal-calendar-items] request url:", response.url);
   if (error || !data) {
     return {
       items: [],
