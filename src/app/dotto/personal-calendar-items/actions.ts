@@ -10,8 +10,13 @@ export async function fetchPersonalCalendarItems(
   userId: string,
   dates: string[],
 ): Promise<{ items: PersonalCalendarItem[]; error?: string }> {
+  const iso8601Dates = dates.map((date) => {
+    const parsedDate = new Date(date);
+    return Number.isNaN(parsedDate.getTime()) ? date : parsedDate.toISOString();
+  });
+
   const { data, error, response } = await api.GET("/v1/personalCalendarItems", {
-    params: { query: { userId, dates } },
+    params: { query: { userId, dates: iso8601Dates } },
   });
   if (error || !data) {
     return {
