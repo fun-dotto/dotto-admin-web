@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { FilterBarField, FilterBarLayout } from "@/components/ui/filter-bar-layout";
+import { FilterBarField, FilterBarFormLayout } from "@/components/ui/filter-bar-layout";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -39,8 +39,16 @@ export function TimetableFilterBar({
   const currentYear = new Date().getFullYear();
   const yearOptions = [currentYear + 1, currentYear, currentYear - 1, currentYear - 2];
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSearch();
+  };
+
   return (
-    <FilterBarLayout className="md:grid-cols-[120px_180px_auto]">
+    <FilterBarFormLayout
+      onSubmit={handleSubmit}
+      className="md:grid-cols-[120px_180px_120px]"
+    >
       <FilterBarField>
         <Label htmlFor="year">年度</Label>
         <Select
@@ -79,10 +87,10 @@ export function TimetableFilterBar({
         </Select>
       </FilterBarField>
 
-      <Button onClick={onSearch} disabled={isSearching} className="w-full md:w-auto">
+      <Button type="submit" disabled={isSearching} className="w-full">
         <Search className="mr-1 size-4" />
         {isSearching ? "検索中..." : "検索"}
       </Button>
-    </FilterBarLayout>
+    </FilterBarFormLayout>
   );
 }

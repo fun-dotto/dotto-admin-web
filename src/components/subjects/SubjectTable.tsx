@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import type { SubjectSummary } from "@/app/dotto/subjects/constants";
+import { SEMESTER_LABEL } from "@/app/dotto/subjects/constants";
 
 interface SubjectTableProps {
   subjects: SubjectSummary[];
@@ -30,6 +31,8 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
       <TableHeader>
         <TableRow>
           <TableHead>科目名</TableHead>
+          <TableHead>年度</TableHead>
+          <TableHead>開講時期</TableHead>
           <TableHead>教員</TableHead>
           <TableHead className="w-12"></TableHead>
         </TableRow>
@@ -46,9 +49,15 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
               </Link>
             </TableCell>
             <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
-              {subject.faculties
-                .map((f) => f.faculty.name)
-                .join(", ")}
+              {subject.year}
+            </TableCell>
+            <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
+              {SEMESTER_LABEL[subject.semester]}
+            </TableCell>
+            <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
+              {subject.faculties.length <= 1
+                ? subject.faculties.map((f) => f.faculty.name).join("")
+                : `${subject.faculties[0].faculty.name} 他${subject.faculties.length - 1}人`}
             </TableCell>
             <TableCell>
               <DropdownMenu>

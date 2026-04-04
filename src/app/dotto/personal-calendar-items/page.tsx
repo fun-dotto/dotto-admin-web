@@ -6,33 +6,34 @@ import { PersonalCalendarItemsPageClient } from "./PersonalCalendarItemsPageClie
 interface PersonalCalendarItemsPageProps {
   searchParams: Promise<{
     userId?: string;
-    date?: string;
+    dates?: string;
   }>;
 }
 
 export default async function PersonalCalendarItemsPage({
   searchParams,
 }: PersonalCalendarItemsPageProps) {
-  const { userId, date } = await searchParams;
+  const { userId, dates: datesParam } = await searchParams;
+  const dates = datesParam ? datesParam.split(",").filter(Boolean) : [];
 
-  if (!userId || !date) {
+  if (!userId || dates.length === 0) {
     return (
       <PersonalCalendarItemsPageClient
         items={[]}
         initialUserId={userId ?? ""}
-        initialDate={date ?? ""}
+        initialDates={dates}
         hasSearched={false}
       />
     );
   }
 
-  const { items } = await fetchPersonalCalendarItems(userId, [date]);
+  const { items } = await fetchPersonalCalendarItems(userId, dates);
 
   return (
     <PersonalCalendarItemsPageClient
       items={items}
       initialUserId={userId}
-      initialDate={date}
+      initialDates={dates}
       hasSearched
     />
   );

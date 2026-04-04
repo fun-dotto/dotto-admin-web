@@ -27,12 +27,14 @@ interface FacilityRoomsPageClientProps {
   rooms: Room[];
   initialQuery: string;
   initialFloor?: Floor;
+  hasSearched: boolean;
 }
 
 export function FacilityRoomsPageClient({
   rooms,
   initialQuery,
   initialFloor,
+  hasSearched,
 }: FacilityRoomsPageClientProps) {
   const router = useRouter();
   const [query, setQuery] = useState(initialQuery);
@@ -132,7 +134,11 @@ export function FacilityRoomsPageClient({
               検索
             </Button>
           </FilterBarFormLayout>
-          {rooms.length === 0 ? (
+          {!hasSearched ? (
+            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
+              検索条件を指定して検索してください
+            </div>
+          ) : rooms.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               教室がありません
             </div>

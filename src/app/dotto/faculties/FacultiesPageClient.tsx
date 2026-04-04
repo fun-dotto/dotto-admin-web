@@ -18,11 +18,13 @@ import type { Faculty } from "./constants";
 interface FacultiesPageClientProps {
   faculties: Faculty[];
   initialQuery: string;
+  hasSearched: boolean;
 }
 
 export function FacultiesPageClient({
   faculties,
   initialQuery,
+  hasSearched,
 }: FacultiesPageClientProps) {
   const router = useRouter();
   const [query, setQuery] = useState(initialQuery);
@@ -97,7 +99,11 @@ export function FacultiesPageClient({
               検索
             </Button>
           </FilterBarFormLayout>
-          {faculties.length === 0 ? (
+          {!hasSearched ? (
+            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
+              検索条件を指定して検索してください
+            </div>
+          ) : faculties.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               教員がありません
             </div>
