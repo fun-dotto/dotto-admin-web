@@ -69,8 +69,8 @@ export function MakeupClassesPageClient({
     if (filledIds.length > 0) params.set("subjectIds", filledIds.join(","));
     if (from) params.set("from", fromLocalDateTimeInputValue(from));
     if (until) params.set("until", fromLocalDateTimeInputValue(until));
-    const qs = params.toString();
-    router.push(qs ? `/dotto/makeup-classes?${qs}` : "/dotto/makeup-classes");
+    params.set("searched", "1");
+    router.push(`/dotto/makeup-classes?${params.toString()}`);
   };
 
   const handleFetch = async () => {
