@@ -5,14 +5,24 @@ import type {
   Registration,
   RegistrationRequest,
   CourseSemester,
+  FilterSemester,
 } from "./constants";
+import { COURSE_REGISTRATION_FILTER_SEMESTER_TO_SEMESTERS } from "./constants";
 
 export async function fetchRegistrations(
   userId: string,
-  semester: CourseSemester,
+  semester: FilterSemester,
 ): Promise<{ registrations: Registration[]; error?: string }> {
+  const semesters: CourseSemester[] =
+    COURSE_REGISTRATION_FILTER_SEMESTER_TO_SEMESTERS[semester];
   const { data, error, response } = await api.GET("/v1/courseRegistrations", {
-    params: { query: { userId, semesters: [semester] } },
+    params: { query: { userId, semesters } },
+    querySerializer: {
+      array: {
+        style: "form",
+        explode: false,
+      },
+    },
   });
   if (error || !data) {
     return {

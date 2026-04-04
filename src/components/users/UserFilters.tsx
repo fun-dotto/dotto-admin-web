@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { FilterBarField, FilterBarLayout } from "@/components/ui/filter-bar-layout";
 import {
   Select,
   SelectContent,
@@ -62,8 +63,8 @@ export function UserFilters({
   }, []);
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <div className="relative flex-1 min-w-[200px] max-w-sm">
+    <FilterBarLayout className="md:grid-cols-[minmax(0,1fr)_180px_auto]">
+      <FilterBarField className="relative min-w-[200px] max-w-none">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
         <Input
           type="text"
@@ -72,13 +73,11 @@ export function UserFilters({
           onChange={(e) => handleInputChange(e.target.value)}
           className="pl-9"
         />
-      </div>
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-zinc-500 dark:text-zinc-400">
-          ステータス
-        </span>
+      </FilterBarField>
+      <FilterBarField>
+        <span className="text-sm text-zinc-500 dark:text-zinc-400">ステータス</span>
         <Select value={statusFilter} onValueChange={onStatusFilterChange}>
-          <SelectTrigger className="w-32">
+          <SelectTrigger className="w-full md:w-[180px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -89,7 +88,7 @@ export function UserFilters({
             ))}
           </SelectContent>
         </Select>
-      </div>
+      </FilterBarField>
       {hasActiveFilters && (
         <Button
           variant="ghost"
@@ -107,6 +106,6 @@ export function UserFilters({
           フィルタをクリア
         </Button>
       )}
-    </div>
+    </FilterBarLayout>
   );
 }

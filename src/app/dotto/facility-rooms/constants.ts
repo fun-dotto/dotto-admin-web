@@ -12,6 +12,7 @@ export const FLOOR_VALUES: Floor[] = [
   "Floor5",
   "Floor6",
   "Floor7",
+  "Virtual",
 ];
 
 export const FLOOR_LABEL: Record<Floor, string> = {
@@ -22,4 +23,5 @@ export const FLOOR_LABEL: Record<Floor, string> = {
   Floor5: "5階",
   Floor6: "6階",
   Floor7: "7階",
+  Virtual: "仮想",
 };

@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus } from "lucide-react";
+import { FilterBarField, FilterBarFormLayout } from "@/components/ui/filter-bar-layout";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 import { SubjectTable } from "@/components/subjects/SubjectTable";
 import { SubjectDeleteDialog } from "@/components/subjects/SubjectDeleteDialog";
 import { deleteSubject } from "./actions";
@@ -15,14 +16,30 @@ import type { SubjectSummary } from "./constants";
 
 interface SubjectsPageClientProps {
   subjects: SubjectSummary[];
+  initialQuery: string;
 }
 
-export function SubjectsPageClient({ subjects }: SubjectsPageClientProps) {
+export function SubjectsPageClient({
+  subjects,
+  initialQuery,
+}: SubjectsPageClientProps) {
   const router = useRouter();
+  const [query, setQuery] = useState(initialQuery);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<SubjectSummary | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    const trimmedQuery = query.trim();
+    if (trimmedQuery) {
+      params.set("q", trimmedQuery);
+    }
+    const qs = params.toString();
+    router.push(qs ? `/dotto/subjects?${qs}` : "/dotto/subjects");
+  };
 
   const handleDeleteOpen = (subject: SubjectSummary) => {
     setDeleteTarget(subject);
@@ -52,17 +69,25 @@ export function SubjectsPageClient({ subjects }: SubjectsPageClientProps) {
     <AuthenticatedLayout>
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>科目管理</span>
-            <Button asChild size="sm">
-              <Link href="/dotto/subjects/new">
-                <Plus className="mr-1 size-4" />
-                新規作成
-              </Link>
-            </Button>
-          </CardTitle>
+          <CardTitle>科目管理</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          <FilterBarFormLayout
+            onSubmit={handleSearch}
+            className="md:grid-cols-[minmax(0,1fr)_auto]"
+          >
+            <FilterBarField className="flex-1">
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="科目名で検索"
+              />
+            </FilterBarField>
+            <Button type="submit" className="w-full md:w-auto">
+              <Search className="mr-1 size-4" />
+              検索
+            </Button>
+          </FilterBarFormLayout>
           {subjects.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               科目がありません

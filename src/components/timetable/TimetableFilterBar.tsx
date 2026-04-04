@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { FilterBarField, FilterBarLayout } from "@/components/ui/filter-bar-layout";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -10,11 +11,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type {
-  CourseSemester,
   TimetableSemester,
 } from "@/app/dotto/timetable/constants";
 import {
-  SEMESTER_LABEL,
   TIMETABLE_SEMESTER_LABEL,
   TIMETABLE_SEMESTER_VALUES,
 } from "@/app/dotto/timetable/constants";
@@ -25,9 +24,6 @@ interface TimetableFilterBarProps {
   onYearChange: (year: number) => void;
   timetableSemester: TimetableSemester;
   onTimetableSemesterChange: (semester: TimetableSemester) => void;
-  semester: CourseSemester;
-  onSemesterChange: (semester: CourseSemester) => void;
-  semesterOptions: CourseSemester[];
   onSearch: () => void;
   isSearching: boolean;
 }
@@ -37,9 +33,6 @@ export function TimetableFilterBar({
   onYearChange,
   timetableSemester,
   onTimetableSemesterChange,
-  semester,
-  onSemesterChange,
-  semesterOptions,
   onSearch,
   isSearching,
 }: TimetableFilterBarProps) {
@@ -47,14 +40,14 @@ export function TimetableFilterBar({
   const yearOptions = [currentYear + 1, currentYear, currentYear - 1, currentYear - 2];
 
   return (
-    <div className="flex items-end gap-4">
-      <div className="space-y-2">
+    <FilterBarLayout className="md:grid-cols-[120px_180px_auto]">
+      <FilterBarField>
         <Label htmlFor="year">年度</Label>
         <Select
           value={String(year)}
           onValueChange={(v) => onYearChange(Number(v))}
         >
-          <SelectTrigger id="year" className="w-[120px]">
+          <SelectTrigger id="year" className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -65,15 +58,15 @@ export function TimetableFilterBar({
             ))}
           </SelectContent>
         </Select>
-      </div>
+      </FilterBarField>
 
-      <div className="space-y-2">
-        <Label htmlFor="timetableSemester">学期</Label>
+      <FilterBarField>
+        <Label htmlFor="timetableSemester">開講時期</Label>
         <Select
           value={timetableSemester}
           onValueChange={(v) => onTimetableSemesterChange(v as TimetableSemester)}
         >
-          <SelectTrigger id="timetableSemester" className="w-[120px]">
+          <SelectTrigger id="timetableSemester" className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -84,31 +77,12 @@ export function TimetableFilterBar({
             ))}
           </SelectContent>
         </Select>
-      </div>
+      </FilterBarField>
 
-      <div className="space-y-2">
-        <Label htmlFor="semester">開講時期</Label>
-        <Select
-          value={semester}
-          onValueChange={(v) => onSemesterChange(v as CourseSemester)}
-        >
-          <SelectTrigger id="semester" className="w-[180px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {semesterOptions.map((s) => (
-              <SelectItem key={s} value={s}>
-                {SEMESTER_LABEL[s]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <Button onClick={onSearch} disabled={isSearching}>
+      <Button onClick={onSearch} disabled={isSearching} className="w-full md:w-auto">
         <Search className="mr-1 size-4" />
         {isSearching ? "検索中..." : "検索"}
       </Button>
-    </div>
+    </FilterBarLayout>
   );
 }

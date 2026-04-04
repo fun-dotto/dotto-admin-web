@@ -1,4 +1,10 @@
 import type { components } from "@/types/openapi";
+import {
+  FilterSemester as TimetableSemester,
+  FILTER_SEMESTER_LABEL as TIMETABLE_SEMESTER_LABEL,
+  FILTER_SEMESTER_VALUES as TIMETABLE_SEMESTER_VALUES,
+  FILTER_SEMESTER_TO_COURSE_SEMESTERS as TIMETABLE_SEMESTER_TO_SEMESTERS,
+} from "@/lib/course-semester-filter";
 
 export type TimetableItem =
   components["schemas"]["AcademicService.TimetableItem"];
@@ -9,10 +15,7 @@ export type DayOfWeek = components["schemas"]["DottoFoundationV1.DayOfWeek"];
 export type Period = components["schemas"]["DottoFoundationV1.Period"];
 export type CourseSemester =
   components["schemas"]["DottoFoundationV1.CourseSemester"];
-export enum TimetableSemester {
-  spring = "spring",
-  fall = "fall",
-}
+export { TimetableSemester };
 
 export const DAY_OF_WEEK_VALUES: DayOfWeek[] = [
   "Monday",
@@ -76,32 +79,8 @@ export const SEMESTER_LABEL: Record<CourseSemester, string> = {
   WinterIntensive: "冬季集中",
 };
 
-export const TIMETABLE_SEMESTER_LABEL: Record<TimetableSemester, string> = {
-  [TimetableSemester.spring]: "前期",
-  [TimetableSemester.fall]: "後期",
-};
-
-export const TIMETABLE_SEMESTER_VALUES: TimetableSemester[] = [
-  TimetableSemester.spring,
-  TimetableSemester.fall,
-];
-
-export const TIMETABLE_SEMESTER_TO_SEMESTERS: Record<
-  TimetableSemester,
-  CourseSemester[]
-> = {
-  [TimetableSemester.spring]: [
-    "H1",
-    "AllYear",
-    "Q1",
-    "Q2",
-    "SummerIntensive",
-  ],
-  [TimetableSemester.fall]: [
-    "H2",
-    "AllYear",
-    "Q3",
-    "Q4",
-    "WinterIntensive",
-  ],
+export {
+  TIMETABLE_SEMESTER_LABEL,
+  TIMETABLE_SEMESTER_VALUES,
+  TIMETABLE_SEMESTER_TO_SEMESTERS,
 };

@@ -5,14 +5,23 @@ import type {
   TimetableItem,
   TimetableItemRequest,
   CourseSemester,
+  TimetableSemester,
 } from "./constants";
+import { TIMETABLE_SEMESTER_TO_SEMESTERS } from "./constants";
 
 export async function fetchTimetableItems(
   year: number,
-  semester: CourseSemester,
+  semester: TimetableSemester,
 ): Promise<{ items: TimetableItem[]; error?: string }> {
+  const semesters: CourseSemester[] = TIMETABLE_SEMESTER_TO_SEMESTERS[semester];
   const { data, error, response } = await api.GET("/v1/timetableItmes", {
-    params: { query: { year, semesters: [semester] } },
+    params: { query: { year, semesters } },
+    querySerializer: {
+      array: {
+        style: "form",
+        explode: false,
+      },
+    },
   });
   if (error || !data) {
     return {

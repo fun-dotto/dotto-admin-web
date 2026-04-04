@@ -7,24 +7,54 @@ import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus } from "lucide-react";
+import { FilterBarField, FilterBarFormLayout } from "@/components/ui/filter-bar-layout";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search, Plus } from "lucide-react";
 import { RoomTable } from "@/components/facility-rooms/RoomTable";
 import { RoomDeleteDialog } from "@/components/facility-rooms/RoomDeleteDialog";
 import { deleteRoom } from "./actions";
-import type { Room } from "./constants";
+import { FLOOR_LABEL, FLOOR_VALUES, type Floor, type Room } from "./constants";
 
 interface FacilityRoomsPageClientProps {
   rooms: Room[];
+  initialQuery: string;
+  initialFloor?: Floor;
 }
 
 export function FacilityRoomsPageClient({
   rooms,
+  initialQuery,
+  initialFloor,
 }: FacilityRoomsPageClientProps) {
   const router = useRouter();
+  const [query, setQuery] = useState(initialQuery);
+  const [floor, setFloor] = useState<Floor | "all">(initialFloor ?? "all");
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Room | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    const trimmedQuery = query.trim();
+    if (trimmedQuery) {
+      params.set("q", trimmedQuery);
+    }
+    if (floor !== "all") {
+      params.set("floor", floor);
+    }
+    const qs = params.toString();
+    router.push(qs ? `/dotto/facility-rooms?${qs}` : "/dotto/facility-rooms");
+  };
 
   const handleDeleteOpen = (room: Room) => {
     setDeleteTarget(room);
@@ -64,7 +94,44 @@ export function FacilityRoomsPageClient({
             </Button>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          <FilterBarFormLayout
+            onSubmit={handleSearch}
+            className="md:grid-cols-[minmax(0,1fr)_180px_auto]"
+          >
+            <FilterBarField className="flex-1">
+              <Label htmlFor="roomQuery">検索</Label>
+              <Input
+                id="roomQuery"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="教室名・教室番号・教員名で検索"
+              />
+            </FilterBarField>
+            <FilterBarField className="w-full md:w-[180px]">
+              <Label htmlFor="roomFloor">フロア</Label>
+              <Select
+                value={floor}
+                onValueChange={(value) => setFloor(value as Floor | "all")}
+              >
+                <SelectTrigger id="roomFloor">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">すべて</SelectItem>
+                  {FLOOR_VALUES.map((value) => (
+                    <SelectItem key={value} value={value}>
+                      {FLOOR_LABEL[value]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FilterBarField>
+            <Button type="submit" className="w-full md:w-auto">
+              <Search className="mr-1 size-4" />
+              検索
+            </Button>
+          </FilterBarFormLayout>
           {rooms.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               教室がありません

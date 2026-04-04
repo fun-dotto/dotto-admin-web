@@ -1,13 +1,22 @@
 "use server";
 
 import { api } from "@/lib/api";
-import type { Room, RoomRequest } from "./constants";
+import type { Room, RoomRequest, Floor } from "./constants";
 
-export async function fetchRooms(): Promise<{
+export async function fetchRooms(filters?: {
+  q?: string;
+  floor?: Floor;
+}): Promise<{
   rooms: Room[];
   error?: string;
 }> {
-  const { data, error, response } = await api.GET("/v1/rooms");
+  const query = {
+    ...(filters?.q?.trim() ? { q: filters.q.trim() } : {}),
+    ...(filters?.floor ? { floors: [filters.floor] } : {}),
+  };
+  const { data, error, response } = await api.GET("/v1/rooms", {
+    params: { query },
+  });
   if (error || !data) {
     return {
       rooms: [],

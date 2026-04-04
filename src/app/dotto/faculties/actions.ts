@@ -3,11 +3,14 @@
 import { api } from "@/lib/api";
 import type { Faculty, FacultyRequest } from "./constants";
 
-export async function fetchFaculties(): Promise<{
+export async function fetchFaculties(q?: string): Promise<{
   faculties: Faculty[];
   error?: string;
 }> {
-  const { data, error, response } = await api.GET("/v1/faculties");
+  const query = q?.trim() ? { q: q.trim() } : {};
+  const { data, error, response } = await api.GET("/v1/faculties", {
+    params: { query },
+  });
   if (error || !data) {
     return {
       faculties: [],

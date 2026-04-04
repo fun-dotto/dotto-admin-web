@@ -1,13 +1,16 @@
 "use server";
 
 import { api } from "@/lib/api";
-import type { Subject, SubjectSummary, SubjectRequest } from "./constants";
+import type { Subject, SubjectSummary } from "./constants";
 
-export async function fetchSubjects(): Promise<{
+export async function fetchSubjects(q?: string): Promise<{
   subjects: SubjectSummary[];
   error?: string;
 }> {
-  const { data, error, response } = await api.GET("/v1/subjects");
+  const query = q?.trim() ? { q: q.trim() } : {};
+  const { data, error, response } = await api.GET("/v1/subjects", {
+    params: { query },
+  });
   if (error || !data) {
     return {
       subjects: [],
@@ -25,18 +28,6 @@ export async function fetchSubject(
   });
   if (error || !data) {
     return { error: `科目の取得に失敗しました (${response.status})` };
-  }
-  return { subject: data.subject };
-}
-
-export async function upsertSubject(
-  request: SubjectRequest,
-): Promise<{ subject?: Subject; error?: string }> {
-  const { data, error, response } = await api.POST("/v1/subjects", {
-    body: request,
-  });
-  if (error || !data) {
-    return { error: `科目の作成・更新に失敗しました (${response.status})` };
   }
   return { subject: data.subject };
 }
