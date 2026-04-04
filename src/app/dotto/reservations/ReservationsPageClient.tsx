@@ -17,7 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
-import { Search, Trash2, X } from "lucide-react";
+import { Plus, Search, Trash2, X } from "lucide-react";
 import { deleteReservation, type Reservation } from "./actions";
 
 interface ReservationsPageClientProps {
@@ -48,14 +48,17 @@ export function ReservationsPageClient({
   initialUntil,
 }: ReservationsPageClientProps) {
   const router = useRouter();
-  const [roomIds, setRoomIds] = useState(initialRoomIds);
+  const [roomIds, setRoomIds] = useState<string[]>(
+    initialRoomIds ? initialRoomIds.split(",").map(s => s.trim()).filter(Boolean) : [""]
+  );
   const [from, setFrom] = useState(toLocalDateTimeInputValue(initialFrom));
   const [until, setUntil] = useState(toLocalDateTimeInputValue(initialUntil));
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (roomIds.trim()) params.set("roomIds", roomIds.trim());
+    const filledIds = roomIds.filter(id => id.trim());
+    if (filledIds.length > 0) params.set("roomIds", filledIds.join(","));
     if (from) params.set("from", fromLocalDateTimeInputValue(from));
     if (until) params.set("until", fromLocalDateTimeInputValue(until));
     const qs = params.toString();
@@ -89,11 +92,42 @@ export function ReservationsPageClient({
           >
             <FilterBarField>
               <Label>教室ID</Label>
-              <Input
-                value={roomIds}
-                onChange={(e) => setRoomIds(e.target.value)}
-                placeholder="教室ID（カンマ区切り）"
-              />
+              <div className="flex flex-col gap-2">
+                {roomIds.map((id, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <Input
+                      value={id}
+                      onChange={(e) => {
+                        const newIds = [...roomIds];
+                        newIds[index] = e.target.value;
+                        setRoomIds(newIds);
+                      }}
+                      placeholder="教室ID"
+                    />
+                    {roomIds.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="shrink-0"
+                        onClick={() => setRoomIds(prev => prev.filter((_, i) => i !== index))}
+                      >
+                        <X className="size-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="w-fit"
+                  onClick={() => setRoomIds(prev => [...prev, ""])}
+                >
+                  <Plus className="mr-1 size-4" />
+                  追加
+                </Button>
+              </div>
             </FilterBarField>
             <FilterBarField>
               <Label>開始</Label>
