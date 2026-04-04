@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
+import { PERIOD_LABEL, type Period } from "@/app/dotto/timetable/constants";
 import { Search, RefreshCw, Trash2, X } from "lucide-react";
 import {
   deleteRoomChange,
@@ -191,7 +192,7 @@ export function RoomChangesPageClient({
                   <TableRow key={item.id}>
                     <TableCell>{item.subject.name}</TableCell>
                     <TableCell>{new Date(item.date).toLocaleString("ja-JP")}</TableCell>
-                    <TableCell>{item.period}</TableCell>
+                    <TableCell>{PERIOD_LABEL[item.period as Period] ?? item.period}</TableCell>
                     <TableCell>{item.originalRooms.map((r) => r.name).join(", ") || "-"}</TableCell>
                     <TableCell>{item.newRooms.map((r) => r.name).join(", ") || "-"}</TableCell>
                     <TableCell>

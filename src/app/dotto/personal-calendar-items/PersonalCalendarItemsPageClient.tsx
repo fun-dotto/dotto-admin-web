@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PERIOD_LABEL, type Period } from "@/app/dotto/timetable/constants";
 import { Search } from "lucide-react";
 import type { PersonalCalendarItem } from "./actions";
 
@@ -112,7 +113,7 @@ export function PersonalCalendarItemsPageClient({
                 {items.map((item) => (
                   <TableRow key={`${item.date}-${item.period}-${item.subject.id}`}>
                     <TableCell>{new Date(item.date).toLocaleDateString("ja-JP")}</TableCell>
-                    <TableCell>{item.period}</TableCell>
+                    <TableCell>{PERIOD_LABEL[item.period as Period] ?? item.period}</TableCell>
                     <TableCell>{item.subject.name}</TableCell>
                     <TableCell>{item.rooms.map((room) => room.name).join(", ")}</TableCell>
                     <TableCell>{STATUS_LABEL[item.status]}</TableCell>
