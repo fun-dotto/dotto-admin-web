@@ -43,7 +43,7 @@ export function CourseRegistrationFilterBar({
   return (
     <FilterBarFormLayout
       onSubmit={handleSubmit}
-      className="md:grid-cols-[minmax(0,1fr)_180px_auto]"
+      className="md:grid-cols-[minmax(0,1fr)_180px_120px]"
     >
       <FilterBarField className="flex-1">
         <Label htmlFor="filterUserId">ユーザーID</Label>
@@ -76,7 +76,7 @@ export function CourseRegistrationFilterBar({
       </FilterBarField>
       <Button
         type="submit"
-        className="w-full md:w-auto"
+        className="w-full"
         disabled={isSearching || !userId.trim()}
       >
         <Search className="mr-1 size-4" />
