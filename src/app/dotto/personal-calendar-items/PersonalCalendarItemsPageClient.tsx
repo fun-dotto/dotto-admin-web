@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FilterBarField, FilterBarFormLayout } from "@/components/ui/filter-bar-layout";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -58,18 +59,25 @@ export function PersonalCalendarItemsPageClient({
           <CardTitle>個人カレンダー</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form onSubmit={handleSearch} className="grid gap-3 md:grid-cols-3">
-            <Input
-              value={userId}
-              onChange={(e) => setUserId(e.target.value)}
-              placeholder="ユーザーID"
-              required
-            />
-            <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
-            <Button type="submit">
+          <FilterBarFormLayout
+            onSubmit={handleSearch}
+            className="md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
+          >
+            <FilterBarField>
+              <Input
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+                placeholder="ユーザーID"
+                required
+              />
+            </FilterBarField>
+            <FilterBarField>
+              <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+            </FilterBarField>
+            <Button type="submit" className="w-full md:w-auto">
               <Search className="mr-1 size-4" />検索
             </Button>
-          </form>
+          </FilterBarFormLayout>
 
           {!hasSearched ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">

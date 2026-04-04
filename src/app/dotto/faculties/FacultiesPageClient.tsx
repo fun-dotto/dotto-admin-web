@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FilterBarField, FilterBarFormLayout } from "@/components/ui/filter-bar-layout";
 import { Input } from "@/components/ui/input";
 import { Search, Plus } from "lucide-react";
 import { FacultyTable } from "@/components/faculties/FacultyTable";
@@ -80,19 +81,22 @@ export function FacultiesPageClient({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form onSubmit={handleSearch} className="flex items-end gap-3">
-            <div className="flex-1">
+          <FilterBarFormLayout
+            onSubmit={handleSearch}
+            className="md:grid-cols-[minmax(0,1fr)_auto]"
+          >
+            <FilterBarField className="flex-1">
               <Input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="教員名で検索"
               />
-            </div>
-            <Button type="submit">
+            </FilterBarField>
+            <Button type="submit" className="w-full md:w-auto">
               <Search className="mr-1 size-4" />
               検索
             </Button>
-          </form>
+          </FilterBarFormLayout>
           {faculties.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               教員がありません

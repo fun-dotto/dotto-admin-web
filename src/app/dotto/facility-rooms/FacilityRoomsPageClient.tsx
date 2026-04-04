@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FilterBarField, FilterBarFormLayout } from "@/components/ui/filter-bar-layout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -94,8 +95,11 @@ export function FacilityRoomsPageClient({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form onSubmit={handleSearch} className="flex items-end gap-3">
-            <div className="flex-1">
+          <FilterBarFormLayout
+            onSubmit={handleSearch}
+            className="md:grid-cols-[minmax(0,1fr)_180px_auto]"
+          >
+            <FilterBarField className="flex-1">
               <Label htmlFor="roomQuery">検索</Label>
               <Input
                 id="roomQuery"
@@ -103,8 +107,8 @@ export function FacilityRoomsPageClient({
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="教室名・教室番号・教員名で検索"
               />
-            </div>
-            <div className="w-[180px]">
+            </FilterBarField>
+            <FilterBarField className="w-full md:w-[180px]">
               <Label htmlFor="roomFloor">フロア</Label>
               <Select
                 value={floor}
@@ -122,12 +126,12 @@ export function FacilityRoomsPageClient({
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-            <Button type="submit">
+            </FilterBarField>
+            <Button type="submit" className="w-full md:w-auto">
               <Search className="mr-1 size-4" />
               検索
             </Button>
-          </form>
+          </FilterBarFormLayout>
           {rooms.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               教室がありません

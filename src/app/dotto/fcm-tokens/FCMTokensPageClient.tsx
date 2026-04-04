@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FilterBarField, FilterBarFormLayout } from "@/components/ui/filter-bar-layout";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -78,31 +79,42 @@ export function FCMTokensPageClient({
           <CardTitle>FCMトークン一覧</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form onSubmit={handleSearch} className="grid gap-3 md:grid-cols-5">
-            <Input
-              value={userIds}
-              onChange={(e) => setUserIds(e.target.value)}
-              placeholder="ユーザーID（カンマ区切り）"
-            />
-            <Input
-              value={tokens}
-              onChange={(e) => setTokens(e.target.value)}
-              placeholder="トークン（カンマ区切り）"
-            />
-            <Input
-              type="datetime-local"
-              value={updatedAtFrom}
-              onChange={(e) => setUpdatedAtFrom(e.target.value)}
-            />
-            <Input
-              type="datetime-local"
-              value={updatedAtTo}
-              onChange={(e) => setUpdatedAtTo(e.target.value)}
-            />
-            <Button type="submit">
+          <FilterBarFormLayout
+            onSubmit={handleSearch}
+            className="md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]"
+          >
+            <FilterBarField>
+              <Input
+                value={userIds}
+                onChange={(e) => setUserIds(e.target.value)}
+                placeholder="ユーザーID（カンマ区切り）"
+              />
+            </FilterBarField>
+            <FilterBarField>
+              <Input
+                value={tokens}
+                onChange={(e) => setTokens(e.target.value)}
+                placeholder="トークン（カンマ区切り）"
+              />
+            </FilterBarField>
+            <FilterBarField>
+              <Input
+                type="datetime-local"
+                value={updatedAtFrom}
+                onChange={(e) => setUpdatedAtFrom(e.target.value)}
+              />
+            </FilterBarField>
+            <FilterBarField>
+              <Input
+                type="datetime-local"
+                value={updatedAtTo}
+                onChange={(e) => setUpdatedAtTo(e.target.value)}
+              />
+            </FilterBarField>
+            <Button type="submit" className="w-full md:w-auto">
               <Search className="mr-1 size-4" />検索
             </Button>
-          </form>
+          </FilterBarFormLayout>
 
           {fcmTokens.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FilterBarField, FilterBarFormLayout } from "@/components/ui/filter-bar-layout";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -109,18 +110,35 @@ export function RoomChangesPageClient({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form onSubmit={handleSearch} className="grid gap-3 md:grid-cols-4">
-            <Input
-              value={subjectIds}
-              onChange={(e) => setSubjectIds(e.target.value)}
-              placeholder="科目ID（カンマ区切り）"
-            />
-            <Input type="datetime-local" value={from} onChange={(e) => setFrom(e.target.value)} />
-            <Input type="datetime-local" value={until} onChange={(e) => setUntil(e.target.value)} />
-            <Button type="submit">
+          <FilterBarFormLayout
+            onSubmit={handleSearch}
+            className="md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]"
+          >
+            <FilterBarField>
+              <Input
+                value={subjectIds}
+                onChange={(e) => setSubjectIds(e.target.value)}
+                placeholder="科目ID（カンマ区切り）"
+              />
+            </FilterBarField>
+            <FilterBarField>
+              <Input
+                type="datetime-local"
+                value={from}
+                onChange={(e) => setFrom(e.target.value)}
+              />
+            </FilterBarField>
+            <FilterBarField>
+              <Input
+                type="datetime-local"
+                value={until}
+                onChange={(e) => setUntil(e.target.value)}
+              />
+            </FilterBarField>
+            <Button type="submit" className="w-full md:w-auto">
               <Search className="mr-1 size-4" />検索
             </Button>
-          </form>
+          </FilterBarFormLayout>
 
           {roomChanges.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">教室変更がありません</div>
