@@ -118,6 +118,20 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
                   className="cursor-pointer"
                   onClick={async () => {
                     try {
+                      await navigator.clipboard.writeText(user.uid);
+                      toast.success("UIDをコピーしました");
+                    } catch {
+                      toast.error("UIDのコピーに失敗しました");
+                    }
+                  }}
+                >
+                  <Copy className="mr-2 size-4" />
+                  <span>UIDをコピー</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={async () => {
+                    try {
                       const idToken = await user.getIdToken();
                       await navigator.clipboard.writeText(idToken);
                       toast.success("IDトークンをコピーしました");
