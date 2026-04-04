@@ -10,18 +10,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { CourseSemester } from "@/app/dotto/course-registrations/constants";
+import type { FilterSemester } from "@/app/dotto/course-registrations/constants";
 import {
-  SEMESTER_VALUES,
-  SEMESTER_LABEL,
+  COURSE_REGISTRATION_FILTER_SEMESTER_LABEL,
+  COURSE_REGISTRATION_FILTER_SEMESTER_VALUES,
 } from "@/app/dotto/course-registrations/constants";
 import { Search } from "lucide-react";
 
 interface CourseRegistrationFilterBarProps {
   userId: string;
   onUserIdChange: (userId: string) => void;
-  semester: CourseSemester;
-  onSemesterChange: (semester: CourseSemester) => void;
+  semester: FilterSemester;
+  onSemesterChange: (semester: FilterSemester) => void;
   onSearch: () => void;
   isSearching: boolean;
 }
@@ -59,15 +59,15 @@ export function CourseRegistrationFilterBar({
         <Label htmlFor="filterSemester">開講時期</Label>
         <Select
           value={semester}
-          onValueChange={(v) => onSemesterChange(v as CourseSemester)}
+          onValueChange={(v) => onSemesterChange(v as FilterSemester)}
         >
           <SelectTrigger id="filterSemester" className="w-full md:w-[180px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {SEMESTER_VALUES.map((s) => (
+            {COURSE_REGISTRATION_FILTER_SEMESTER_VALUES.map((s) => (
               <SelectItem key={s} value={s}>
-                {SEMESTER_LABEL[s]}
+                {COURSE_REGISTRATION_FILTER_SEMESTER_LABEL[s]}
               </SelectItem>
             ))}
           </SelectContent>

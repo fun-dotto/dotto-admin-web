@@ -13,11 +13,9 @@ import { TimetableFilterBar } from "@/components/timetable/TimetableFilterBar";
 import { deleteTimetableItem, fetchTimetableItems } from "./actions";
 import type {
   TimetableItem,
-  CourseSemester,
   TimetableSemester,
 } from "./constants";
 import {
-  TIMETABLE_SEMESTER_TO_SEMESTERS,
   TimetableSemester as TimetableSemesterEnum,
 } from "./constants";
 import type { SubjectSummary } from "@/app/dotto/subjects/constants";
@@ -38,7 +36,6 @@ export function TimetablePageClient({
   const [timetableSemester, setTimetableSemester] = useState<TimetableSemester>(
     TimetableSemesterEnum.spring,
   );
-  const [semester, setSemester] = useState<CourseSemester>("H1");
   const [isSearching, setIsSearching] = useState(false);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -50,23 +47,10 @@ export function TimetablePageClient({
       Object.fromEntries(subjects.map((s) => [s.id, s.name])),
     [subjects],
   );
-  const semesterOptions = useMemo(
-    () => TIMETABLE_SEMESTER_TO_SEMESTERS[timetableSemester],
-    [timetableSemester],
-  );
-
-  const handleTimetableSemesterChange = (next: TimetableSemester) => {
-    setTimetableSemester(next);
-    const nextOptions = TIMETABLE_SEMESTER_TO_SEMESTERS[next];
-    if (!nextOptions.includes(semester)) {
-      setSemester(nextOptions[0]);
-    }
-  };
-
   const handleSearch = async () => {
     setIsSearching(true);
     try {
-      const result = await fetchTimetableItems(year, semester);
+      const result = await fetchTimetableItems(year, timetableSemester);
       if (result.error) {
         toast.error(result.error);
         return;
@@ -122,10 +106,7 @@ export function TimetablePageClient({
             year={year}
             onYearChange={setYear}
             timetableSemester={timetableSemester}
-            onTimetableSemesterChange={handleTimetableSemesterChange}
-            semester={semester}
-            onSemesterChange={setSemester}
-            semesterOptions={semesterOptions}
+            onTimetableSemesterChange={setTimetableSemester}
             onSearch={handleSearch}
             isSearching={isSearching}
           />

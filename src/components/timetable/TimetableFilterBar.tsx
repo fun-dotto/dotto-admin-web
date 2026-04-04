@@ -10,11 +10,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type {
-  CourseSemester,
   TimetableSemester,
 } from "@/app/dotto/timetable/constants";
 import {
-  SEMESTER_LABEL,
   TIMETABLE_SEMESTER_LABEL,
   TIMETABLE_SEMESTER_VALUES,
 } from "@/app/dotto/timetable/constants";
@@ -25,9 +23,6 @@ interface TimetableFilterBarProps {
   onYearChange: (year: number) => void;
   timetableSemester: TimetableSemester;
   onTimetableSemesterChange: (semester: TimetableSemester) => void;
-  semester: CourseSemester;
-  onSemesterChange: (semester: CourseSemester) => void;
-  semesterOptions: CourseSemester[];
   onSearch: () => void;
   isSearching: boolean;
 }
@@ -37,9 +32,6 @@ export function TimetableFilterBar({
   onYearChange,
   timetableSemester,
   onTimetableSemesterChange,
-  semester,
-  onSemesterChange,
-  semesterOptions,
   onSearch,
   isSearching,
 }: TimetableFilterBarProps) {
@@ -68,7 +60,7 @@ export function TimetableFilterBar({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="timetableSemester">学期</Label>
+        <Label htmlFor="timetableSemester">開講時期</Label>
         <Select
           value={timetableSemester}
           onValueChange={(v) => onTimetableSemesterChange(v as TimetableSemester)}
@@ -80,25 +72,6 @@ export function TimetableFilterBar({
             {TIMETABLE_SEMESTER_VALUES.map((s) => (
               <SelectItem key={s} value={s}>
                 {TIMETABLE_SEMESTER_LABEL[s]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="semester">開講時期</Label>
-        <Select
-          value={semester}
-          onValueChange={(v) => onSemesterChange(v as CourseSemester)}
-        >
-          <SelectTrigger id="semester" className="w-[180px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {semesterOptions.map((s) => (
-              <SelectItem key={s} value={s}>
-                {SEMESTER_LABEL[s]}
               </SelectItem>
             ))}
           </SelectContent>

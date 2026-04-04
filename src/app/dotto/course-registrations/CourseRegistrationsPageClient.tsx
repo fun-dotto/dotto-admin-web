@@ -11,7 +11,8 @@ import { CourseRegistrationTable } from "@/components/course-registrations/Cours
 import { CourseRegistrationDeleteDialog } from "@/components/course-registrations/CourseRegistrationDeleteDialog";
 import { CourseRegistrationFilterBar } from "@/components/course-registrations/CourseRegistrationFilterBar";
 import { deleteRegistration, fetchRegistrations } from "./actions";
-import type { Registration, CourseSemester } from "./constants";
+import { FilterSemester } from "./constants";
+import type { Registration } from "./constants";
 import type { SubjectSummary } from "@/app/dotto/subjects/constants";
 
 interface CourseRegistrationsPageClientProps {
@@ -23,7 +24,9 @@ export function CourseRegistrationsPageClient({
 }: CourseRegistrationsPageClientProps) {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [userId, setUserId] = useState("");
-  const [semester, setSemester] = useState<CourseSemester>("Q1");
+  const [semester, setSemester] = useState<FilterSemester>(
+    FilterSemester.spring,
+  );
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
