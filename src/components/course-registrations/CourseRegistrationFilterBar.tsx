@@ -62,7 +62,7 @@ export function CourseRegistrationFilterBar({
           value={semester}
           onValueChange={(v) => onSemesterChange(v as FilterSemester)}
         >
-          <SelectTrigger id="filterSemester" className="w-full md:w-[180px]">
+          <SelectTrigger id="filterSemester" className="w-full md:w-[180px] !mb-0">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
