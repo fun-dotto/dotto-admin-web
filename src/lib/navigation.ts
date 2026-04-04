@@ -104,6 +104,12 @@ export const navigationSections: NavigationSection[] = [
         href: "/dotto/course-registrations",
         icon: ClipboardList,
       },
+      {
+        title: "イレギュラー通知",
+        description: "",
+        href: "/dotto/notify-irregularities",
+        icon: Send,
+      },
     ],
   },
   {
@@ -124,12 +130,6 @@ export const navigationSections: NavigationSection[] = [
         description: "",
         href: "/dotto/fcm-tokens",
         icon: BellRing,
-      },
-      {
-        title: "イレギュラー通知",
-        description: "",
-        href: "/dotto/notify-irregularities",
-        icon: Send,
       },
     ],
   },
