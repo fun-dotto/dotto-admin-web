@@ -39,6 +39,7 @@ export function TimetablePageClient({
   );
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [isSearching, setIsSearching] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<TimetableItem | null>(null);
@@ -58,6 +59,7 @@ export function TimetablePageClient({
         return;
       }
       setItems(result.items);
+      setHasSearched(true);
     } catch {
       toast.error("エラーが発生しました");
     } finally {
@@ -135,7 +137,11 @@ export function TimetablePageClient({
             </div>
           </div>
 
-          {items.length === 0 ? (
+          {!hasSearched ? (
+            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
+              検索ボタンを押して検索してください
+            </div>
+          ) : items.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               時間割がありません
             </div>

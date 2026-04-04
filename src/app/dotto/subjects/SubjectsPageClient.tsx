@@ -49,6 +49,7 @@ interface SubjectsPageClientProps {
   initialSemesters: CourseSemester[];
   initialRequirementTypes: SubjectRequirementType[];
   initialCulturalSubjectCategories: CulturalSubjectCategory[];
+  hasSearched: boolean;
 }
 
 export function SubjectsPageClient({
@@ -60,6 +61,7 @@ export function SubjectsPageClient({
   initialSemesters,
   initialRequirementTypes,
   initialCulturalSubjectCategories,
+  hasSearched,
 }: SubjectsPageClientProps) {
   const router = useRouter();
   const [query, setQuery] = useState(initialQuery);
@@ -253,7 +255,11 @@ export function SubjectsPageClient({
               検索
             </Button>
           </FilterBarFormLayout>
-          {subjects.length === 0 ? (
+          {!hasSearched ? (
+            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
+              検索条件を指定して検索してください
+            </div>
+          ) : subjects.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               科目がありません
             </div>

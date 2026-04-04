@@ -54,6 +54,7 @@ export default async function SubjectsPage({ searchParams }: SubjectsPageProps) 
       initialSemesters={semesters}
       initialRequirementTypes={requirementTypes}
       initialCulturalSubjectCategories={culturalSubjectCategories}
+      hasSearched={!!hasFilters}
     />
   );
 }

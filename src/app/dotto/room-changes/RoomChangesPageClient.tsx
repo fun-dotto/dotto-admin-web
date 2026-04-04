@@ -30,6 +30,7 @@ interface RoomChangesPageClientProps {
   initialSubjectIds: string;
   initialFrom: string;
   initialUntil: string;
+  hasSearched: boolean;
 }
 
 function toLocalDateTimeInputValue(iso: string): string {
@@ -51,6 +52,7 @@ export function RoomChangesPageClient({
   initialSubjectIds,
   initialFrom,
   initialUntil,
+  hasSearched,
 }: RoomChangesPageClientProps) {
   const router = useRouter();
   const [subjectIds, setSubjectIds] = useState<string[]>(
@@ -207,7 +209,11 @@ export function RoomChangesPageClient({
             </Button>
           </FilterBarFormLayout>
 
-          {roomChanges.length === 0 ? (
+          {!hasSearched ? (
+            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
+              検索条件を指定して検索してください
+            </div>
+          ) : roomChanges.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">教室変更がありません</div>
           ) : (
             <Table>

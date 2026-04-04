@@ -30,6 +30,7 @@ interface MakeupClassesPageClientProps {
   initialSubjectIds: string;
   initialFrom: string;
   initialUntil: string;
+  hasSearched: boolean;
 }
 
 function toLocalDateTimeInputValue(iso: string): string {
@@ -51,6 +52,7 @@ export function MakeupClassesPageClient({
   initialSubjectIds,
   initialFrom,
   initialUntil,
+  hasSearched,
 }: MakeupClassesPageClientProps) {
   const router = useRouter();
   const [subjectIds, setSubjectIds] = useState<string[]>(
@@ -207,7 +209,11 @@ export function MakeupClassesPageClient({
             </Button>
           </FilterBarFormLayout>
 
-          {makeupClasses.length === 0 ? (
+          {!hasSearched ? (
+            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
+              検索条件を指定して検索してください
+            </div>
+          ) : makeupClasses.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">補講がありません</div>
           ) : (
             <Table>

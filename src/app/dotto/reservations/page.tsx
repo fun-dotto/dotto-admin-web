@@ -13,15 +13,18 @@ interface ReservationsPageProps {
 
 export default async function ReservationsPage({ searchParams }: ReservationsPageProps) {
   const { roomIds, from, until } = await searchParams;
+  const hasSearchParams = roomIds || from || until;
   const parsedRoomIds = (roomIds ?? "")
     .split(",")
     .map((v) => v.trim())
     .filter(Boolean);
-  const { reservations } = await fetchReservations({
-    ...(parsedRoomIds.length > 0 ? { roomIds: parsedRoomIds } : {}),
-    ...(from ? { from } : {}),
-    ...(until ? { until } : {}),
-  });
+  const { reservations } = hasSearchParams
+    ? await fetchReservations({
+        ...(parsedRoomIds.length > 0 ? { roomIds: parsedRoomIds } : {}),
+        ...(from ? { from } : {}),
+        ...(until ? { until } : {}),
+      })
+    : { reservations: [] };
 
   return (
     <ReservationsPageClient
@@ -29,6 +32,7 @@ export default async function ReservationsPage({ searchParams }: ReservationsPag
       initialRoomIds={roomIds ?? ""}
       initialFrom={from ?? ""}
       initialUntil={until ?? ""}
+      hasSearched={!!hasSearchParams}
     />
   );
 }

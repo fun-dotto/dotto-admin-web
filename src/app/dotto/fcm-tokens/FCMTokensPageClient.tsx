@@ -24,6 +24,7 @@ interface FCMTokensPageClientProps {
   initialTokens: string;
   initialUpdatedAtFrom: string;
   initialUpdatedAtTo: string;
+  hasSearched: boolean;
 }
 
 function toLocalDateTimeInputValue(iso: string): string {
@@ -46,6 +47,7 @@ export function FCMTokensPageClient({
   initialTokens,
   initialUpdatedAtFrom,
   initialUpdatedAtTo,
+  hasSearched,
 }: FCMTokensPageClientProps) {
   const router = useRouter();
   const [userIds, setUserIds] = useState(initialUserIds);
@@ -116,7 +118,11 @@ export function FCMTokensPageClient({
             </Button>
           </FilterBarFormLayout>
 
-          {fcmTokens.length === 0 ? (
+          {!hasSearched ? (
+            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
+              検索条件を指定して検索してください
+            </div>
+          ) : fcmTokens.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               FCMトークンがありません
             </div>

@@ -25,6 +25,7 @@ interface ReservationsPageClientProps {
   initialRoomIds: string;
   initialFrom: string;
   initialUntil: string;
+  hasSearched: boolean;
 }
 
 function toLocalDateTimeInputValue(iso: string): string {
@@ -46,6 +47,7 @@ export function ReservationsPageClient({
   initialRoomIds,
   initialFrom,
   initialUntil,
+  hasSearched,
 }: ReservationsPageClientProps) {
   const router = useRouter();
   const [roomIds, setRoomIds] = useState<string[]>(
@@ -178,7 +180,11 @@ export function ReservationsPageClient({
             </Button>
           </FilterBarFormLayout>
 
-          {reservations.length === 0 ? (
+          {!hasSearched ? (
+            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
+              検索条件を指定して検索してください
+            </div>
+          ) : reservations.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">予約がありません</div>
           ) : (
             <Table>

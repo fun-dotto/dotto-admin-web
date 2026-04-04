@@ -19,13 +19,17 @@ export default async function FacilityRoomsPage({
   const validatedFloor: Floor | undefined = FLOOR_VALUES.includes(floor as Floor)
     ? (floor as Floor)
     : undefined;
-  const { rooms } = await fetchRooms({ q: query, floor: validatedFloor });
+  const hasFilters = query || validatedFloor;
+  const { rooms } = hasFilters
+    ? await fetchRooms({ q: query, floor: validatedFloor })
+    : { rooms: [] as never[] };
 
   return (
     <FacilityRoomsPageClient
       rooms={rooms}
       initialQuery={query}
       initialFloor={validatedFloor}
+      hasSearched={!!hasFilters}
     />
   );
 }

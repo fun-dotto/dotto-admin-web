@@ -1,22 +1,17 @@
 export const dynamic = "force-dynamic";
 
-import { fetchTimetableItems } from "./actions";
 import { fetchSubjects } from "@/app/dotto/subjects/actions";
 import { TimetablePageClient } from "./TimetablePageClient";
-import { TimetableSemester } from "./constants";
 
 export default async function TimetablePage() {
   const currentYear = new Date().getFullYear();
-  const [timetableResult, subjectsResult] = await Promise.all([
-    fetchTimetableItems(currentYear, TimetableSemester.spring),
-    fetchSubjects(),
-  ]);
+  const { subjects } = await fetchSubjects();
 
   return (
     <TimetablePageClient
-      initialItems={timetableResult.items}
+      initialItems={[]}
       initialYear={currentYear}
-      subjects={subjectsResult.subjects}
+      subjects={subjects}
     />
   );
 }
