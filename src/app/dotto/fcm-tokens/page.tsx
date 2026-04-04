@@ -14,15 +14,18 @@ interface FCMTokensPageProps {
 
 export default async function FCMTokensPage({ searchParams }: FCMTokensPageProps) {
   const { userIds, tokens, updatedAtFrom, updatedAtTo } = await searchParams;
+  const hasSearchParams = userIds || tokens || updatedAtFrom || updatedAtTo;
   const parsedUserIds = (userIds ?? "").split(",").map((v) => v.trim()).filter(Boolean);
   const parsedTokens = (tokens ?? "").split(",").map((v) => v.trim()).filter(Boolean);
 
-  const { fcmTokens } = await fetchFCMTokens({
-    ...(parsedUserIds.length > 0 ? { userIds: parsedUserIds } : {}),
-    ...(parsedTokens.length > 0 ? { tokens: parsedTokens } : {}),
-    ...(updatedAtFrom ? { updatedAtFrom } : {}),
-    ...(updatedAtTo ? { updatedAtTo } : {}),
-  });
+  const { fcmTokens } = hasSearchParams
+    ? await fetchFCMTokens({
+        ...(parsedUserIds.length > 0 ? { userIds: parsedUserIds } : {}),
+        ...(parsedTokens.length > 0 ? { tokens: parsedTokens } : {}),
+        ...(updatedAtFrom ? { updatedAtFrom } : {}),
+        ...(updatedAtTo ? { updatedAtTo } : {}),
+      })
+    : { fcmTokens: [] };
 
   return (
     <FCMTokensPageClient
@@ -31,6 +34,7 @@ export default async function FCMTokensPage({ searchParams }: FCMTokensPageProps
       initialTokens={tokens ?? ""}
       initialUpdatedAtFrom={updatedAtFrom ?? ""}
       initialUpdatedAtTo={updatedAtTo ?? ""}
+      hasSearched={!!hasSearchParams}
     />
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { FilterBarField, FilterBarLayout } from "@/components/ui/filter-bar-layout";
+import { FilterBarField, FilterBarFormLayout } from "@/components/ui/filter-bar-layout";
 import {
   Select,
   SelectContent,
@@ -32,45 +32,29 @@ export function UserFilters({
   hasActiveFilters,
 }: UserFiltersProps) {
   const [localQuery, setLocalQuery] = useState(searchQuery);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   // 外部からsearchQueryが変更された場合にローカルステートを同期
   useEffect(() => {
     setLocalQuery(searchQuery);
   }, [searchQuery]);
 
-  const handleInputChange = (value: string) => {
-    setLocalQuery(value);
-
-    // 既存のタイマーをクリア
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-
-    // 300ms後にURL更新
-    debounceRef.current = setTimeout(() => {
-      onSearchChange(value);
-    }, 300);
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSearchChange(localQuery.trim());
   };
 
-  // クリーンアップ
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-      }
-    };
-  }, []);
-
   return (
-    <FilterBarLayout className="md:grid-cols-[minmax(0,1fr)_180px_auto]">
+    <FilterBarFormLayout
+      onSubmit={handleSearch}
+      className="md:grid-cols-[minmax(0,1fr)_180px_auto_auto]"
+    >
       <FilterBarField className="relative min-w-[200px] max-w-none">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
         <Input
           type="text"
           placeholder="名前、メール、UIDで検索..."
           value={localQuery}
-          onChange={(e) => handleInputChange(e.target.value)}
+          onChange={(e) => setLocalQuery(e.target.value)}
           className="pl-9"
         />
       </FilterBarField>
@@ -89,15 +73,17 @@ export function UserFilters({
           </SelectContent>
         </Select>
       </FilterBarField>
+      <Button type="submit" className="w-full md:w-auto">
+        <Search className="mr-1 size-4" />
+        検索
+      </Button>
       {hasActiveFilters && (
         <Button
+          type="button"
           variant="ghost"
           size="sm"
           onClick={() => {
             setLocalQuery("");
-            if (debounceRef.current) {
-              clearTimeout(debounceRef.current);
-            }
             onClearFilters();
           }}
           className="text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
@@ -106,6 +92,6 @@ export function UserFilters({
           フィルタをクリア
         </Button>
       )}
-    </FilterBarLayout>
+    </FilterBarFormLayout>
   );
 }

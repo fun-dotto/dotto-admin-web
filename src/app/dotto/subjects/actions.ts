@@ -1,15 +1,43 @@
 "use server";
 
 import { api } from "@/lib/api";
-import type { Subject, SubjectSummary } from "./constants";
+import type {
+  Subject,
+  SubjectSummary,
+  Grade,
+  Course,
+  Class,
+  CourseSemester,
+  SubjectRequirementType,
+  CulturalSubjectCategory,
+} from "./constants";
 
-export async function fetchSubjects(q?: string): Promise<{
+export async function fetchSubjects(params?: {
+  q?: string;
+  grades?: Grade[];
+  courses?: Course[];
+  classes?: Class[];
+  semesters?: CourseSemester[];
+  requirementTypes?: SubjectRequirementType[];
+  culturalSubjectCategories?: CulturalSubjectCategory[];
+}): Promise<{
   subjects: SubjectSummary[];
   error?: string;
 }> {
-  const query = q?.trim() ? { q: q.trim() } : {};
+  const query: Record<string, unknown> = {};
+  if (params?.q?.trim()) query.q = params.q.trim();
+  if (params?.grades?.length) query.grades = params.grades;
+  if (params?.courses?.length) query.courses = params.courses;
+  if (params?.classes?.length) query.classes = params.classes;
+  if (params?.semesters?.length) query.semesters = params.semesters;
+  if (params?.requirementTypes?.length) query.requirementTypes = params.requirementTypes;
+  if (params?.culturalSubjectCategories?.length) query.culturalSubjectCategories = params.culturalSubjectCategories;
+
   const { data, error, response } = await api.GET("/v1/subjects", {
     params: { query },
+    querySerializer: {
+      array: { style: "form", explode: false },
+    },
   });
   if (error || !data) {
     return {

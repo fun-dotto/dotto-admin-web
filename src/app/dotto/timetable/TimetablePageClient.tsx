@@ -6,8 +6,9 @@ import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus } from "lucide-react";
+import { Grid3X3, List, Plus } from "lucide-react";
 import { TimetableItemTable } from "@/components/timetable/TimetableItemTable";
+import { TimetableGridView } from "@/components/timetable/TimetableGridView";
 import { TimetableItemDeleteDialog } from "@/components/timetable/TimetableItemDeleteDialog";
 import { TimetableFilterBar } from "@/components/timetable/TimetableFilterBar";
 import { deleteTimetableItem, fetchTimetableItems } from "./actions";
@@ -36,7 +37,9 @@ export function TimetablePageClient({
   const [timetableSemester, setTimetableSemester] = useState<TimetableSemester>(
     TimetableSemesterEnum.spring,
   );
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [isSearching, setIsSearching] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<TimetableItem | null>(null);
@@ -56,6 +59,7 @@ export function TimetablePageClient({
         return;
       }
       setItems(result.items);
+      setHasSearched(true);
     } catch {
       toast.error("エラーが発生しました");
     } finally {
@@ -102,21 +106,53 @@ export function TimetablePageClient({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <TimetableFilterBar
-            year={year}
-            onYearChange={setYear}
-            timetableSemester={timetableSemester}
-            onTimetableSemesterChange={setTimetableSemester}
-            onSearch={handleSearch}
-            isSearching={isSearching}
-          />
+          <div className="flex items-end justify-between gap-4">
+            <div className="flex-1">
+              <TimetableFilterBar
+                year={year}
+                onYearChange={setYear}
+                timetableSemester={timetableSemester}
+                onTimetableSemesterChange={setTimetableSemester}
+                onSearch={handleSearch}
+                isSearching={isSearching}
+              />
+            </div>
+            <div className="flex gap-1">
+              <Button
+                variant={viewMode === "list" ? "default" : "outline"}
+                size="icon-sm"
+                onClick={() => setViewMode("list")}
+                aria-label="リスト表示"
+              >
+                <List className="size-4" />
+              </Button>
+              <Button
+                variant={viewMode === "grid" ? "default" : "outline"}
+                size="icon-sm"
+                onClick={() => setViewMode("grid")}
+                aria-label="グリッド表示"
+              >
+                <Grid3X3 className="size-4" />
+              </Button>
+            </div>
+          </div>
 
-          {items.length === 0 ? (
+          {!hasSearched ? (
+            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
+              検索ボタンを押して検索してください
+            </div>
+          ) : items.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               時間割がありません
             </div>
-          ) : (
+          ) : viewMode === "list" ? (
             <TimetableItemTable
+              items={items}
+              subjectMap={subjectMap}
+              onDelete={handleDeleteOpen}
+            />
+          ) : (
+            <TimetableGridView
               items={items}
               subjectMap={subjectMap}
               onDelete={handleDeleteOpen}

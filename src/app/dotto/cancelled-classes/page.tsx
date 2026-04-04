@@ -15,15 +15,18 @@ export default async function CancelledClassesPage({
   searchParams,
 }: CancelledClassesPageProps) {
   const { subjectIds, from, until } = await searchParams;
+  const hasSearchParams = subjectIds || from || until;
   const parsedSubjectIds = (subjectIds ?? "")
     .split(",")
     .map((v) => v.trim())
     .filter(Boolean);
-  const { cancelledClasses } = await fetchCancelledClasses({
-    ...(parsedSubjectIds.length > 0 ? { subjectIds: parsedSubjectIds } : {}),
-    ...(from ? { from } : {}),
-    ...(until ? { until } : {}),
-  });
+  const { cancelledClasses } = hasSearchParams
+    ? await fetchCancelledClasses({
+        ...(parsedSubjectIds.length > 0 ? { subjectIds: parsedSubjectIds } : {}),
+        ...(from ? { from } : {}),
+        ...(until ? { until } : {}),
+      })
+    : { cancelledClasses: [] };
 
   return (
     <CancelledClassesPageClient
@@ -31,6 +34,7 @@ export default async function CancelledClassesPage({
       initialSubjectIds={subjectIds ?? ""}
       initialFrom={from ?? ""}
       initialUntil={until ?? ""}
+      hasSearched={!!hasSearchParams}
     />
   );
 }

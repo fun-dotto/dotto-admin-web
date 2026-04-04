@@ -63,3 +63,12 @@ export const REQUIREMENT_TYPE_LABEL: Record<SubjectRequirementType, string> = {
   Optional: "選択",
   OptionalRequired: "選択必修",
 };
+
+export type CulturalSubjectCategory = components["schemas"]["DottoFoundationV1.CulturalSubjectCategory"];
+export const CULTURAL_SUBJECT_CATEGORY_LABEL: Record<CulturalSubjectCategory, string> = {
+  Society: "社会",
+  Human: "人間",
+  Science: "科学",
+  Health: "健康",
+  Communication: "コミュニケーション",
+};

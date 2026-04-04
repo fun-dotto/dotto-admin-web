@@ -13,15 +13,18 @@ interface RoomChangesPageProps {
 
 export default async function RoomChangesPage({ searchParams }: RoomChangesPageProps) {
   const { subjectIds, from, until } = await searchParams;
+  const hasSearchParams = subjectIds || from || until;
   const parsedSubjectIds = (subjectIds ?? "")
     .split(",")
     .map((v) => v.trim())
     .filter(Boolean);
-  const { roomChanges } = await fetchRoomChanges({
-    ...(parsedSubjectIds.length > 0 ? { subjectIds: parsedSubjectIds } : {}),
-    ...(from ? { from } : {}),
-    ...(until ? { until } : {}),
-  });
+  const { roomChanges } = hasSearchParams
+    ? await fetchRoomChanges({
+        ...(parsedSubjectIds.length > 0 ? { subjectIds: parsedSubjectIds } : {}),
+        ...(from ? { from } : {}),
+        ...(until ? { until } : {}),
+      })
+    : { roomChanges: [] };
 
   return (
     <RoomChangesPageClient
@@ -29,6 +32,7 @@ export default async function RoomChangesPage({ searchParams }: RoomChangesPageP
       initialSubjectIds={subjectIds ?? ""}
       initialFrom={from ?? ""}
       initialUntil={until ?? ""}
+      hasSearched={!!hasSearchParams}
     />
   );
 }
