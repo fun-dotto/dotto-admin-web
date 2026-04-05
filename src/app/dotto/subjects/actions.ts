@@ -35,9 +35,6 @@ export async function fetchSubjects(params?: {
 
   const { data, error, response } = await api.GET("/v1/subjects", {
     params: { query },
-    querySerializer: {
-      array: { style: "form", explode: false },
-    },
   });
   if (error || !data) {
     return {

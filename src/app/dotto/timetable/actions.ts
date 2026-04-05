@@ -16,12 +16,6 @@ export async function fetchTimetableItems(
   const semesters: CourseSemester[] = TIMETABLE_SEMESTER_TO_SEMESTERS[semester];
   const { data, error, response } = await api.GET("/v1/timetableItmes", {
     params: { query: { year, semesters } },
-    querySerializer: {
-      array: {
-        style: "form",
-        explode: false,
-      },
-    },
   });
   if (error || !data) {
     return {

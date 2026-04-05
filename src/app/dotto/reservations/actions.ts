@@ -16,9 +16,6 @@ export async function fetchReservations(
 ): Promise<{ reservations: Reservation[]; error?: string }> {
   const { data, error, response } = await api.GET("/v1/reservations", {
     params: { query: filters ?? {} },
-    querySerializer: {
-      array: { style: "form", explode: false },
-    },
   });
   if (error || !data) {
     return {

@@ -16,9 +16,6 @@ export async function fetchRooms(filters?: {
   };
   const { data, error, response } = await api.GET("/v1/rooms", {
     params: { query },
-    querySerializer: {
-      array: { style: "form", explode: false },
-    },
   });
   if (error || !data) {
     return {
