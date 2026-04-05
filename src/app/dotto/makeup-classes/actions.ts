@@ -16,6 +16,9 @@ export async function fetchMakeupClasses(
 ): Promise<{ makeupClasses: MakeupClass[]; error?: string }> {
   const { data, error, response } = await api.GET("/v1/makeupClasses", {
     params: { query: filters ?? {} },
+    querySerializer: {
+      array: { style: "form", explode: false },
+    },
   });
   if (error || !data) {
     return {

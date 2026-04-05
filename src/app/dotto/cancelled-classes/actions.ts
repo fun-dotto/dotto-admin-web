@@ -16,6 +16,9 @@ export async function fetchCancelledClasses(
 ): Promise<{ cancelledClasses: CancelledClass[]; error?: string }> {
   const { data, error, response } = await api.GET("/v1/cancelledClasses", {
     params: { query: filters ?? {} },
+    querySerializer: {
+      array: { style: "form", explode: false },
+    },
   });
   if (error || !data) {
     return {
