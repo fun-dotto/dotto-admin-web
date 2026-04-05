@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
@@ -26,6 +26,7 @@ interface ReservationsPageClientProps {
   initialFrom: string;
   initialUntil: string;
   hasSearched: boolean;
+  error?: string;
 }
 
 function toLocalDateTimeInputValue(iso: string): string {
@@ -48,8 +49,13 @@ export function ReservationsPageClient({
   initialFrom,
   initialUntil,
   hasSearched,
+  error,
 }: ReservationsPageClientProps) {
   const router = useRouter();
+
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
   const [roomIds, setRoomIds] = useState<string[]>(
     initialRoomIds ? initialRoomIds.split(",").map(s => s.trim()).filter(Boolean) : [""]
   );
@@ -63,8 +69,8 @@ export function ReservationsPageClient({
     if (filledIds.length > 0) params.set("roomIds", filledIds.join(","));
     if (from) params.set("from", fromLocalDateTimeInputValue(from));
     if (until) params.set("until", fromLocalDateTimeInputValue(until));
-    const qs = params.toString();
-    router.push(qs ? `/dotto/reservations?${qs}` : "/dotto/reservations");
+    params.set("searched", "1");
+    router.push(`/dotto/reservations?${params.toString()}`);
   };
 
   const handleDelete = async (id: string) => {
