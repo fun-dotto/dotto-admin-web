@@ -54,8 +54,8 @@ export function FacilityRoomsPageClient({
     if (floor !== "all") {
       params.set("floor", floor);
     }
-    const qs = params.toString();
-    router.push(qs ? `/dotto/facility-rooms?${qs}` : "/dotto/facility-rooms");
+    params.set("searched", "1");
+    router.push(`/dotto/facility-rooms?${params.toString()}`);
   };
 
   const handleDeleteOpen = (room: Room) => {

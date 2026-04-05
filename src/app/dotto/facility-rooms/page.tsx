@@ -8,19 +8,20 @@ interface FacilityRoomsPageProps {
   searchParams: Promise<{
     q?: string;
     floor?: string;
+    searched?: string;
   }>;
 }
 
 export default async function FacilityRoomsPage({
   searchParams,
 }: FacilityRoomsPageProps) {
-  const { q, floor } = await searchParams;
+  const { q, floor, searched } = await searchParams;
   const query = q?.trim() ?? "";
   const validatedFloor: Floor | undefined = FLOOR_VALUES.includes(floor as Floor)
     ? (floor as Floor)
     : undefined;
-  const hasFilters = query || validatedFloor;
-  const { rooms } = hasFilters
+  const hasSearched = searched === "1";
+  const { rooms } = hasSearched
     ? await fetchRooms({ q: query, floor: validatedFloor })
     : { rooms: [] as never[] };
 
@@ -29,7 +30,7 @@ export default async function FacilityRoomsPage({
       rooms={rooms}
       initialQuery={query}
       initialFloor={validatedFloor}
-      hasSearched={!!hasFilters}
+      hasSearched={hasSearched}
     />
   );
 }
