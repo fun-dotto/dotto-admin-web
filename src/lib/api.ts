@@ -1,6 +1,17 @@
 import createClient, { type Middleware } from "openapi-fetch";
 import type { paths } from "@/types/openapi";
 
+const loggingMiddleware: Middleware = {
+  async onRequest({ request }) {
+    console.log(`[API Request] ${request.method} ${request.url}`);
+    return request;
+  },
+  async onResponse({ request, response }) {
+    console.log(`[API Response] ${request.method} ${request.url} -> ${response.status}`);
+    return response;
+  },
+};
+
 const authMiddleware: Middleware = {
   async onRequest({ request }) {
     let token: string | undefined;
@@ -27,4 +38,5 @@ export const api = createClient<paths>({
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 
+api.use(loggingMiddleware);
 api.use(authMiddleware);
