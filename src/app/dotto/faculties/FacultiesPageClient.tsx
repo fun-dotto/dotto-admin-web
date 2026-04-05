@@ -40,8 +40,8 @@ export function FacultiesPageClient({
     if (trimmedQuery) {
       params.set("q", trimmedQuery);
     }
-    const qs = params.toString();
-    router.push(qs ? `/dotto/faculties?${qs}` : "/dotto/faculties");
+    params.set("searched", "1");
+    router.push(`/dotto/faculties?${params.toString()}`);
   };
 
   const handleDeleteOpen = (faculty: Faculty) => {
