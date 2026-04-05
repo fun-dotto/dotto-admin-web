@@ -6,12 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { DottoUserTable } from "@/components/dotto-users/DottoUserTable";
 import type { User } from "./constants";
+import { ErrorToast } from "@/components/error-toast";
 
 interface UsersPageClientProps {
   users: User[];
+  error?: string;
 }
 
-export function UsersPageClient({ users }: UsersPageClientProps) {
+export function UsersPageClient({ users, error }: UsersPageClientProps) {
   const [query, setQuery] = useState("");
   const filteredUsers = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -28,6 +30,7 @@ export function UsersPageClient({ users }: UsersPageClientProps) {
 
   return (
     <AuthenticatedLayout>
+      <ErrorToast error={error} />
       <div className="space-y-4">
         <Card>
           <CardHeader>

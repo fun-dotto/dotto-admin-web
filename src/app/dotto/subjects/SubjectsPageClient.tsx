@@ -37,6 +37,7 @@ import {
   REQUIREMENT_TYPE_LABEL,
   CULTURAL_SUBJECT_CATEGORY_LABEL,
 } from "./constants";
+import { ErrorToast } from "@/components/error-toast";
 
 const ALL_VALUE = "__all__";
 
@@ -49,7 +50,7 @@ interface SubjectsPageClientProps {
   initialSemesters: CourseSemester[];
   initialRequirementTypes: SubjectRequirementType[];
   initialCulturalSubjectCategories: CulturalSubjectCategory[];
-  hasSearched: boolean;
+  error?: string;
 }
 
 export function SubjectsPageClient({
@@ -61,7 +62,7 @@ export function SubjectsPageClient({
   initialSemesters,
   initialRequirementTypes,
   initialCulturalSubjectCategories,
-  hasSearched,
+  error,
 }: SubjectsPageClientProps) {
   const router = useRouter();
   const [query, setQuery] = useState(initialQuery);
@@ -88,8 +89,7 @@ export function SubjectsPageClient({
     if (requirementType) params.set("requirementTypes", requirementType);
     if (culturalSubjectCategory) params.set("culturalSubjectCategories", culturalSubjectCategory);
 
-    const qs = params.toString();
-    router.push(qs ? `/dotto/subjects?${qs}` : "/dotto/subjects");
+    router.push(`/dotto/subjects?${params.toString()}`);
   };
 
   const handleDeleteOpen = (subject: SubjectSummary) => {
@@ -118,6 +118,7 @@ export function SubjectsPageClient({
 
   return (
     <AuthenticatedLayout>
+      <ErrorToast error={error} />
       <Card>
         <CardHeader>
           <CardTitle>科目管理</CardTitle>
@@ -255,11 +256,7 @@ export function SubjectsPageClient({
               検索
             </Button>
           </FilterBarFormLayout>
-          {!hasSearched ? (
-            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
-              検索条件を指定して検索してください
-            </div>
-          ) : subjects.length === 0 ? (
+          {subjects.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               科目がありません
             </div>

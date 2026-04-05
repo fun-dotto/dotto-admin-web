@@ -5,13 +5,14 @@ import { TimetablePageClient } from "./TimetablePageClient";
 
 export default async function TimetablePage() {
   const currentYear = new Date().getFullYear();
-  const { subjects } = await fetchSubjects();
+  const { subjects, error } = await fetchSubjects();
 
   return (
     <TimetablePageClient
       initialItems={[]}
       initialYear={currentYear}
       subjects={subjects}
+      error={error}
     />
   );
 }

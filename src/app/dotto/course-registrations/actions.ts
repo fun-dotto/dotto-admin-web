@@ -17,12 +17,6 @@ export async function fetchRegistrations(
     COURSE_REGISTRATION_FILTER_SEMESTER_TO_SEMESTERS[semester];
   const { data, error, response } = await api.GET("/v1/courseRegistrations", {
     params: { query: { userId, semesters } },
-    querySerializer: {
-      array: {
-        style: "form",
-        explode: false,
-      },
-    },
   });
   if (error || !data) {
     return {

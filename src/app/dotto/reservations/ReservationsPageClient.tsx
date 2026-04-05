@@ -19,13 +19,14 @@ import {
 import { Label } from "@/components/ui/label";
 import { Plus, Search, Trash2, X } from "lucide-react";
 import { deleteReservation, type Reservation } from "./actions";
+import { ErrorToast } from "@/components/error-toast";
 
 interface ReservationsPageClientProps {
   reservations: Reservation[];
   initialRoomIds: string;
   initialFrom: string;
   initialUntil: string;
-  hasSearched: boolean;
+  error?: string;
 }
 
 function toLocalDateTimeInputValue(iso: string): string {
@@ -47,7 +48,7 @@ export function ReservationsPageClient({
   initialRoomIds,
   initialFrom,
   initialUntil,
-  hasSearched,
+  error,
 }: ReservationsPageClientProps) {
   const router = useRouter();
   const [roomIds, setRoomIds] = useState<string[]>(
@@ -63,8 +64,7 @@ export function ReservationsPageClient({
     if (filledIds.length > 0) params.set("roomIds", filledIds.join(","));
     if (from) params.set("from", fromLocalDateTimeInputValue(from));
     if (until) params.set("until", fromLocalDateTimeInputValue(until));
-    const qs = params.toString();
-    router.push(qs ? `/dotto/reservations?${qs}` : "/dotto/reservations");
+    router.push(`/dotto/reservations?${params.toString()}`);
   };
 
   const handleDelete = async (id: string) => {
@@ -83,6 +83,7 @@ export function ReservationsPageClient({
 
   return (
     <AuthenticatedLayout>
+      <ErrorToast error={error} />
       <Card>
         <CardHeader>
           <CardTitle>予約管理</CardTitle>
@@ -180,11 +181,7 @@ export function ReservationsPageClient({
             </Button>
           </FilterBarFormLayout>
 
-          {!hasSearched ? (
-            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
-              検索条件を指定して検索してください
-            </div>
-          ) : reservations.length === 0 ? (
+          {reservations.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">予約がありません</div>
           ) : (
             <Table>

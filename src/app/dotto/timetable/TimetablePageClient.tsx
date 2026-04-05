@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
@@ -20,17 +20,20 @@ import {
   TimetableSemester as TimetableSemesterEnum,
 } from "./constants";
 import type { SubjectSummary } from "@/app/dotto/subjects/constants";
+import { ErrorToast } from "@/components/error-toast";
 
 interface TimetablePageClientProps {
   initialItems: TimetableItem[];
   initialYear: number;
   subjects: SubjectSummary[];
+  error?: string;
 }
 
 export function TimetablePageClient({
   initialItems,
   initialYear,
   subjects,
+  error,
 }: TimetablePageClientProps) {
   const [items, setItems] = useState(initialItems);
   const [year, setYear] = useState(initialYear);
@@ -39,7 +42,6 @@ export function TimetablePageClient({
   );
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [isSearching, setIsSearching] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<TimetableItem | null>(null);
@@ -50,6 +52,7 @@ export function TimetablePageClient({
       Object.fromEntries(subjects.map((s) => [s.id, s.name])),
     [subjects],
   );
+
   const handleSearch = async () => {
     setIsSearching(true);
     try {
@@ -59,13 +62,16 @@ export function TimetablePageClient({
         return;
       }
       setItems(result.items);
-      setHasSearched(true);
     } catch {
       toast.error("エラーが発生しました");
     } finally {
       setIsSearching(false);
     }
   };
+
+  useEffect(() => {
+    handleSearch();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleDeleteOpen = (item: TimetableItem) => {
     setDeleteTarget(item);
@@ -93,6 +99,7 @@ export function TimetablePageClient({
 
   return (
     <AuthenticatedLayout>
+      <ErrorToast error={error} />
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -137,11 +144,7 @@ export function TimetablePageClient({
             </div>
           </div>
 
-          {!hasSearched ? (
-            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
-              検索ボタンを押して検索してください
-            </div>
-          ) : items.length === 0 ? (
+          {items.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               時間割がありません
             </div>

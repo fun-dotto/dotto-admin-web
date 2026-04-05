@@ -22,19 +22,20 @@ import { RoomTable } from "@/components/facility-rooms/RoomTable";
 import { RoomDeleteDialog } from "@/components/facility-rooms/RoomDeleteDialog";
 import { deleteRoom } from "./actions";
 import { FLOOR_LABEL, FLOOR_VALUES, type Floor, type Room } from "./constants";
+import { ErrorToast } from "@/components/error-toast";
 
 interface FacilityRoomsPageClientProps {
   rooms: Room[];
   initialQuery: string;
   initialFloor?: Floor;
-  hasSearched: boolean;
+  error?: string;
 }
 
 export function FacilityRoomsPageClient({
   rooms,
   initialQuery,
   initialFloor,
-  hasSearched,
+  error,
 }: FacilityRoomsPageClientProps) {
   const router = useRouter();
   const [query, setQuery] = useState(initialQuery);
@@ -54,8 +55,7 @@ export function FacilityRoomsPageClient({
     if (floor !== "all") {
       params.set("floor", floor);
     }
-    const qs = params.toString();
-    router.push(qs ? `/dotto/facility-rooms?${qs}` : "/dotto/facility-rooms");
+    router.push(`/dotto/facility-rooms?${params.toString()}`);
   };
 
   const handleDeleteOpen = (room: Room) => {
@@ -84,6 +84,7 @@ export function FacilityRoomsPageClient({
 
   return (
     <AuthenticatedLayout>
+      <ErrorToast error={error} />
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -134,11 +135,7 @@ export function FacilityRoomsPageClient({
               検索
             </Button>
           </FilterBarFormLayout>
-          {!hasSearched ? (
-            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
-              検索条件を指定して検索してください
-            </div>
-          ) : rooms.length === 0 ? (
+          {rooms.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               教室がありません
             </div>

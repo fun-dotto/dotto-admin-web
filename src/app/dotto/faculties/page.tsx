@@ -12,10 +12,7 @@ interface FacultiesPageProps {
 export default async function FacultiesPage({ searchParams }: FacultiesPageProps) {
   const { q } = await searchParams;
   const query = q?.trim() ?? "";
-  const hasFilters = !!query;
-  const { faculties } = hasFilters
-    ? await fetchFaculties(query)
-    : { faculties: [] as never[] };
+  const { faculties, error } = await fetchFaculties(query);
 
-  return <FacultiesPageClient faculties={faculties} initialQuery={query} hasSearched={hasFilters} />;
+  return <FacultiesPageClient faculties={faculties} initialQuery={query} error={error} />;
 }

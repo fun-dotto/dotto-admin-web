@@ -22,19 +22,18 @@ export default async function PersonalCalendarItemsPage({
         items={[]}
         initialUserId={userId ?? ""}
         initialDates={dates}
-        hasSearched={false}
       />
     );
   }
 
-  const { items } = await fetchPersonalCalendarItems(userId, dates);
+  const { items, error } = await fetchPersonalCalendarItems(userId, dates);
 
   return (
     <PersonalCalendarItemsPageClient
       items={items}
       initialUserId={userId}
       initialDates={dates}
-      hasSearched
+      error={error}
     />
   );
 }

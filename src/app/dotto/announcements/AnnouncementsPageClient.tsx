@@ -12,13 +12,16 @@ import { AnnouncementTable } from "@/components/announcements/AnnouncementTable"
 import { AnnouncementDeleteDialog } from "@/components/announcements/AnnouncementDeleteDialog";
 import { deleteAnnouncement } from "./actions";
 import type { Announcement } from "./constants";
+import { ErrorToast } from "@/components/error-toast";
 
 interface AnnouncementsPageClientProps {
   announcements: Announcement[];
+  error?: string;
 }
 
 export function AnnouncementsPageClient({
   announcements,
+  error,
 }: AnnouncementsPageClientProps) {
   const router = useRouter();
 
@@ -52,6 +55,7 @@ export function AnnouncementsPageClient({
 
   return (
     <AuthenticatedLayout>
+      <ErrorToast error={error} />
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">

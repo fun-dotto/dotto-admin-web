@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 import { Search } from "lucide-react";
 import type { FCMToken } from "./actions";
+import { ErrorToast } from "@/components/error-toast";
 
 interface FCMTokensPageClientProps {
   fcmTokens: FCMToken[];
@@ -24,7 +25,7 @@ interface FCMTokensPageClientProps {
   initialTokens: string;
   initialUpdatedAtFrom: string;
   initialUpdatedAtTo: string;
-  hasSearched: boolean;
+  error?: string;
 }
 
 function toLocalDateTimeInputValue(iso: string): string {
@@ -47,7 +48,7 @@ export function FCMTokensPageClient({
   initialTokens,
   initialUpdatedAtFrom,
   initialUpdatedAtTo,
-  hasSearched,
+  error,
 }: FCMTokensPageClientProps) {
   const router = useRouter();
   const [userIds, setUserIds] = useState(initialUserIds);
@@ -76,6 +77,7 @@ export function FCMTokensPageClient({
 
   return (
     <AuthenticatedLayout>
+      <ErrorToast error={error} />
       <Card>
         <CardHeader>
           <CardTitle>FCMトークン一覧</CardTitle>
@@ -118,11 +120,7 @@ export function FCMTokensPageClient({
             </Button>
           </FilterBarFormLayout>
 
-          {!hasSearched ? (
-            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
-              検索条件を指定して検索してください
-            </div>
-          ) : fcmTokens.length === 0 ? (
+          {fcmTokens.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               FCMトークンがありません
             </div>

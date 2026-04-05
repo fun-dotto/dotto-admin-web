@@ -8,26 +8,22 @@ interface CancelledClassesPageProps {
     subjectIds?: string;
     from?: string;
     until?: string;
-    searched?: string;
   }>;
 }
 
 export default async function CancelledClassesPage({
   searchParams,
 }: CancelledClassesPageProps) {
-  const { subjectIds, from, until, searched } = await searchParams;
-  const hasSearched = searched === "1";
+  const { subjectIds, from, until } = await searchParams;
   const parsedSubjectIds = (subjectIds ?? "")
     .split(",")
     .map((v) => v.trim())
     .filter(Boolean);
-  const { cancelledClasses } = hasSearched
-    ? await fetchCancelledClasses({
-        ...(parsedSubjectIds.length > 0 ? { subjectIds: parsedSubjectIds } : {}),
-        ...(from ? { from } : {}),
-        ...(until ? { until } : {}),
-      })
-    : { cancelledClasses: [] };
+  const { cancelledClasses, error } = await fetchCancelledClasses({
+    ...(parsedSubjectIds.length > 0 ? { subjectIds: parsedSubjectIds } : {}),
+    ...(from ? { from } : {}),
+    ...(until ? { until } : {}),
+  });
 
   return (
     <CancelledClassesPageClient
@@ -35,7 +31,7 @@ export default async function CancelledClassesPage({
       initialSubjectIds={subjectIds ?? ""}
       initialFrom={from ?? ""}
       initialUntil={until ?? ""}
-      hasSearched={hasSearched}
+      error={error}
     />
   );
 }

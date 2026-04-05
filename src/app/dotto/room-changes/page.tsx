@@ -8,24 +8,20 @@ interface RoomChangesPageProps {
     subjectIds?: string;
     from?: string;
     until?: string;
-    searched?: string;
   }>;
 }
 
 export default async function RoomChangesPage({ searchParams }: RoomChangesPageProps) {
-  const { subjectIds, from, until, searched } = await searchParams;
-  const hasSearched = searched === "1";
+  const { subjectIds, from, until } = await searchParams;
   const parsedSubjectIds = (subjectIds ?? "")
     .split(",")
     .map((v) => v.trim())
     .filter(Boolean);
-  const { roomChanges } = hasSearched
-    ? await fetchRoomChanges({
-        ...(parsedSubjectIds.length > 0 ? { subjectIds: parsedSubjectIds } : {}),
-        ...(from ? { from } : {}),
-        ...(until ? { until } : {}),
-      })
-    : { roomChanges: [] };
+  const { roomChanges, error } = await fetchRoomChanges({
+    ...(parsedSubjectIds.length > 0 ? { subjectIds: parsedSubjectIds } : {}),
+    ...(from ? { from } : {}),
+    ...(until ? { until } : {}),
+  });
 
   return (
     <RoomChangesPageClient
@@ -33,7 +29,7 @@ export default async function RoomChangesPage({ searchParams }: RoomChangesPageP
       initialSubjectIds={subjectIds ?? ""}
       initialFrom={from ?? ""}
       initialUntil={until ?? ""}
-      hasSearched={hasSearched}
+      error={error}
     />
   );
 }

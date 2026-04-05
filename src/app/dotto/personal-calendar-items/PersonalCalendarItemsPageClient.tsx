@@ -20,6 +20,7 @@ import { PERIOD_LABEL, type Period } from "@/app/dotto/timetable/constants";
 import { Plus, Search, UserRound, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import type { PersonalCalendarItem } from "./actions";
+import { ErrorToast } from "@/components/error-toast";
 
 const STATUS_LABEL: Record<PersonalCalendarItem["status"], string> = {
   Normal: "通常",
@@ -32,14 +33,14 @@ interface PersonalCalendarItemsPageClientProps {
   items: PersonalCalendarItem[];
   initialUserId: string;
   initialDates: string[];
-  hasSearched: boolean;
+  error?: string;
 }
 
 export function PersonalCalendarItemsPageClient({
   items,
   initialUserId,
   initialDates,
-  hasSearched,
+  error,
 }: PersonalCalendarItemsPageClientProps) {
   const router = useRouter();
   const { user } = useAuth();
@@ -73,6 +74,7 @@ export function PersonalCalendarItemsPageClient({
 
   return (
     <AuthenticatedLayout>
+      <ErrorToast error={error} />
       <Card>
         <CardHeader>
           <CardTitle>個人カレンダー</CardTitle>
@@ -146,11 +148,7 @@ export function PersonalCalendarItemsPageClient({
             </Button>
           </FilterBarFormLayout>
 
-          {!hasSearched ? (
-            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
-              ユーザーIDと日付を指定して検索してください
-            </div>
-          ) : items.length === 0 ? (
+          {items.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               該当データがありません
             </div>
