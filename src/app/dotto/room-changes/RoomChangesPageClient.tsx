@@ -33,18 +33,9 @@ interface RoomChangesPageClientProps {
   hasSearched: boolean;
 }
 
-function toLocalDateTimeInputValue(iso: string): string {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  const offset = d.getTimezoneOffset();
-  const local = new Date(d.getTime() - offset * 60_000);
-  return local.toISOString().slice(0, 16);
-}
-
-function fromLocalDateTimeInputValue(local: string): string {
-  if (!local) return "";
-  return new Date(local).toISOString();
+function toDateInputValue(value: string): string {
+  if (!value) return "";
+  return value.slice(0, 10);
 }
 
 export function RoomChangesPageClient({
@@ -58,8 +49,8 @@ export function RoomChangesPageClient({
   const [subjectIds, setSubjectIds] = useState<string[]>(
     initialSubjectIds ? initialSubjectIds.split(",").map(s => s.trim()).filter(Boolean) : [""]
   );
-  const [from, setFrom] = useState(toLocalDateTimeInputValue(initialFrom));
-  const [until, setUntil] = useState(toLocalDateTimeInputValue(initialUntil));
+  const [from, setFrom] = useState(toDateInputValue(initialFrom));
+  const [until, setUntil] = useState(toDateInputValue(initialUntil));
   const [isFetching, setIsFetching] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -67,8 +58,8 @@ export function RoomChangesPageClient({
     const params = new URLSearchParams();
     const filledIds = subjectIds.filter(id => id.trim());
     if (filledIds.length > 0) params.set("subjectIds", filledIds.join(","));
-    if (from) params.set("from", fromLocalDateTimeInputValue(from));
-    if (until) params.set("until", fromLocalDateTimeInputValue(until));
+    if (from) params.set("from", from);
+    if (until) params.set("until", until);
     params.set("searched", "1");
     router.push(`/dotto/room-changes?${params.toString()}`);
   };
@@ -164,7 +155,7 @@ export function RoomChangesPageClient({
               <Label>開始</Label>
               <div className="flex items-center gap-1">
                 <Input
-                  type="datetime-local"
+                  type="date"
                   value={from}
                   onChange={(e) => setFrom(e.target.value)}
                   className="flex-1"
@@ -186,7 +177,7 @@ export function RoomChangesPageClient({
               <Label>終了</Label>
               <div className="flex items-center gap-1">
                 <Input
-                  type="datetime-local"
+                  type="date"
                   value={until}
                   onChange={(e) => setUntil(e.target.value)}
                   className="flex-1"
@@ -220,7 +211,7 @@ export function RoomChangesPageClient({
               <TableHeader>
                 <TableRow>
                   <TableHead>科目</TableHead>
-                  <TableHead>日時</TableHead>
+                  <TableHead>日付</TableHead>
                   <TableHead>時限</TableHead>
                   <TableHead>変更前</TableHead>
                   <TableHead>変更後</TableHead>
@@ -231,7 +222,7 @@ export function RoomChangesPageClient({
                 {roomChanges.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>{item.subject.name}</TableCell>
-                    <TableCell>{new Date(item.date).toLocaleString("ja-JP")}</TableCell>
+                    <TableCell>{new Date(item.date).toLocaleDateString("ja-JP")}</TableCell>
                     <TableCell>{PERIOD_LABEL[item.period as Period] ?? item.period}</TableCell>
                     <TableCell>{item.originalRoom.name || "-"}</TableCell>
                     <TableCell>{item.newRoom.name || "-"}</TableCell>
