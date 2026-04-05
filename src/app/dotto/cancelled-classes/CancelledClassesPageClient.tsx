@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
@@ -31,6 +31,7 @@ interface CancelledClassesPageClientProps {
   initialFrom: string;
   initialUntil: string;
   hasSearched: boolean;
+  error?: string;
 }
 
 function toDateInputValue(value: string): string {
@@ -44,8 +45,13 @@ export function CancelledClassesPageClient({
   initialFrom,
   initialUntil,
   hasSearched,
+  error,
 }: CancelledClassesPageClientProps) {
   const router = useRouter();
+
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
   const [subjectIds, setSubjectIds] = useState<string[]>(
     initialSubjectIds ? initialSubjectIds.split(",").map(s => s.trim()).filter(Boolean) : [""]
   );

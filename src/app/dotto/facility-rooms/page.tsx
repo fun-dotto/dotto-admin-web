@@ -21,9 +21,9 @@ export default async function FacilityRoomsPage({
     ? (floor as Floor)
     : undefined;
   const hasSearched = searched === "1";
-  const { rooms } = hasSearched
+  const { rooms, error } = hasSearched
     ? await fetchRooms({ q: query, floor: validatedFloor })
-    : { rooms: [] as never[] };
+    : { rooms: [] as never[], error: undefined };
 
   return (
     <FacilityRoomsPageClient
@@ -31,6 +31,7 @@ export default async function FacilityRoomsPage({
       initialQuery={query}
       initialFloor={validatedFloor}
       hasSearched={hasSearched}
+      error={error}
     />
   );
 }

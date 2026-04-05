@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -19,14 +19,20 @@ interface FacultiesPageClientProps {
   faculties: Faculty[];
   initialQuery: string;
   hasSearched: boolean;
+  error?: string;
 }
 
 export function FacultiesPageClient({
   faculties,
   initialQuery,
   hasSearched,
+  error,
 }: FacultiesPageClientProps) {
   const router = useRouter();
+
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
   const [query, setQuery] = useState(initialQuery);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);

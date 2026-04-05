@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
@@ -50,6 +50,7 @@ interface SubjectsPageClientProps {
   initialRequirementTypes: SubjectRequirementType[];
   initialCulturalSubjectCategories: CulturalSubjectCategory[];
   hasSearched: boolean;
+  error?: string;
 }
 
 export function SubjectsPageClient({
@@ -62,8 +63,13 @@ export function SubjectsPageClient({
   initialRequirementTypes,
   initialCulturalSubjectCategories,
   hasSearched,
+  error,
 }: SubjectsPageClientProps) {
   const router = useRouter();
+
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
   const [query, setQuery] = useState(initialQuery);
   const [grade, setGrade] = useState<Grade | "">(initialGrades[0] ?? "");
   const [course, setCourse] = useState<Course | "">(initialCourses[0] ?? "");

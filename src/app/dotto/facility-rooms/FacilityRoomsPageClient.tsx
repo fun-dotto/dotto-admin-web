@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -28,6 +28,7 @@ interface FacilityRoomsPageClientProps {
   initialQuery: string;
   initialFloor?: Floor;
   hasSearched: boolean;
+  error?: string;
 }
 
 export function FacilityRoomsPageClient({
@@ -35,8 +36,13 @@ export function FacilityRoomsPageClient({
   initialQuery,
   initialFloor,
   hasSearched,
+  error,
 }: FacilityRoomsPageClientProps) {
   const router = useRouter();
+
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
   const [query, setQuery] = useState(initialQuery);
   const [floor, setFloor] = useState<Floor | "all">(initialFloor ?? "all");
 

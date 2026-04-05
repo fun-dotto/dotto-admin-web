@@ -40,9 +40,9 @@ export default async function SubjectsPage({ searchParams }: SubjectsPageProps) 
   const culturalSubjectCategories = parseArrayParam<CulturalSubjectCategory>(params.culturalSubjectCategories);
   const hasSearched = params.searched === "1";
 
-  const { subjects } = hasSearched
+  const { subjects, error } = hasSearched
     ? await fetchSubjects({ q: query || undefined, grades, courses, classes, semesters, requirementTypes, culturalSubjectCategories })
-    : { subjects: [] as never[] };
+    : { subjects: [] as never[], error: undefined };
 
   return (
     <SubjectsPageClient
@@ -55,6 +55,7 @@ export default async function SubjectsPage({ searchParams }: SubjectsPageProps) 
       initialRequirementTypes={requirementTypes}
       initialCulturalSubjectCategories={culturalSubjectCategories}
       hasSearched={hasSearched}
+      error={error}
     />
   );
 }

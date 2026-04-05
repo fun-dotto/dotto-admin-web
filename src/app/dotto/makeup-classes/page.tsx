@@ -21,13 +21,13 @@ export default async function MakeupClassesPage({
     .split(",")
     .map((v) => v.trim())
     .filter(Boolean);
-  const { makeupClasses } = hasSearched
+  const { makeupClasses, error } = hasSearched
     ? await fetchMakeupClasses({
         ...(parsedSubjectIds.length > 0 ? { subjectIds: parsedSubjectIds } : {}),
         ...(from ? { from } : {}),
         ...(until ? { until } : {}),
       })
-    : { makeupClasses: [] };
+    : { makeupClasses: [], error: undefined };
 
   return (
     <MakeupClassesPageClient
@@ -36,6 +36,7 @@ export default async function MakeupClassesPage({
       initialFrom={from ?? ""}
       initialUntil={until ?? ""}
       hasSearched={hasSearched}
+      error={error}
     />
   );
 }

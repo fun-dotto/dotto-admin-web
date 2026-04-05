@@ -19,13 +19,13 @@ export default async function RoomChangesPage({ searchParams }: RoomChangesPageP
     .split(",")
     .map((v) => v.trim())
     .filter(Boolean);
-  const { roomChanges } = hasSearched
+  const { roomChanges, error } = hasSearched
     ? await fetchRoomChanges({
         ...(parsedSubjectIds.length > 0 ? { subjectIds: parsedSubjectIds } : {}),
         ...(from ? { from } : {}),
         ...(until ? { until } : {}),
       })
-    : { roomChanges: [] };
+    : { roomChanges: [], error: undefined };
 
   return (
     <RoomChangesPageClient
@@ -34,6 +34,7 @@ export default async function RoomChangesPage({ searchParams }: RoomChangesPageP
       initialFrom={from ?? ""}
       initialUntil={until ?? ""}
       hasSearched={hasSearched}
+      error={error}
     />
   );
 }

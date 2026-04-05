@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,6 +34,7 @@ interface PersonalCalendarItemsPageClientProps {
   initialUserId: string;
   initialDates: string[];
   hasSearched: boolean;
+  error?: string;
 }
 
 export function PersonalCalendarItemsPageClient({
@@ -40,8 +42,13 @@ export function PersonalCalendarItemsPageClient({
   initialUserId,
   initialDates,
   hasSearched,
+  error,
 }: PersonalCalendarItemsPageClientProps) {
   const router = useRouter();
+
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
   const { user } = useAuth();
   const [userId, setUserId] = useState(initialUserId);
   const [dates, setDates] = useState<string[]>(

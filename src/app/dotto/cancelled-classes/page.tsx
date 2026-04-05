@@ -21,13 +21,13 @@ export default async function CancelledClassesPage({
     .split(",")
     .map((v) => v.trim())
     .filter(Boolean);
-  const { cancelledClasses } = hasSearched
+  const { cancelledClasses, error } = hasSearched
     ? await fetchCancelledClasses({
         ...(parsedSubjectIds.length > 0 ? { subjectIds: parsedSubjectIds } : {}),
         ...(from ? { from } : {}),
         ...(until ? { until } : {}),
       })
-    : { cancelledClasses: [] };
+    : { cancelledClasses: [], error: undefined };
 
   return (
     <CancelledClassesPageClient
@@ -36,6 +36,7 @@ export default async function CancelledClassesPage({
       initialFrom={from ?? ""}
       initialUntil={until ?? ""}
       hasSearched={hasSearched}
+      error={error}
     />
   );
 }
