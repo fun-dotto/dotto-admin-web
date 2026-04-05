@@ -102,10 +102,16 @@ export function MakeupClassesPageClient({
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>補講管理</span>
-            <Button variant="outline" onClick={handleFetch} disabled={isFetching}>
-              <RefreshCw className="mr-1 size-4" />
-              {isFetching ? "取得中..." : "教務から取得"}
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={handleFetch} disabled={isFetching}>
+                <RefreshCw className="mr-1 size-4" />
+                {isFetching ? "取得中..." : "教務から取得"}
+              </Button>
+              <Button onClick={() => router.push("/dotto/makeup-classes/new")}>
+                <Plus className="mr-1 size-4" />
+                新規追加
+              </Button>
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">

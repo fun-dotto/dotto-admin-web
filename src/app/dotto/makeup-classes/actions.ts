@@ -4,6 +4,7 @@ import { api } from "@/lib/api";
 import type { components } from "@/types/openapi";
 
 export type MakeupClass = components["schemas"]["AcademicService.MakeupClass"];
+export type MakeupClassRequest = components["schemas"]["AcademicService.MakeupClassRequest"];
 
 interface ListFilters {
   subjectIds?: string[];
@@ -35,6 +36,18 @@ export async function fetchFromAcademicSystem(): Promise<{
     return { fetched: [], error: `補講の取得に失敗しました (${response.status})` };
   }
   return { fetched: data.makeupClasses };
+}
+
+export async function createMakeupClass(
+  request: MakeupClassRequest,
+): Promise<{ makeupClass?: MakeupClass; error?: string }> {
+  const { data, error, response } = await api.POST("/v1/makeupClasses", {
+    body: request,
+  });
+  if (error || !data) {
+    return { error: `補講の作成に失敗しました (${response.status})` };
+  }
+  return { makeupClass: data.makeupClass };
 }
 
 export async function deleteMakeupClass(
