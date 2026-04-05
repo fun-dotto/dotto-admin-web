@@ -16,6 +16,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { PERIOD_LABEL, type Period } from "@/app/dotto/timetable/constants";
 import { Plus, Search, RefreshCw, Trash2, X } from "lucide-react";
@@ -228,9 +239,27 @@ export function CancelledClassesPageClient({
                     <TableCell>{PERIOD_LABEL[item.period as Period] ?? item.period}</TableCell>
                     <TableCell>{item.comment}</TableCell>
                     <TableCell>
-                      <Button size="icon-sm" variant="ghost" onClick={() => handleDelete(item.id)}>
-                        <Trash2 className="size-4 text-red-600" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="icon-sm" variant="ghost">
+                            <Trash2 className="size-4 text-red-600" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>休講を削除しますか？</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              {item.subject.name} ({new Date(item.date).toLocaleDateString("ja-JP")} {PERIOD_LABEL[item.period as Period] ?? item.period}) を削除します。この操作は取り消せません。
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>キャンセル</AlertDialogCancel>
+                            <AlertDialogAction variant="destructive" onClick={() => handleDelete(item.id)}>
+                              削除
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </TableCell>
                   </TableRow>
                 ))}
