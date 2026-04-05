@@ -20,6 +20,7 @@ interface SubjectsPageProps {
     semesters?: string;
     requirementTypes?: string;
     culturalSubjectCategories?: string;
+    searched?: string;
   }>;
 }
 
@@ -37,10 +38,9 @@ export default async function SubjectsPage({ searchParams }: SubjectsPageProps) 
   const semesters = parseArrayParam<CourseSemester>(params.semesters);
   const requirementTypes = parseArrayParam<SubjectRequirementType>(params.requirementTypes);
   const culturalSubjectCategories = parseArrayParam<CulturalSubjectCategory>(params.culturalSubjectCategories);
+  const hasSearched = params.searched === "1";
 
-  const hasFilters = query || grades.length || courses.length || classes.length || semesters.length || requirementTypes.length || culturalSubjectCategories.length;
-
-  const { subjects } = hasFilters
+  const { subjects } = hasSearched
     ? await fetchSubjects({ q: query || undefined, grades, courses, classes, semesters, requirementTypes, culturalSubjectCategories })
     : { subjects: [] as never[] };
 
@@ -54,7 +54,7 @@ export default async function SubjectsPage({ searchParams }: SubjectsPageProps) 
       initialSemesters={semesters}
       initialRequirementTypes={requirementTypes}
       initialCulturalSubjectCategories={culturalSubjectCategories}
-      hasSearched={!!hasFilters}
+      hasSearched={hasSearched}
     />
   );
 }

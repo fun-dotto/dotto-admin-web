@@ -88,8 +88,8 @@ export function SubjectsPageClient({
     if (requirementType) params.set("requirementTypes", requirementType);
     if (culturalSubjectCategory) params.set("culturalSubjectCategories", culturalSubjectCategory);
 
-    const qs = params.toString();
-    router.push(qs ? `/dotto/subjects?${qs}` : "/dotto/subjects");
+    params.set("searched", "1");
+    router.push(`/dotto/subjects?${params.toString()}`);
   };
 
   const handleDeleteOpen = (subject: SubjectSummary) => {
