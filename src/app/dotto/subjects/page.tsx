@@ -20,7 +20,6 @@ interface SubjectsPageProps {
     semesters?: string;
     requirementTypes?: string;
     culturalSubjectCategories?: string;
-    searched?: string;
   }>;
 }
 
@@ -38,11 +37,8 @@ export default async function SubjectsPage({ searchParams }: SubjectsPageProps) 
   const semesters = parseArrayParam<CourseSemester>(params.semesters);
   const requirementTypes = parseArrayParam<SubjectRequirementType>(params.requirementTypes);
   const culturalSubjectCategories = parseArrayParam<CulturalSubjectCategory>(params.culturalSubjectCategories);
-  const hasSearched = params.searched === "1";
 
-  const { subjects, error } = hasSearched
-    ? await fetchSubjects({ q: query || undefined, grades, courses, classes, semesters, requirementTypes, culturalSubjectCategories })
-    : { subjects: [] as never[], error: undefined };
+  const { subjects, error } = await fetchSubjects({ q: query || undefined, grades, courses, classes, semesters, requirementTypes, culturalSubjectCategories });
 
   return (
     <SubjectsPageClient
@@ -54,7 +50,6 @@ export default async function SubjectsPage({ searchParams }: SubjectsPageProps) 
       initialSemesters={semesters}
       initialRequirementTypes={requirementTypes}
       initialCulturalSubjectCategories={culturalSubjectCategories}
-      hasSearched={hasSearched}
       error={error}
     />
   );

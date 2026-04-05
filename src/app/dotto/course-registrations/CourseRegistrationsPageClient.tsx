@@ -14,13 +14,16 @@ import { deleteRegistration, fetchRegistrations } from "./actions";
 import { FilterSemester } from "./constants";
 import type { Registration } from "./constants";
 import type { SubjectSummary } from "@/app/dotto/subjects/constants";
+import { ErrorToast } from "@/components/error-toast";
 
 interface CourseRegistrationsPageClientProps {
   subjects: SubjectSummary[];
+  error?: string;
 }
 
 export function CourseRegistrationsPageClient({
   subjects,
+  error,
 }: CourseRegistrationsPageClientProps) {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [userId, setUserId] = useState("");
@@ -28,7 +31,6 @@ export function CourseRegistrationsPageClient({
     FilterSemester.spring,
   );
   const [isSearching, setIsSearching] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Registration | null>(null);
@@ -42,7 +44,6 @@ export function CourseRegistrationsPageClient({
   const handleSearch = async () => {
     if (!userId.trim()) return;
     setIsSearching(true);
-    setHasSearched(true);
     try {
       const result = await fetchRegistrations(userId.trim(), semester);
       if (result.error) {
@@ -85,6 +86,7 @@ export function CourseRegistrationsPageClient({
 
   return (
     <AuthenticatedLayout>
+      <ErrorToast error={error} />
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -107,11 +109,7 @@ export function CourseRegistrationsPageClient({
             isSearching={isSearching}
           />
 
-          {!hasSearched ? (
-            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
-              ユーザーIDと開講時期を指定して検索してください
-            </div>
-          ) : registrations.length === 0 ? (
+          {registrations.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               履修情報がありません
             </div>

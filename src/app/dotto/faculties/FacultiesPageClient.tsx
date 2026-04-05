@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -14,25 +14,20 @@ import { FacultyTable } from "@/components/faculties/FacultyTable";
 import { FacultyDeleteDialog } from "@/components/faculties/FacultyDeleteDialog";
 import { deleteFaculty } from "./actions";
 import type { Faculty } from "./constants";
+import { ErrorToast } from "@/components/error-toast";
 
 interface FacultiesPageClientProps {
   faculties: Faculty[];
   initialQuery: string;
-  hasSearched: boolean;
   error?: string;
 }
 
 export function FacultiesPageClient({
   faculties,
   initialQuery,
-  hasSearched,
   error,
 }: FacultiesPageClientProps) {
   const router = useRouter();
-
-  useEffect(() => {
-    if (error) toast.error(error);
-  }, [error]);
   const [query, setQuery] = useState(initialQuery);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -46,7 +41,6 @@ export function FacultiesPageClient({
     if (trimmedQuery) {
       params.set("q", trimmedQuery);
     }
-    params.set("searched", "1");
     router.push(`/dotto/faculties?${params.toString()}`);
   };
 
@@ -76,6 +70,7 @@ export function FacultiesPageClient({
 
   return (
     <AuthenticatedLayout>
+      <ErrorToast error={error} />
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -105,11 +100,7 @@ export function FacultiesPageClient({
               検索
             </Button>
           </FilterBarFormLayout>
-          {!hasSearched ? (
-            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
-              検索条件を指定して検索してください
-            </div>
-          ) : faculties.length === 0 ? (
+          {faculties.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
               教員がありません
             </div>

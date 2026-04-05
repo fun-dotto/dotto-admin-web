@@ -22,7 +22,6 @@ export default async function PersonalCalendarItemsPage({
         items={[]}
         initialUserId={userId ?? ""}
         initialDates={dates}
-        hasSearched={false}
       />
     );
   }
@@ -34,7 +33,6 @@ export default async function PersonalCalendarItemsPage({
       items={items}
       initialUserId={userId}
       initialDates={dates}
-      hasSearched
       error={error}
     />
   );

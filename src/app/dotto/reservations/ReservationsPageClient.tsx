@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
@@ -19,13 +19,13 @@ import {
 import { Label } from "@/components/ui/label";
 import { Plus, Search, Trash2, X } from "lucide-react";
 import { deleteReservation, type Reservation } from "./actions";
+import { ErrorToast } from "@/components/error-toast";
 
 interface ReservationsPageClientProps {
   reservations: Reservation[];
   initialRoomIds: string;
   initialFrom: string;
   initialUntil: string;
-  hasSearched: boolean;
   error?: string;
 }
 
@@ -48,14 +48,9 @@ export function ReservationsPageClient({
   initialRoomIds,
   initialFrom,
   initialUntil,
-  hasSearched,
   error,
 }: ReservationsPageClientProps) {
   const router = useRouter();
-
-  useEffect(() => {
-    if (error) toast.error(error);
-  }, [error]);
   const [roomIds, setRoomIds] = useState<string[]>(
     initialRoomIds ? initialRoomIds.split(",").map(s => s.trim()).filter(Boolean) : [""]
   );
@@ -69,7 +64,6 @@ export function ReservationsPageClient({
     if (filledIds.length > 0) params.set("roomIds", filledIds.join(","));
     if (from) params.set("from", fromLocalDateTimeInputValue(from));
     if (until) params.set("until", fromLocalDateTimeInputValue(until));
-    params.set("searched", "1");
     router.push(`/dotto/reservations?${params.toString()}`);
   };
 
@@ -89,6 +83,7 @@ export function ReservationsPageClient({
 
   return (
     <AuthenticatedLayout>
+      <ErrorToast error={error} />
       <Card>
         <CardHeader>
           <CardTitle>予約管理</CardTitle>
@@ -186,11 +181,7 @@ export function ReservationsPageClient({
             </Button>
           </FilterBarFormLayout>
 
-          {!hasSearched ? (
-            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
-              検索条件を指定して検索してください
-            </div>
-          ) : reservations.length === 0 ? (
+          {reservations.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">予約がありません</div>
           ) : (
             <Table>

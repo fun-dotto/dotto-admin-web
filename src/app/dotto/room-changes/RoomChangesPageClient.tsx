@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
@@ -24,13 +24,13 @@ import {
   fetchFromAcademicSystem,
   type RoomChange,
 } from "./actions";
+import { ErrorToast } from "@/components/error-toast";
 
 interface RoomChangesPageClientProps {
   roomChanges: RoomChange[];
   initialSubjectIds: string;
   initialFrom: string;
   initialUntil: string;
-  hasSearched: boolean;
   error?: string;
 }
 
@@ -44,14 +44,9 @@ export function RoomChangesPageClient({
   initialSubjectIds,
   initialFrom,
   initialUntil,
-  hasSearched,
   error,
 }: RoomChangesPageClientProps) {
   const router = useRouter();
-
-  useEffect(() => {
-    if (error) toast.error(error);
-  }, [error]);
   const [subjectIds, setSubjectIds] = useState<string[]>(
     initialSubjectIds ? initialSubjectIds.split(",").map(s => s.trim()).filter(Boolean) : [""]
   );
@@ -66,7 +61,6 @@ export function RoomChangesPageClient({
     if (filledIds.length > 0) params.set("subjectIds", filledIds.join(","));
     if (from) params.set("from", from);
     if (until) params.set("until", until);
-    params.set("searched", "1");
     router.push(`/dotto/room-changes?${params.toString()}`);
   };
 
@@ -103,6 +97,7 @@ export function RoomChangesPageClient({
 
   return (
     <AuthenticatedLayout>
+      <ErrorToast error={error} />
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -206,11 +201,7 @@ export function RoomChangesPageClient({
             </Button>
           </FilterBarFormLayout>
 
-          {!hasSearched ? (
-            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
-              検索条件を指定して検索してください
-            </div>
-          ) : roomChanges.length === 0 ? (
+          {roomChanges.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">教室変更がありません</div>
           ) : (
             <Table>

@@ -8,26 +8,22 @@ interface MakeupClassesPageProps {
     subjectIds?: string;
     from?: string;
     until?: string;
-    searched?: string;
   }>;
 }
 
 export default async function MakeupClassesPage({
   searchParams,
 }: MakeupClassesPageProps) {
-  const { subjectIds, from, until, searched } = await searchParams;
-  const hasSearched = searched === "1";
+  const { subjectIds, from, until } = await searchParams;
   const parsedSubjectIds = (subjectIds ?? "")
     .split(",")
     .map((v) => v.trim())
     .filter(Boolean);
-  const { makeupClasses, error } = hasSearched
-    ? await fetchMakeupClasses({
-        ...(parsedSubjectIds.length > 0 ? { subjectIds: parsedSubjectIds } : {}),
-        ...(from ? { from } : {}),
-        ...(until ? { until } : {}),
-      })
-    : { makeupClasses: [], error: undefined };
+  const { makeupClasses, error } = await fetchMakeupClasses({
+    ...(parsedSubjectIds.length > 0 ? { subjectIds: parsedSubjectIds } : {}),
+    ...(from ? { from } : {}),
+    ...(until ? { until } : {}),
+  });
 
   return (
     <MakeupClassesPageClient
@@ -35,7 +31,6 @@ export default async function MakeupClassesPage({
       initialSubjectIds={subjectIds ?? ""}
       initialFrom={from ?? ""}
       initialUntil={until ?? ""}
-      hasSearched={hasSearched}
       error={error}
     />
   );

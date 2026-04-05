@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
@@ -24,13 +24,13 @@ import {
   fetchFromAcademicSystem,
   type MakeupClass,
 } from "./actions";
+import { ErrorToast } from "@/components/error-toast";
 
 interface MakeupClassesPageClientProps {
   makeupClasses: MakeupClass[];
   initialSubjectIds: string;
   initialFrom: string;
   initialUntil: string;
-  hasSearched: boolean;
   error?: string;
 }
 
@@ -44,14 +44,9 @@ export function MakeupClassesPageClient({
   initialSubjectIds,
   initialFrom,
   initialUntil,
-  hasSearched,
   error,
 }: MakeupClassesPageClientProps) {
   const router = useRouter();
-
-  useEffect(() => {
-    if (error) toast.error(error);
-  }, [error]);
   const [subjectIds, setSubjectIds] = useState<string[]>(
     initialSubjectIds ? initialSubjectIds.split(",").map(s => s.trim()).filter(Boolean) : [""]
   );
@@ -66,7 +61,6 @@ export function MakeupClassesPageClient({
     if (filledIds.length > 0) params.set("subjectIds", filledIds.join(","));
     if (from) params.set("from", from);
     if (until) params.set("until", until);
-    params.set("searched", "1");
     router.push(`/dotto/makeup-classes?${params.toString()}`);
   };
 
@@ -103,6 +97,7 @@ export function MakeupClassesPageClient({
 
   return (
     <AuthenticatedLayout>
+      <ErrorToast error={error} />
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -206,11 +201,7 @@ export function MakeupClassesPageClient({
             </Button>
           </FilterBarFormLayout>
 
-          {!hasSearched ? (
-            <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">
-              検索条件を指定して検索してください
-            </div>
-          ) : makeupClasses.length === 0 ? (
+          {makeupClasses.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">補講がありません</div>
           ) : (
             <Table>
