@@ -16,6 +16,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { PERIOD_LABEL, type Period } from "@/app/dotto/timetable/constants";
 import { Plus, Search, RefreshCw, Trash2, X } from "lucide-react";
@@ -102,10 +113,16 @@ export function MakeupClassesPageClient({
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>補講管理</span>
-            <Button variant="outline" onClick={handleFetch} disabled={isFetching}>
-              <RefreshCw className="mr-1 size-4" />
-              {isFetching ? "取得中..." : "教務から取得"}
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={handleFetch} disabled={isFetching}>
+                <RefreshCw className="mr-1 size-4" />
+                {isFetching ? "取得中..." : "教務から取得"}
+              </Button>
+              <Button onClick={() => router.push("/dotto/makeup-classes/new")}>
+                <Plus className="mr-1 size-4" />
+                新規追加
+              </Button>
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -222,9 +239,27 @@ export function MakeupClassesPageClient({
                     <TableCell>{PERIOD_LABEL[item.period as Period] ?? item.period}</TableCell>
                     <TableCell>{item.comment}</TableCell>
                     <TableCell>
-                      <Button size="icon-sm" variant="ghost" onClick={() => handleDelete(item.id)}>
-                        <Trash2 className="size-4 text-red-600" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="icon-sm" variant="ghost">
+                            <Trash2 className="size-4 text-red-600" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>補講を削除しますか？</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              {item.subject.name} ({new Date(item.date).toLocaleDateString("ja-JP")} {PERIOD_LABEL[item.period as Period] ?? item.period}) を削除します。この操作は取り消せません。
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>キャンセル</AlertDialogCancel>
+                            <AlertDialogAction variant="destructive" onClick={() => handleDelete(item.id)}>
+                              削除
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </TableCell>
                   </TableRow>
                 ))}
