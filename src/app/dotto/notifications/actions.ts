@@ -17,13 +17,13 @@ export async function fetchNotifications(
   if (filters.notifyAtTo) query.notifyAtTo = filters.notifyAtTo;
   if (filters.isNotified !== undefined) query.isNotified = filters.isNotified;
 
-  const { data, error, response } = await api.GET("/v1/notifications", {
+  const { data, error } = await api.GET("/v1/notifications", {
     params: { query },
   });
   if (error || !data) {
     return {
       notifications: [],
-      error: `通知の取得に失敗しました (${response.status})`,
+      error: "通知の取得に失敗しました",
     };
   }
   return { notifications: data.notifications };
@@ -32,11 +32,11 @@ export async function fetchNotifications(
 export async function createNotification(
   request: NotificationRequest,
 ): Promise<{ notification?: Notification; error?: string }> {
-  const { data, error, response } = await api.POST("/v1/notifications", {
+  const { data, error } = await api.POST("/v1/notifications", {
     body: request,
   });
   if (error || !data) {
-    return { error: `通知の作成に失敗しました (${response.status})` };
+    return { error: "通知の作成に失敗しました" };
   }
   return { notification: data.notification };
 }
