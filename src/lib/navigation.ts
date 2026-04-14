@@ -11,7 +11,6 @@ import {
   Ban,
   Wrench,
   Megaphone,
-  Send,
   UserRound,
   UserSearch,
   Users,
@@ -104,12 +103,6 @@ export const navigationSections: NavigationSection[] = [
         href: "/dotto/course-registrations",
         icon: ClipboardList,
       },
-      {
-        title: "イレギュラー通知",
-        description: "",
-        href: "/dotto/notify-irregularities",
-        icon: Send,
-      },
     ],
   },
   {
@@ -124,6 +117,12 @@ export const navigationSections: NavigationSection[] = [
         description: "",
         href: "/dotto/users",
         icon: UserSearch,
+      },
+      {
+        title: "通知",
+        description: "",
+        href: "/dotto/notifications",
+        icon: BellRing,
       },
       {
         title: "FCMトークン",
