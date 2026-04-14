@@ -20,10 +20,11 @@ export async function fetchNotifications(
   const { data, error, response } = await api.GET("/v1/notifications", {
     params: { query },
   });
+  const status = response.status;
   if (error || !data) {
     return {
       notifications: [],
-      error: `通知の取得に失敗しました (${response.status})`,
+      error: `通知の取得に失敗しました (${status})`,
     };
   }
   return { notifications: data.notifications };
@@ -35,8 +36,9 @@ export async function createNotification(
   const { data, error, response } = await api.POST("/v1/notifications", {
     body: request,
   });
+  const status = response.status;
   if (error || !data) {
-    return { error: `通知の作成に失敗しました (${response.status})` };
+    return { error: `通知の作成に失敗しました (${status})` };
   }
   return { notification: data.notification };
 }
