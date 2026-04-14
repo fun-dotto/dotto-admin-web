@@ -103,12 +103,6 @@ export const navigationSections: NavigationSection[] = [
         href: "/dotto/course-registrations",
         icon: ClipboardList,
       },
-      {
-        title: "通知",
-        description: "",
-        href: "/dotto/notifications",
-        icon: BellRing,
-      },
     ],
   },
   {
@@ -123,6 +117,12 @@ export const navigationSections: NavigationSection[] = [
         description: "",
         href: "/dotto/users",
         icon: UserSearch,
+      },
+      {
+        title: "通知",
+        description: "",
+        href: "/dotto/notifications",
+        icon: BellRing,
       },
       {
         title: "FCMトークン",
