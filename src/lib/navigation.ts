@@ -14,6 +14,7 @@ import {
   UserRound,
   UserSearch,
   Users,
+  Armchair,
 } from "lucide-react";
 
 export interface NavigationItem {
@@ -60,6 +61,12 @@ export const navigationSections: NavigationSection[] = [
         description: "",
         href: "/dotto/facility-rooms",
         icon: DoorOpen,
+      },
+      {
+        title: "教員室",
+        description: "",
+        href: "/dotto/faculty-rooms",
+        icon: Armchair,
       },
       {
         title: "時間割",
