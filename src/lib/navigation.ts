@@ -15,6 +15,7 @@ import {
   UserSearch,
   Users,
   Armchair,
+  UtensilsCrossed,
 } from "lucide-react";
 
 export interface NavigationItem {
@@ -114,7 +115,14 @@ export const navigationSections: NavigationSection[] = [
   },
   {
     title: "Funch",
-    items: [],
+    items: [
+      {
+        title: "メニュー",
+        description: "",
+        href: "/dotto/menu-items",
+        icon: UtensilsCrossed,
+      },
+    ],
   },
   {
     title: "User",
