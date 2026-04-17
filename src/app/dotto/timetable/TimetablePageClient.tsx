@@ -21,10 +21,11 @@ import {
 } from "./constants";
 import type { SubjectSummary } from "@/app/dotto/subjects/constants";
 import { ErrorToast } from "@/components/error-toast";
+import type { AcademicYear } from "@/lib/academic-year";
 
 interface TimetablePageClientProps {
   initialItems: TimetableItem[];
-  initialYear: number;
+  initialYear: AcademicYear;
   subjects: SubjectSummary[];
   error?: string;
 }
