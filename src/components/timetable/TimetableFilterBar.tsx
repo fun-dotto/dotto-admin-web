@@ -17,11 +17,16 @@ import {
   TIMETABLE_SEMESTER_LABEL,
   TIMETABLE_SEMESTER_VALUES,
 } from "@/app/dotto/timetable/constants";
+import {
+  ACADEMIC_YEAR_LABEL,
+  ACADEMIC_YEAR_VALUES,
+  AcademicYear,
+} from "@/lib/academic-year";
 import { Search } from "lucide-react";
 
 interface TimetableFilterBarProps {
-  year: number;
-  onYearChange: (year: number) => void;
+  year: AcademicYear;
+  onYearChange: (year: AcademicYear) => void;
   timetableSemester: TimetableSemester;
   onTimetableSemesterChange: (semester: TimetableSemester) => void;
   onSearch: () => void;
@@ -36,9 +41,6 @@ export function TimetableFilterBar({
   onSearch,
   isSearching,
 }: TimetableFilterBarProps) {
-  const currentYear = new Date().getFullYear();
-  const yearOptions = [currentYear + 1, currentYear, currentYear - 1, currentYear - 2];
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSearch();
@@ -53,15 +55,15 @@ export function TimetableFilterBar({
         <Label htmlFor="year">年度</Label>
         <Select
           value={String(year)}
-          onValueChange={(v) => onYearChange(Number(v))}
+          onValueChange={(v) => onYearChange(Number(v) as AcademicYear)}
         >
           <SelectTrigger id="year" className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {yearOptions.map((y) => (
+            {ACADEMIC_YEAR_VALUES.map((y) => (
               <SelectItem key={y} value={String(y)}>
-                {y}年度
+                {ACADEMIC_YEAR_LABEL[y]}
               </SelectItem>
             ))}
           </SelectContent>
