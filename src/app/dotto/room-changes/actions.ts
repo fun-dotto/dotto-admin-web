@@ -27,17 +27,6 @@ export async function fetchRoomChanges(
   return { roomChanges: data.roomChanges };
 }
 
-export async function fetchFromAcademicSystem(): Promise<{
-  fetched: RoomChange[];
-  error?: string;
-}> {
-  const { data, error, response } = await api.PUT("/v1/roomChanges");
-  if (error || !data) {
-    return { fetched: [], error: `教室変更の取得に失敗しました (${response.status})` };
-  }
-  return { fetched: data.roomChanges };
-}
-
 export async function createRoomChange(
   request: RoomChangeRequest,
 ): Promise<{ roomChange?: RoomChange; error?: string }> {
