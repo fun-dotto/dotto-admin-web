@@ -45,7 +45,8 @@ export function NotificationTable({
   onDelete,
 }: NotificationTableProps) {
   const sorted = [...notifications].sort(
-    (a, b) => new Date(b.notifyAt).getTime() - new Date(a.notifyAt).getTime(),
+    (a, b) =>
+      new Date(b.notifyAfter).getTime() - new Date(a.notifyAfter).getTime(),
   );
 
   return (
@@ -53,7 +54,7 @@ export function NotificationTable({
       <TableHeader>
         <TableRow>
           <TableHead>タイトル</TableHead>
-          <TableHead>通知予定日時</TableHead>
+          <TableHead>通知送信期間</TableHead>
           <TableHead>対象人数</TableHead>
           <TableHead>ステータス</TableHead>
           <TableHead className="w-12"></TableHead>
@@ -68,7 +69,8 @@ export function NotificationTable({
                 {notification.title}
               </TableCell>
               <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
-                {formatDateTime(notification.notifyAt)}
+                {formatDateTime(notification.notifyAfter)} 〜{" "}
+                {formatDateTime(notification.notifyBefore)}
               </TableCell>
               <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
                 {notification.targetUserIds.length}
