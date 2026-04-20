@@ -46,8 +46,11 @@ export function NotificationForm({
   const [title, setTitle] = useState(notification?.title ?? "");
   const [message, setMessage] = useState(notification?.message ?? "");
   const [url, setUrl] = useState(notification?.url ?? "");
-  const [notifyAt, setNotifyAt] = useState(
-    notification ? toDatetimeLocal(notification.notifyAt) : "",
+  const [notifyAfter, setNotifyAfter] = useState(
+    notification ? toDatetimeLocal(notification.notifyAfter) : "",
+  );
+  const [notifyBefore, setNotifyBefore] = useState(
+    notification ? toDatetimeLocal(notification.notifyBefore) : "",
   );
   const [targetUserIds, setTargetUserIds] = useState(
     notification?.targetUserIds.join("\n") ?? "",
@@ -67,7 +70,8 @@ export function NotificationForm({
     const request: NotificationRequest = {
       title,
       message,
-      notifyAt: fromDatetimeLocal(notifyAt),
+      notifyAfter: fromDatetimeLocal(notifyAfter),
+      notifyBefore: fromDatetimeLocal(notifyBefore),
       targetUserIds: ids,
     };
 
@@ -101,12 +105,22 @@ export function NotificationForm({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="notifyAt">通知予定日時</Label>
+        <Label htmlFor="notifyAfter">通知送信可能日時（開始）</Label>
         <Input
-          id="notifyAt"
+          id="notifyAfter"
           type="datetime-local"
-          value={notifyAt}
-          onChange={(e) => setNotifyAt(e.target.value)}
+          value={notifyAfter}
+          onChange={(e) => setNotifyAfter(e.target.value)}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="notifyBefore">通知送信期限日時（終了）</Label>
+        <Input
+          id="notifyBefore"
+          type="datetime-local"
+          value={notifyBefore}
+          onChange={(e) => setNotifyBefore(e.target.value)}
           required
         />
       </div>

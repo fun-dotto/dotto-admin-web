@@ -29,12 +29,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { PERIOD_LABEL, type Period } from "@/app/dotto/timetable/constants";
-import { Plus, Search, RefreshCw, Trash2, X } from "lucide-react";
-import {
-  deleteMakeupClass,
-  fetchFromAcademicSystem,
-  type MakeupClass,
-} from "./actions";
+import { Plus, Search, Trash2, X } from "lucide-react";
+import { deleteMakeupClass, type MakeupClass } from "./actions";
 import { ErrorToast } from "@/components/error-toast";
 
 interface MakeupClassesPageClientProps {
@@ -63,7 +59,6 @@ export function MakeupClassesPageClient({
   );
   const [from, setFrom] = useState(toDateInputValue(initialFrom));
   const [until, setUntil] = useState(toDateInputValue(initialUntil));
-  const [isFetching, setIsFetching] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,23 +68,6 @@ export function MakeupClassesPageClient({
     if (from) params.set("from", from);
     if (until) params.set("until", until);
     router.push(`/dotto/makeup-classes?${params.toString()}`);
-  };
-
-  const handleFetch = async () => {
-    setIsFetching(true);
-    try {
-      const result = await fetchFromAcademicSystem();
-      if (result.error) {
-        toast.error(result.error);
-        return;
-      }
-      toast.success(`${result.fetched.length}件の補講を取得しました`);
-      router.refresh();
-    } catch {
-      toast.error("エラーが発生しました");
-    } finally {
-      setIsFetching(false);
-    }
   };
 
   const handleDelete = async (id: string) => {
@@ -113,16 +91,10 @@ export function MakeupClassesPageClient({
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>補講管理</span>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={handleFetch} disabled={isFetching}>
-                <RefreshCw className="mr-1 size-4" />
-                {isFetching ? "取得中..." : "教務から取得"}
-              </Button>
-              <Button onClick={() => router.push("/dotto/makeup-classes/new")}>
-                <Plus className="mr-1 size-4" />
-                新規追加
-              </Button>
-            </div>
+            <Button onClick={() => router.push("/dotto/makeup-classes/new")}>
+              <Plus className="mr-1 size-4" />
+              新規追加
+            </Button>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">

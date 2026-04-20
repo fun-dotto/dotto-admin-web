@@ -27,17 +27,6 @@ export async function fetchMakeupClasses(
   return { makeupClasses: data.makeupClasses };
 }
 
-export async function fetchFromAcademicSystem(): Promise<{
-  fetched: MakeupClass[];
-  error?: string;
-}> {
-  const { data, error, response } = await api.PUT("/v1/makeupClasses");
-  if (error || !data) {
-    return { fetched: [], error: `補講の取得に失敗しました (${response.status})` };
-  }
-  return { fetched: data.makeupClasses };
-}
-
 export async function createMakeupClass(
   request: MakeupClassRequest,
 ): Promise<{ makeupClass?: MakeupClass; error?: string }> {

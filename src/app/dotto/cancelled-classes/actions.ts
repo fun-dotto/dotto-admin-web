@@ -27,17 +27,6 @@ export async function fetchCancelledClasses(
   return { cancelledClasses: data.cancelledClasses };
 }
 
-export async function fetchFromAcademicSystem(): Promise<{
-  fetched: CancelledClass[];
-  error?: string;
-}> {
-  const { data, error, response } = await api.PUT("/v1/cancelledClasses");
-  if (error || !data) {
-    return { fetched: [], error: `休講の取得に失敗しました (${response.status})` };
-  }
-  return { fetched: data.cancelledClasses };
-}
-
 export async function createCancelledClass(
   request: CancelledClassRequest,
 ): Promise<{ cancelledClass?: CancelledClass; error?: string }> {
