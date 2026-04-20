@@ -188,7 +188,7 @@ export function ReservationsPageClient({
               <TableHeader>
                 <TableRow>
                   <TableHead>予約ID</TableHead>
-                  <TableHead>教室ID</TableHead>
+                  <TableHead>教室</TableHead>
                   <TableHead>タイトル</TableHead>
                   <TableHead>開始</TableHead>
                   <TableHead>終了</TableHead>
@@ -199,7 +199,7 @@ export function ReservationsPageClient({
                 {reservations.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell className="font-mono text-xs">{item.id}</TableCell>
-                    <TableCell className="font-mono text-xs">{item.roomId}</TableCell>
+                    <TableCell>{item.room.name}</TableCell>
                     <TableCell>{item.title}</TableCell>
                     <TableCell>{new Date(item.startAt).toLocaleString("ja-JP")}</TableCell>
                     <TableCell>{new Date(item.endAt).toLocaleString("ja-JP")}</TableCell>
