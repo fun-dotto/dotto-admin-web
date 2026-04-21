@@ -1,16 +1,17 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  BookOpen,
-  Calendar,
-  CalendarDays,
-  ClipboardList,
-  DoorOpen,
-  DoorClosed,
-  DoorOpen as DoorOpenIcon,
-  BellRing,
+  ArrowRightLeft,
   Ban,
-  Wrench,
+  BellRing,
+  BookOpen,
+  CalendarCheck,
+  CalendarDays,
+  CalendarPlus,
+  Calendar,
+  ClipboardList,
+  KeyRound,
   Megaphone,
+  Presentation,
   UserRound,
   UserSearch,
   Users,
@@ -32,17 +33,6 @@ export interface NavigationSection {
 
 export const navigationSections: NavigationSection[] = [
   {
-    title: "Announcement",
-    items: [
-      {
-        title: "おしらせ",
-        description: "",
-        href: "/dotto/announcements",
-        icon: Megaphone,
-      },
-    ],
-  },
-  {
     title: "Academic",
     items: [
       {
@@ -61,7 +51,7 @@ export const navigationSections: NavigationSection[] = [
         title: "教室",
         description: "",
         href: "/dotto/facility-rooms",
-        icon: DoorOpen,
+        icon: Presentation,
       },
       {
         title: "教員室",
@@ -85,19 +75,19 @@ export const navigationSections: NavigationSection[] = [
         title: "補講",
         description: "",
         href: "/dotto/makeup-classes",
-        icon: Wrench,
+        icon: CalendarPlus,
       },
       {
         title: "教室変更",
         description: "",
         href: "/dotto/room-changes",
-        icon: DoorOpenIcon,
+        icon: ArrowRightLeft,
       },
       {
         title: "予約",
         description: "",
         href: "/dotto/reservations",
-        icon: DoorClosed,
+        icon: CalendarCheck,
       },
       {
         title: "個人カレンダー",
@@ -110,6 +100,17 @@ export const navigationSections: NavigationSection[] = [
         description: "",
         href: "/dotto/course-registrations",
         icon: ClipboardList,
+      },
+    ],
+  },
+  {
+    title: "Announcement",
+    items: [
+      {
+        title: "おしらせ",
+        description: "",
+        href: "/dotto/announcements",
+        icon: Megaphone,
       },
     ],
   },
@@ -143,7 +144,7 @@ export const navigationSections: NavigationSection[] = [
         title: "FCMトークン",
         description: "",
         href: "/dotto/fcm-tokens",
-        icon: BellRing,
+        icon: KeyRound,
       },
     ],
   },
