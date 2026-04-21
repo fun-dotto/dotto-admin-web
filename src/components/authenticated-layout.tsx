@@ -1,17 +1,22 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { CircularProgress } from "@/components/ui/circular-progress";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { resolvePageTitle } from "@/lib/page-title";
 
 interface AuthenticatedLayoutProps {
   children: React.ReactNode;
+  actions?: React.ReactNode;
 }
 
-export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
+export function AuthenticatedLayout({ children, actions }: AuthenticatedLayoutProps) {
   const { user, loading, authError, signInWithGoogle } = useAuth();
+  const pathname = usePathname();
+  const title = resolvePageTitle(pathname);
 
   if (loading) {
     return (
@@ -68,6 +73,12 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />
+          {title && (
+            <h1 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
+              {title}
+            </h1>
+          )}
+          {actions && <div className="ml-auto flex items-center gap-2">{actions}</div>}
         </header>
         <main className="flex-1 p-6">
           {children}
