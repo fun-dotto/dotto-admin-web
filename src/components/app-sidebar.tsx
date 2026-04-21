@@ -38,7 +38,7 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarHeader>
         <EnvironmentSwitcher />
       </SidebarHeader>
@@ -50,7 +50,11 @@ export function AppSidebar() {
               <SidebarMenu>
                 {group.items.map((item) => (
                   <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton asChild isActive={item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)}
+                      tooltip={item.title}
+                    >
                       <Link href={item.href}>
                         <item.icon />
                         <span>{item.title}</span>
