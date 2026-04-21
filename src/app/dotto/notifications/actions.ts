@@ -57,6 +57,21 @@ export async function updateNotification(
   return { notification: data.notification };
 }
 
+export async function dispatchNotifications(
+  notificationIds: string[],
+): Promise<{ notifications?: Notification[]; error?: string }> {
+  const { data, error, response } = await api.POST(
+    "/v1/notifications/dispatch",
+    {
+      body: { notificationIds },
+    },
+  );
+  if (error || !data) {
+    return { error: `通知の送信に失敗しました (${response.status})` };
+  }
+  return { notifications: data.notifications };
+}
+
 export async function deleteNotification(
   id: string,
 ): Promise<{ success: boolean; error?: string }> {
