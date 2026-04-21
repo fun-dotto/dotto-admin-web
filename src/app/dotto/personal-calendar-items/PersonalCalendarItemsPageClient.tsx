@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { FilterBarField, FilterBarFormLayout } from "@/components/ui/filter-bar-layout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -76,9 +76,6 @@ export function PersonalCalendarItemsPageClient({
     <AuthenticatedLayout>
       <ErrorToast error={error} />
       <Card>
-        <CardHeader>
-          <CardTitle>個人カレンダー</CardTitle>
-        </CardHeader>
         <CardContent className="space-y-4">
           <FilterBarFormLayout
             onSubmit={handleSearch}

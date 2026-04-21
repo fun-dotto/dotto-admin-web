@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { DottoUserTable } from "@/components/dotto-users/DottoUserTable";
 import type { User } from "./constants";
@@ -33,9 +33,6 @@ export function UsersPageClient({ users, error }: UsersPageClientProps) {
       <ErrorToast error={error} />
       <div className="space-y-4">
         <Card>
-          <CardHeader>
-            <CardTitle>ユーザー一覧</CardTitle>
-          </CardHeader>
           <CardContent className="space-y-4">
             <Input
               value={query}

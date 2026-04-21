@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -76,9 +76,6 @@ export function NewMakeupClassPageClient() {
         </Breadcrumb>
 
         <Card>
-          <CardHeader>
-            <CardTitle>補講を作成</CardTitle>
-          </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">

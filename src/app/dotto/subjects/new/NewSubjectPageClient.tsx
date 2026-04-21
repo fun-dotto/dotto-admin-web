@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -34,9 +34,6 @@ export function NewSubjectPageClient() {
         </Breadcrumb>
 
         <Card>
-          <CardHeader>
-            <CardTitle>科目の新規作成</CardTitle>
-          </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-zinc-600 dark:text-zinc-400">
               現在のAPIでは科目の新規作成はサポートされていません。

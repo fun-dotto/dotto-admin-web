@@ -442,57 +442,57 @@ export function UsersPageClient({
   }
 
   return (
-    <AuthenticatedLayout>
+    <AuthenticatedLayout
+      actions={
+        !isSearchMode ? (
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-normal text-zinc-500 dark:text-zinc-400">
+                表示件数
+              </span>
+              <Select
+                value={pageSize.toString()}
+                onValueChange={handlePageSizeChange}
+              >
+                <SelectTrigger className="w-20">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {PAGE_SIZE_OPTIONS.map((size) => (
+                    <SelectItem key={size} value={size.toString()}>
+                      {size}件
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={handlePrevious}
+                disabled={!hasPrevious}
+              >
+                <ChevronLeft className="size-4" />
+              </Button>
+              <span className="min-w-16 text-center text-sm font-normal text-zinc-500 dark:text-zinc-400">
+                ページ {currentPage}
+              </span>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={handleNext}
+                disabled={!hasNext}
+              >
+                <ChevronRight className="size-4" />
+              </Button>
+            </div>
+          </div>
+        ) : undefined
+      }
+    >
         <Card>
-          <CardHeader className="space-y-4">
-            <CardTitle className="flex items-center justify-between">
-              <span>ユーザー一覧</span>
-              {!isSearchMode && (
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-normal text-zinc-500 dark:text-zinc-400">
-                      表示件数
-                    </span>
-                    <Select
-                      value={pageSize.toString()}
-                      onValueChange={handlePageSizeChange}
-                    >
-                      <SelectTrigger className="w-20">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {PAGE_SIZE_OPTIONS.map((size) => (
-                          <SelectItem key={size} value={size.toString()}>
-                            {size}件
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      onClick={handlePrevious}
-                      disabled={!hasPrevious}
-                    >
-                      <ChevronLeft className="size-4" />
-                    </Button>
-                    <span className="min-w-16 text-center text-sm font-normal text-zinc-500 dark:text-zinc-400">
-                      ページ {currentPage}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      onClick={handleNext}
-                      disabled={!hasNext}
-                    >
-                      <ChevronRight className="size-4" />
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </CardTitle>
+          <CardHeader>
             <UserFilters
               searchQuery={searchQuery}
               statusFilter={statusFilter}

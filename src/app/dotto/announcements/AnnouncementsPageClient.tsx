@@ -6,7 +6,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { AnnouncementTable } from "@/components/announcements/AnnouncementTable";
 import { AnnouncementDeleteDialog } from "@/components/announcements/AnnouncementDeleteDialog";
@@ -54,20 +54,18 @@ export function AnnouncementsPageClient({
   };
 
   return (
-    <AuthenticatedLayout>
+    <AuthenticatedLayout
+      actions={
+        <Button asChild size="sm">
+          <Link href="/dotto/announcements/new">
+            <Plus className="mr-1 size-4" />
+            追加
+          </Link>
+        </Button>
+      }
+    >
       <ErrorToast error={error} />
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>おしらせ管理</span>
-            <Button asChild size="sm">
-              <Link href="/dotto/announcements/new">
-                <Plus className="mr-1 size-4" />
-                新規作成
-              </Link>
-            </Button>
-          </CardTitle>
-        </CardHeader>
         <CardContent>
           {announcements.length === 0 ? (
             <div className="py-8 text-center text-zinc-500 dark:text-zinc-400">

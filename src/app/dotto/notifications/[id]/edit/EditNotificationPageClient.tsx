@@ -4,12 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -67,9 +62,6 @@ export function EditNotificationPageClient({
         </Breadcrumb>
 
         <Card>
-          <CardHeader>
-            <CardTitle>通知を編集</CardTitle>
-          </CardHeader>
           <CardContent>
             <NotificationForm
               notification={notification}

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { FilterBarField, FilterBarFormLayout } from "@/components/ui/filter-bar-layout";
 import { Input } from "@/components/ui/input";
 import {
@@ -85,18 +85,16 @@ export function MakeupClassesPageClient({
   };
 
   return (
-    <AuthenticatedLayout>
+    <AuthenticatedLayout
+      actions={
+        <Button onClick={() => router.push("/dotto/makeup-classes/new")} size="sm">
+          <Plus className="mr-1 size-4" />
+          追加
+        </Button>
+      }
+    >
       <ErrorToast error={error} />
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>補講管理</span>
-            <Button onClick={() => router.push("/dotto/makeup-classes/new")}>
-              <Plus className="mr-1 size-4" />
-              新規追加
-            </Button>
-          </CardTitle>
-        </CardHeader>
         <CardContent className="space-y-4">
           <FilterBarFormLayout
             onSubmit={handleSearch}

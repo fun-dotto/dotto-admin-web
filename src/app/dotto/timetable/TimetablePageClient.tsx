@@ -5,7 +5,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Grid3X3, List, Plus } from "lucide-react";
 import { TimetableItemTable } from "@/components/timetable/TimetableItemTable";
 import { TimetableGridView } from "@/components/timetable/TimetableGridView";
@@ -99,20 +99,18 @@ export function TimetablePageClient({
   };
 
   return (
-    <AuthenticatedLayout>
+    <AuthenticatedLayout
+      actions={
+        <Button asChild size="sm">
+          <Link href="/dotto/timetable/new">
+            <Plus className="mr-1 size-4" />
+            追加
+          </Link>
+        </Button>
+      }
+    >
       <ErrorToast error={error} />
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>時間割管理</span>
-            <Button asChild size="sm">
-              <Link href="/dotto/timetable/new">
-                <Plus className="mr-1 size-4" />
-                新規作成
-              </Link>
-            </Button>
-          </CardTitle>
-        </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-end justify-between gap-4">
             <div className="flex-1">

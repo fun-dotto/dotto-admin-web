@@ -6,7 +6,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { FilterBarField, FilterBarFormLayout } from "@/components/ui/filter-bar-layout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -83,20 +83,18 @@ export function FacilityRoomsPageClient({
   };
 
   return (
-    <AuthenticatedLayout>
+    <AuthenticatedLayout
+      actions={
+        <Button asChild size="sm">
+          <Link href="/dotto/facility-rooms/new">
+            <Plus className="mr-1 size-4" />
+            追加
+          </Link>
+        </Button>
+      }
+    >
       <ErrorToast error={error} />
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>教室管理</span>
-            <Button asChild size="sm">
-              <Link href="/dotto/facility-rooms/new">
-                <Plus className="mr-1 size-4" />
-                新規作成
-              </Link>
-            </Button>
-          </CardTitle>
-        </CardHeader>
         <CardContent className="space-y-4">
           <FilterBarFormLayout
             onSubmit={handleSearch}

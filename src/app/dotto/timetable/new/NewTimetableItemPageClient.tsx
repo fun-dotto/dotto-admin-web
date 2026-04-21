@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AuthenticatedLayout } from "@/components/authenticated-layout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -66,9 +66,6 @@ export function NewTimetableItemPageClient({
         </Breadcrumb>
 
         <Card>
-          <CardHeader>
-            <CardTitle>時間割を作成</CardTitle>
-          </CardHeader>
           <CardContent>
             <TimetableItemForm
               subjects={subjects}
