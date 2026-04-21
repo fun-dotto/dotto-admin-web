@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Trash2 } from "lucide-react";
 import type { Notification } from "@/app/dotto/notifications/constants";
 import {
   getNotificationStatus,
@@ -51,6 +51,7 @@ export function NotificationTable({
   onToggleSelect,
   onToggleSelectAll,
 }: NotificationTableProps) {
+  const router = useRouter();
   const sorted = [...notifications].sort(
     (a, b) =>
       new Date(b.notifyAfter).getTime() - new Date(a.notifyAfter).getTime(),
@@ -90,8 +91,14 @@ export function NotificationTable({
         {sorted.map((notification) => {
           const status = getNotificationStatus(notification);
           return (
-            <TableRow key={notification.id}>
-              <TableCell>
+            <TableRow
+              key={notification.id}
+              onClick={() =>
+                router.push(`/dotto/notifications/${notification.id}/edit`)
+              }
+              className="cursor-pointer"
+            >
+              <TableCell onClick={(e) => e.stopPropagation()}>
                 <Checkbox
                   checked={selectedSet.has(notification.id)}
                   onCheckedChange={() => onToggleSelect(notification.id)}
@@ -113,7 +120,7 @@ export function NotificationTable({
                   {STATUS_LABEL[status]}
                 </Badge>
               </TableCell>
-              <TableCell>
+              <TableCell onClick={(e) => e.stopPropagation()}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon-sm">
@@ -121,14 +128,6 @@ export function NotificationTable({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href={`/dotto/notifications/${notification.id}/edit`}
-                      >
-                        <Pencil className="mr-2 size-4" />
-                        編集
-                      </Link>
-                    </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onDelete(notification)}
                       className="text-red-600 dark:text-red-400"

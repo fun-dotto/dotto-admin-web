@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -17,7 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ExternalLink, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { ExternalLink, MoreHorizontal, Trash2 } from "lucide-react";
 import type { Announcement } from "@/app/dotto/announcements/constants";
 import {
   getAnnouncementStatus,
@@ -56,6 +56,7 @@ export function AnnouncementTable({
   announcements,
   onDelete,
 }: AnnouncementTableProps) {
+  const router = useRouter();
   const sorted = [...announcements].sort(
     (a, b) =>
       new Date(b.availableFrom).getTime() - new Date(a.availableFrom).getTime()
@@ -77,7 +78,13 @@ export function AnnouncementTable({
         {sorted.map((announcement) => {
           const status = getAnnouncementStatus(announcement);
           return (
-            <TableRow key={announcement.id}>
+            <TableRow
+              key={announcement.id}
+              onClick={() =>
+                router.push(`/dotto/announcements/${announcement.id}/edit`)
+              }
+              className="cursor-pointer"
+            >
               <TableCell className="font-medium text-zinc-900 dark:text-zinc-50">
                 {announcement.title}
               </TableCell>
@@ -86,6 +93,7 @@ export function AnnouncementTable({
                   href={announcement.url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
                   className="inline-flex items-center gap-1 text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
                 >
                   {truncateUrl(announcement.url)}
@@ -105,7 +113,7 @@ export function AnnouncementTable({
                   {STATUS_LABEL[status]}
                 </Badge>
               </TableCell>
-              <TableCell>
+              <TableCell onClick={(e) => e.stopPropagation()}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon-sm">
@@ -113,14 +121,6 @@ export function AnnouncementTable({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href={`/dotto/announcements/${announcement.id}/edit`}
-                      >
-                        <Pencil className="mr-2 size-4" />
-                        編集
-                      </Link>
-                    </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onDelete(announcement)}
                       className="text-red-600 dark:text-red-400"

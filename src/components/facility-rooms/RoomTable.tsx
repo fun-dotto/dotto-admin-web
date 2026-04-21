@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -16,7 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Trash2 } from "lucide-react";
 import type { Room } from "@/app/dotto/facility-rooms/constants";
 import { FLOOR_LABEL } from "@/app/dotto/facility-rooms/constants";
 
@@ -26,6 +26,7 @@ interface RoomTableProps {
 }
 
 export function RoomTable({ rooms, onDelete }: RoomTableProps) {
+  const router = useRouter();
   return (
     <Table>
       <TableHeader>
@@ -37,14 +38,18 @@ export function RoomTable({ rooms, onDelete }: RoomTableProps) {
       </TableHeader>
       <TableBody>
         {rooms.map((room) => (
-          <TableRow key={room.id}>
+          <TableRow
+            key={room.id}
+            onClick={() => router.push(`/dotto/facility-rooms/${room.id}/edit`)}
+            className="cursor-pointer"
+          >
             <TableCell className="font-medium text-zinc-900 dark:text-zinc-50">
               {room.name}
             </TableCell>
             <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
               {FLOOR_LABEL[room.floor]}
             </TableCell>
-            <TableCell>
+            <TableCell onClick={(e) => e.stopPropagation()}>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon-sm">
@@ -52,12 +57,6 @@ export function RoomTable({ rooms, onDelete }: RoomTableProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link href={`/dotto/facility-rooms/${room.id}/edit`}>
-                      <Pencil className="mr-2 size-4" />
-                      編集
-                    </Link>
-                  </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => onDelete(room)}
                     className="text-red-600 dark:text-red-400"

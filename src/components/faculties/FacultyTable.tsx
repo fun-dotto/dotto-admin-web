@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -16,7 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Trash2 } from "lucide-react";
 import type { Faculty } from "@/app/dotto/faculties/constants";
 
 interface FacultyTableProps {
@@ -25,6 +25,7 @@ interface FacultyTableProps {
 }
 
 export function FacultyTable({ faculties, onDelete }: FacultyTableProps) {
+  const router = useRouter();
   return (
     <Table>
       <TableHeader>
@@ -36,14 +37,18 @@ export function FacultyTable({ faculties, onDelete }: FacultyTableProps) {
       </TableHeader>
       <TableBody>
         {faculties.map((faculty) => (
-          <TableRow key={faculty.id}>
+          <TableRow
+            key={faculty.id}
+            onClick={() => router.push(`/dotto/faculties/${faculty.id}/edit`)}
+            className="cursor-pointer"
+          >
             <TableCell className="font-medium text-zinc-900 dark:text-zinc-50">
               {faculty.name}
             </TableCell>
             <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
               {faculty.email}
             </TableCell>
-            <TableCell>
+            <TableCell onClick={(e) => e.stopPropagation()}>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon-sm">
@@ -51,12 +56,6 @@ export function FacultyTable({ faculties, onDelete }: FacultyTableProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link href={`/dotto/faculties/${faculty.id}/edit`}>
-                      <Pencil className="mr-2 size-4" />
-                      編集
-                    </Link>
-                  </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => onDelete(faculty)}
                     className="text-red-600 dark:text-red-400"

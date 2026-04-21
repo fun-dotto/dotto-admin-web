@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -16,7 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import { MoreHorizontal, Trash2 } from "lucide-react";
 import type { SubjectSummary } from "@/app/dotto/subjects/constants";
 import { SEMESTER_LABEL } from "@/app/dotto/subjects/constants";
 
@@ -26,6 +26,7 @@ interface SubjectTableProps {
 }
 
 export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
+  const router = useRouter();
   return (
     <Table>
       <TableHeader>
@@ -39,14 +40,13 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
       </TableHeader>
       <TableBody>
         {subjects.map((subject) => (
-          <TableRow key={subject.id}>
+          <TableRow
+            key={subject.id}
+            onClick={() => router.push(`/dotto/subjects/${subject.id}`)}
+            className="cursor-pointer"
+          >
             <TableCell className="font-medium text-zinc-900 dark:text-zinc-50">
-              <Link
-                href={`/dotto/subjects/${subject.id}`}
-                className="hover:underline"
-              >
-                {subject.name}
-              </Link>
+              {subject.name}
             </TableCell>
             <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
               {subject.year}
@@ -59,7 +59,7 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
                 ? subject.faculties.map((f) => f.faculty.name).join("")
                 : `${subject.faculties[0].faculty.name} 他${subject.faculties.length - 1}人`}
             </TableCell>
-            <TableCell>
+            <TableCell onClick={(e) => e.stopPropagation()}>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon-sm">
@@ -67,12 +67,6 @@ export function SubjectTable({ subjects, onDelete }: SubjectTableProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link href={`/dotto/subjects/${subject.id}`}>
-                      <Eye className="mr-2 size-4" />
-                      詳細
-                    </Link>
-                  </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => onDelete(subject)}
                     className="text-red-600 dark:text-red-400"
