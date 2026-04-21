@@ -1,0 +1,49 @@
+export type EnvironmentKey = "local" | "dev" | "stg" | "qa" | "prod";
+
+export type Environment = {
+  key: EnvironmentKey;
+  label: string;
+  url: string;
+};
+
+export const environments: Environment[] = [
+  {
+    key: "local",
+    label: "ローカル",
+    url: "http://localhost:3000",
+  },
+  {
+    key: "dev",
+    label: "開発",
+    url: process.env.NEXT_PUBLIC_APP_URL_DEV ?? "",
+  },
+  {
+    key: "stg",
+    label: "ステージング",
+    url: process.env.NEXT_PUBLIC_APP_URL_STG ?? "",
+  },
+  {
+    key: "qa",
+    label: "QA",
+    url: process.env.NEXT_PUBLIC_APP_URL_QA ?? "",
+  },
+  {
+    key: "prod",
+    label: "本番",
+    url: process.env.NEXT_PUBLIC_APP_URL_PROD ?? "",
+  },
+];
+
+export function detectCurrentEnvironment(origin: string): EnvironmentKey {
+  const normalize = (url: string) => url.replace(/\/$/, "");
+  const current = normalize(origin);
+
+  if (current.startsWith("http://localhost") || current.startsWith("http://127.0.0.1")) {
+    return "local";
+  }
+
+  const match = environments.find(
+    (env) => env.url && normalize(env.url) === current,
+  );
+  return match?.key ?? "local";
+}

@@ -1,9 +1,11 @@
 "use client";
 
 import { Home } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { EnvironmentSwitcher } from "@/components/environment-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -37,9 +39,18 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <Link href="/" className="flex items-center gap-2 px-2 py-2 hover:opacity-80">
-          <span className="text-lg font-bold">Dotto Admin</span>
-        </Link>
+        <div className="flex items-center gap-2 px-2 py-2">
+          <Link
+            href="/"
+            aria-label="Dotto Admin"
+            className="shrink-0 hover:opacity-80"
+          >
+            <Image src="/logo.png" alt="Dotto Admin" width={32} height={32} priority />
+          </Link>
+          <div className="min-w-0 flex-1">
+            <EnvironmentSwitcher />
+          </div>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         {sidebarSections.map((group) => (
