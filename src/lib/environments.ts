@@ -9,17 +9,17 @@ export type Environment = {
 export const environments: Environment[] = [
   {
     key: "local",
-    label: "ローカル",
+    label: "Local",
     url: "http://localhost:3000",
   },
   {
     key: "dev",
-    label: "開発",
+    label: "Development",
     url: process.env.NEXT_PUBLIC_APP_URL_DEV ?? "",
   },
   {
     key: "stg",
-    label: "ステージング",
+    label: "Staging",
     url: process.env.NEXT_PUBLIC_APP_URL_STG ?? "",
   },
   {
@@ -29,7 +29,7 @@ export const environments: Environment[] = [
   },
   {
     key: "prod",
-    label: "本番",
+    label: "Production",
     url: process.env.NEXT_PUBLIC_APP_URL_PROD ?? "",
   },
 ];
