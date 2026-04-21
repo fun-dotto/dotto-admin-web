@@ -6,9 +6,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { EnvironmentSwitcher } from "@/components/environment-switcher";
+import { SidebarUserMenu } from "@/components/sidebar-user-menu";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -73,6 +75,9 @@ export function AppSidebar() {
           </SidebarGroup>
         ))}
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarUserMenu />
+      </SidebarFooter>
     </Sidebar>
   );
 }

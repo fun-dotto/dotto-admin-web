@@ -1,29 +1,17 @@
 "use client";
 
-import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { CircularProgress } from "@/components/ui/circular-progress";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import { Separator } from "@/components/ui/separator";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Copy, LogOut } from "lucide-react";
-import { toast } from "sonner";
 
 interface AuthenticatedLayoutProps {
   children: React.ReactNode;
 }
 
 export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
-  const { user, loading, authError, signInWithGoogle, signOut } = useAuth();
+  const { user, loading, authError, signInWithGoogle } = useAuth();
 
   if (loading) {
     return (
@@ -80,76 +68,6 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <div className="flex flex-1 items-center justify-end">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative size-10 rounded-full p-0">
-                  {user.photoURL ? (
-                    <Image
-                      src={user.photoURL}
-                      alt={user.displayName || "User"}
-                      width={40}
-                      height={40}
-                      className="size-10 rounded-full"
-                    />
-                  ) : (
-                    <div className="flex size-10 items-center justify-center rounded-full bg-zinc-200 dark:bg-zinc-700">
-                      <span className="text-base font-medium text-zinc-600 dark:text-zinc-300">
-                        {(user.displayName || user.email || "U").charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      {user.displayName || "ユーザー"}
-                    </p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {user.email}
-                    </p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={async () => {
-                    try {
-                      await navigator.clipboard.writeText(user.uid);
-                      toast.success("UIDをコピーしました");
-                    } catch {
-                      toast.error("UIDのコピーに失敗しました");
-                    }
-                  }}
-                >
-                  <Copy className="mr-2 size-4" />
-                  <span>UIDをコピー</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={async () => {
-                    try {
-                      const idToken = await user.getIdToken();
-                      await navigator.clipboard.writeText(idToken);
-                      toast.success("IDトークンをコピーしました");
-                    } catch {
-                      toast.error("IDトークンのコピーに失敗しました");
-                    }
-                  }}
-                >
-                  <Copy className="mr-2 size-4" />
-                  <span>IDトークンをコピー</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={signOut} className="cursor-pointer">
-                  <LogOut className="mr-2 size-4" />
-                  <span>ログアウト</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
         </header>
         <main className="flex-1 p-6">
           {children}
