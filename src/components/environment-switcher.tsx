@@ -1,14 +1,22 @@
 "use client";
 
+import { Check, ChevronsUpDown } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
 import {
   detectCurrentEnvironment,
   environments,
@@ -22,7 +30,10 @@ export function EnvironmentSwitcher() {
     setCurrentKey(detectCurrentEnvironment(window.location.origin));
   }, []);
 
-  const handleChange = (next: string) => {
+  const currentEnv =
+    environments.find((env) => env.key === currentKey) ?? environments[0];
+
+  const handleSelect = (next: EnvironmentKey) => {
     const target = environments.find((env) => env.key === next);
     if (!target || !target.url) return;
     if (target.key === currentKey) return;
@@ -32,21 +43,58 @@ export function EnvironmentSwitcher() {
   };
 
   return (
-    <Select value={currentKey} onValueChange={handleChange}>
-      <SelectTrigger size="sm" className="w-full">
-        <SelectValue placeholder="環境を選択" />
-      </SelectTrigger>
-      <SelectContent>
-        {environments.map((env) => (
-          <SelectItem
-            key={env.key}
-            value={env.key}
-            disabled={env.key !== "local" && !env.url}
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              <Image
+                src="/logo.png"
+                alt="Dotto Admin"
+                width={32}
+                height={32}
+                priority
+                className="size-8 shrink-0 rounded-md"
+              />
+              <div className="grid min-w-0 flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-medium">Dotto Admin</span>
+                <span className="truncate text-xs text-muted-foreground">
+                  {currentEnv.label}
+                </span>
+              </div>
+              <ChevronsUpDown className="ml-auto size-4" />
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            side="bottom"
+            align="start"
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-56"
           >
-            {env.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+            <DropdownMenuLabel className="text-xs text-muted-foreground">
+              環境を切り替え
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {environments.map((env) => {
+              const disabled = env.key !== "local" && !env.url;
+              const isCurrent = env.key === currentKey;
+              return (
+                <DropdownMenuItem
+                  key={env.key}
+                  disabled={disabled}
+                  onClick={() => handleSelect(env.key)}
+                  className="cursor-pointer"
+                >
+                  <span className="flex-1">{env.label}</span>
+                  {isCurrent ? <Check className="ml-2 size-4" /> : null}
+                </DropdownMenuItem>
+              );
+            })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
   );
 }
