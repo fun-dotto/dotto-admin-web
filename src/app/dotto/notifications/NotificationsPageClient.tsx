@@ -25,10 +25,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, X } from "lucide-react";
+import { Plus, Search, Send, X } from "lucide-react";
 import { NotificationTable } from "@/components/notifications/NotificationTable";
 import { NotificationDeleteDialog } from "@/components/notifications/NotificationDeleteDialog";
-import { deleteNotification } from "./actions";
+import { NotificationDispatchDialog } from "@/components/notifications/NotificationDispatchDialog";
+import { deleteNotification, dispatchNotifications } from "./actions";
 import type { Notification } from "./constants";
 import { ErrorToast } from "@/components/error-toast";
 
@@ -80,6 +81,49 @@ export function NotificationsPageClient({
   const [deleteTarget, setDeleteTarget] = useState<Notification | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [dispatchDialogOpen, setDispatchDialogOpen] = useState(false);
+  const [isDispatching, setIsDispatching] = useState(false);
+
+  const handleToggleSelect = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id],
+    );
+  };
+
+  const handleToggleSelectAll = (ids: string[], checked: boolean) => {
+    setSelectedIds((prev) => {
+      if (checked) {
+        const set = new Set(prev);
+        ids.forEach((id) => set.add(id));
+        return Array.from(set);
+      }
+      const idSet = new Set(ids);
+      return prev.filter((id) => !idSet.has(id));
+    });
+  };
+
+  const handleDispatchConfirm = async () => {
+    if (selectedIds.length === 0) return;
+    setIsDispatching(true);
+    try {
+      const result = await dispatchNotifications(selectedIds);
+      if (result.error) {
+        toast.error(result.error);
+        return;
+      }
+      const count = result.notifications?.length ?? 0;
+      toast.success(`${count}件の通知を送信しました`);
+      setDispatchDialogOpen(false);
+      setSelectedIds([]);
+      router.refresh();
+    } catch {
+      toast.error("エラーが発生しました");
+    } finally {
+      setIsDispatching(false);
+    }
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
@@ -122,12 +166,24 @@ export function NotificationsPageClient({
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>通知管理</span>
-            <Button asChild size="sm">
-              <Link href="/dotto/notifications/new">
-                <Plus className="mr-1 size-4" />
-                新規作成
-              </Link>
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={selectedIds.length === 0}
+                onClick={() => setDispatchDialogOpen(true)}
+              >
+                <Send className="mr-1 size-4" />
+                選択した通知を送信
+                {selectedIds.length > 0 ? ` (${selectedIds.length})` : ""}
+              </Button>
+              <Button asChild size="sm">
+                <Link href="/dotto/notifications/new">
+                  <Plus className="mr-1 size-4" />
+                  新規作成
+                </Link>
+              </Button>
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -206,10 +262,21 @@ export function NotificationsPageClient({
             <NotificationTable
               notifications={notifications}
               onDelete={handleDeleteOpen}
+              selectedIds={selectedIds}
+              onToggleSelect={handleToggleSelect}
+              onToggleSelectAll={handleToggleSelectAll}
             />
           )}
         </CardContent>
       </Card>
+
+      <NotificationDispatchDialog
+        open={dispatchDialogOpen}
+        onOpenChange={setDispatchDialogOpen}
+        count={selectedIds.length}
+        onConfirm={handleDispatchConfirm}
+        isSubmitting={isDispatching}
+      />
 
       <NotificationDeleteDialog
         open={deleteDialogOpen}

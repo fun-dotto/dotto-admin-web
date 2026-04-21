@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +29,9 @@ import {
 interface NotificationTableProps {
   notifications: Notification[];
   onDelete: (notification: Notification) => void;
+  selectedIds: string[];
+  onToggleSelect: (id: string) => void;
+  onToggleSelectAll: (ids: string[], checked: boolean) => void;
 }
 
 function formatDateTime(dateString: string): string {
@@ -43,16 +47,38 @@ function formatDateTime(dateString: string): string {
 export function NotificationTable({
   notifications,
   onDelete,
+  selectedIds,
+  onToggleSelect,
+  onToggleSelectAll,
 }: NotificationTableProps) {
   const sorted = [...notifications].sort(
     (a, b) =>
       new Date(b.notifyAfter).getTime() - new Date(a.notifyAfter).getTime(),
   );
+  const sortedIds = sorted.map((n) => n.id);
+  const selectedSet = new Set(selectedIds);
+  const allSelected =
+    sortedIds.length > 0 && sortedIds.every((id) => selectedSet.has(id));
+  const someSelected = sortedIds.some((id) => selectedSet.has(id));
+  const headerChecked: boolean | "indeterminate" = allSelected
+    ? true
+    : someSelected
+      ? "indeterminate"
+      : false;
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead className="w-10">
+            <Checkbox
+              checked={headerChecked}
+              onCheckedChange={(checked) =>
+                onToggleSelectAll(sortedIds, checked === true)
+              }
+              aria-label="全て選択"
+            />
+          </TableHead>
           <TableHead>タイトル</TableHead>
           <TableHead>通知送信期間</TableHead>
           <TableHead>対象人数</TableHead>
@@ -65,6 +91,13 @@ export function NotificationTable({
           const status = getNotificationStatus(notification);
           return (
             <TableRow key={notification.id}>
+              <TableCell>
+                <Checkbox
+                  checked={selectedSet.has(notification.id)}
+                  onCheckedChange={() => onToggleSelect(notification.id)}
+                  aria-label={`${notification.title}を選択`}
+                />
+              </TableCell>
               <TableCell className="font-medium text-zinc-900 dark:text-zinc-50">
                 {notification.title}
               </TableCell>
