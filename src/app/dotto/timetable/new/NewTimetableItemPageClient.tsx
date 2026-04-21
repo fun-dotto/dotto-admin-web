@@ -55,7 +55,7 @@ export function NewTimetableItemPageClient({
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/dotto/timetable">
-                時間割管理
+                時間割
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />

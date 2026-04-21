@@ -65,7 +65,7 @@ export function NewCancelledClassPageClient() {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/dotto/cancelled-classes">
-                休講管理
+                休講
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />

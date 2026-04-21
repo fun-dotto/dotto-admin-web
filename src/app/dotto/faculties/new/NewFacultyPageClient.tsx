@@ -45,7 +45,7 @@ export function NewFacultyPageClient() {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/dotto/faculties">
-                教員管理
+                教員
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />

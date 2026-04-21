@@ -52,7 +52,7 @@ export function NewCourseRegistrationPageClient({
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/dotto/course-registrations">
-                履修情報管理
+                履修情報
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />

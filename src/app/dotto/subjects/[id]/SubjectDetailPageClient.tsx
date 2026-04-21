@@ -55,7 +55,7 @@ export function SubjectDetailPageClient({
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/dotto/subjects">科目管理</BreadcrumbLink>
+              <BreadcrumbLink href="/dotto/subjects">科目</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>

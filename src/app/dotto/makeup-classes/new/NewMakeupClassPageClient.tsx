@@ -65,7 +65,7 @@ export function NewMakeupClassPageClient() {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/dotto/makeup-classes">
-                補講管理
+                補講
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />

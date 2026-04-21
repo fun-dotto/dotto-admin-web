@@ -45,7 +45,7 @@ export function NewRoomPageClient() {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/dotto/facility-rooms">
-                教室管理
+                教室
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />

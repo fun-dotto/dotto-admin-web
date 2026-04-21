@@ -67,7 +67,7 @@ export function NewRoomChangePageClient() {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/dotto/room-changes">
-                教室変更管理
+                教室変更
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />

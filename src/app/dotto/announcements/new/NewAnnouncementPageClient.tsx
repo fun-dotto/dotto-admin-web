@@ -45,7 +45,7 @@ export function NewAnnouncementPageClient() {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/dotto/announcements">
-                おしらせ管理
+                おしらせ
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />

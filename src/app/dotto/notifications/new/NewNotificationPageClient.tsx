@@ -45,7 +45,7 @@ export function NewNotificationPageClient() {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/dotto/notifications">
-                通知管理
+                通知
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />

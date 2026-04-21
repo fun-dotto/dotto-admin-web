@@ -59,7 +59,7 @@ export function NewFacultyRoomPageClient({
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/dotto/faculty-rooms">
-                教員室管理
+                教員室
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />

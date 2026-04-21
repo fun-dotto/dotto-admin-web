@@ -23,7 +23,7 @@ export function NewSubjectPageClient() {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/dotto/subjects">
-                科目管理
+                科目
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
