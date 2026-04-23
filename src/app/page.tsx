@@ -13,6 +13,12 @@ import Link from "next/link";
 export default function Home() {
   return (
     <AuthenticatedLayout>
+      <iframe
+        width="100%"
+        height="400"
+        src="https://datastudio.google.com/embed/reporting/638767f2-6a09-4a33-9e0a-7dee4acd6184/page/kb3fF"
+        sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+      ></iframe>
       <div className="flex flex-1 flex-col gap-8 p-6">
         {navigationSections.map((section) => (
           <div key={section.title} className="flex flex-col gap-3">
