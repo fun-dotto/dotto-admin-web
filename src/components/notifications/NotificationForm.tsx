@@ -44,7 +44,7 @@ export function NotificationForm({
   isEdit,
 }: NotificationFormProps) {
   const [title, setTitle] = useState(notification?.title ?? "");
-  const [message, setMessage] = useState(notification?.message ?? "");
+  const [body, setBody] = useState(notification?.body ?? "");
   const [url, setUrl] = useState(notification?.url ?? "");
   const [notifyAfter, setNotifyAfter] = useState(
     notification ? toDatetimeLocal(notification.notifyAfter) : "",
@@ -69,7 +69,7 @@ export function NotificationForm({
 
     const request: NotificationRequest = {
       title,
-      message,
+      body,
       notifyAfter: fromDatetimeLocal(notifyAfter),
       notifyBefore: fromDatetimeLocal(notifyBefore),
       targetUserIds: ids,
@@ -95,11 +95,11 @@ export function NotificationForm({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="message">メッセージ</Label>
+        <Label htmlFor="body">本文</Label>
         <Textarea
-          id="message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          id="body"
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
           rows={4}
           required
         />
