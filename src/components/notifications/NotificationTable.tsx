@@ -23,7 +23,7 @@ import type { Notification } from "@/app/dotto/notifications/constants";
 import {
   getNotificationStatus,
   STATUS_LABEL,
-  STATUS_BADGE_VARIANT,
+  STATUS_BADGE_CLASS,
 } from "@/app/dotto/notifications/constants";
 
 interface NotificationTableProps {
@@ -116,7 +116,10 @@ export function NotificationTable({
                 {notification.targetUsers.length}
               </TableCell>
               <TableCell>
-                <Badge variant={STATUS_BADGE_VARIANT[status]}>
+                <Badge
+                  variant="secondary"
+                  className={STATUS_BADGE_CLASS[status]}
+                >
                   {STATUS_LABEL[status]}
                 </Badge>
               </TableCell>
