@@ -2,7 +2,7 @@
 
 import { getAdminAuth } from "@/lib/firebase-admin";
 import { UserRecord } from "firebase-admin/auth";
-import { DEFAULT_PAGE_SIZE, StatusFilter } from "./constants";
+import { StatusFilter } from "./constants";
 
 export interface FirebaseUser {
   uid: string;
@@ -17,11 +17,6 @@ export interface FirebaseUser {
   isDeveloper: boolean;
 }
 
-export interface PaginatedUsersResult {
-  users: FirebaseUser[];
-  nextPageToken: string | undefined;
-}
-
 function formatUserRecord(user: UserRecord): FirebaseUser {
   return {
     uid: user.uid,
@@ -34,18 +29,6 @@ function formatUserRecord(user: UserRecord): FirebaseUser {
     lastSignInTime: user.metadata.lastSignInTime,
     isAdmin: user.customClaims?.admin === true,
     isDeveloper: user.customClaims?.developer === true,
-  };
-}
-
-export async function fetchUsers(
-  pageSize: number = DEFAULT_PAGE_SIZE,
-  pageToken?: string
-): Promise<PaginatedUsersResult> {
-  const auth = getAdminAuth();
-  const listUsersResult = await auth.listUsers(pageSize, pageToken);
-  return {
-    users: listUsersResult.users.map(formatUserRecord),
-    nextPageToken: listUsersResult.pageToken,
   };
 }
 
