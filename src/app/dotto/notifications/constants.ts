@@ -9,7 +9,9 @@ export type NotificationStatus = "notified" | "pending";
 export function getNotificationStatus(
   notification: Notification,
 ): NotificationStatus {
-  return notification.isNotified ? "notified" : "pending";
+  const { targetUsers } = notification;
+  if (targetUsers.length === 0) return "pending";
+  return targetUsers.every((u) => u.notifiedAt) ? "notified" : "pending";
 }
 
 export const STATUS_LABEL: Record<NotificationStatus, string> = {

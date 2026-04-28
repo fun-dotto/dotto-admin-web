@@ -113,7 +113,7 @@ export function NotificationTable({
                 {formatDateTime(notification.notifyBefore)}
               </TableCell>
               <TableCell className="text-sm text-zinc-600 dark:text-zinc-400">
-                {notification.targetUserIds.length}
+                {notification.targetUsers.length}
               </TableCell>
               <TableCell>
                 <Badge variant={STATUS_BADGE_VARIANT[status]}>

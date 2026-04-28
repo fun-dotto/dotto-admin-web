@@ -86,7 +86,7 @@ export function NotificationForm({
     notification ? toDatetimeLocal(notification.notifyBefore) : "",
   );
   const [targetUserIds, setTargetUserIds] = useState(
-    notification?.targetUserIds.join("\n") ?? "",
+    notification?.targetUsers.map((u) => u.userId).join("\n") ?? "",
   );
   const [error, setError] = useState<string | null>(null);
 
