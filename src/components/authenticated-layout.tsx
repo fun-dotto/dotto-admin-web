@@ -11,9 +11,14 @@ import { resolvePageTitle } from "@/lib/page-title";
 interface AuthenticatedLayoutProps {
   children: React.ReactNode;
   actions?: React.ReactNode;
+  headerContent?: React.ReactNode;
 }
 
-export function AuthenticatedLayout({ children, actions }: AuthenticatedLayoutProps) {
+export function AuthenticatedLayout({
+  children,
+  actions,
+  headerContent,
+}: AuthenticatedLayoutProps) {
   const { user, loading, authError, signInWithGoogle } = useAuth();
   const pathname = usePathname();
   const title = resolvePageTitle(pathname);
@@ -73,10 +78,14 @@ export function AuthenticatedLayout({ children, actions }: AuthenticatedLayoutPr
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />
-          {title && (
-            <h1 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
-              {title}
-            </h1>
+          {headerContent ? (
+            headerContent
+          ) : (
+            title && (
+              <h1 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
+                {title}
+              </h1>
+            )
           )}
           {actions && <div className="ml-auto flex items-center gap-2">{actions}</div>}
         </header>

@@ -14,6 +14,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { NotificationForm } from "@/components/notifications/NotificationForm";
+import { NotificationTargetUsersTable } from "@/components/notifications/NotificationTargetUsersTable";
 import { updateNotification } from "../../actions";
 import type { Notification, NotificationRequest } from "../../constants";
 
@@ -69,6 +70,15 @@ export function EditNotificationPageClient({
               onCancel={() => router.push("/dotto/notifications")}
               isSubmitting={isSubmitting}
               isEdit={true}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="space-y-2">
+            <h2 className="text-sm font-medium">対象ユーザーの送信状況</h2>
+            <NotificationTargetUsersTable
+              targetUsers={notification.targetUsers}
             />
           </CardContent>
         </Card>
