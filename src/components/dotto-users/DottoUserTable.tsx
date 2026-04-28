@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -20,6 +21,7 @@ interface DottoUserTableProps {
 }
 
 export function DottoUserTable({ users }: DottoUserTableProps) {
+  const router = useRouter();
   return (
     <Table>
       <TableHeader>
@@ -33,7 +35,11 @@ export function DottoUserTable({ users }: DottoUserTableProps) {
       </TableHeader>
       <TableBody>
         {users.map((user) => (
-          <TableRow key={user.id}>
+          <TableRow
+            key={user.id}
+            onClick={() => router.push(`/dotto/users/${user.id}`)}
+            className="cursor-pointer"
+          >
             <TableCell className="font-mono text-xs text-zinc-700 dark:text-zinc-300">
               {user.id}
             </TableCell>

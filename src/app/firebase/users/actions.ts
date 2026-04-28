@@ -49,6 +49,20 @@ export async function fetchUsers(
   };
 }
 
+export async function fetchFirebaseUser(
+  uid: string
+): Promise<{ user?: FirebaseUser; error?: string }> {
+  try {
+    const auth = getAdminAuth();
+    const record = await auth.getUser(uid);
+    return { user: formatUserRecord(record) };
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "不明なエラーが発生しました";
+    return { error: `Firebase ユーザーの取得に失敗しました: ${message}` };
+  }
+}
+
 export interface SearchUsersResult {
   users: FirebaseUser[];
   totalCount: number;
